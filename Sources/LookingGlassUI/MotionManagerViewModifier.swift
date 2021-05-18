@@ -22,24 +22,13 @@ struct MotionManagerViewModifier: ViewModifier {
             }
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
                 motionManager.changeDeviceOrientation()
+                motionManager.restart()
             }
             .onAppear {
                 motionManager.changeDeviceOrientation()
                 motionManager.setUpdateInterval(updateInterval)
                 motionManager.setDisabled(disabled)
             }
-            .onChange(of: updateInterval, perform: motionManager.setUpdateInterval)
-            .onChange(of: disabled, perform: motionManager.setDisabled)
-//            .onChange(of: motionManager.updateInterval) {
-//                if updateInterval != $0 {
-//                    updateInterval = $0
-//                }
-//            }
-//            .onChange(of: motionManager.disabled) {
-//                if disabled != $0 {
-//                    disabled = $0
-//                }
-//            }
     }
 }
 
