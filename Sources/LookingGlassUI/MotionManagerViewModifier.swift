@@ -11,8 +11,8 @@ import SwiftUI
 struct MotionManagerViewModifier: ViewModifier {
     @StateObject var motionManager = MotionManager()
     
-    @Binding var updateInterval: TimeInterval
-    @Binding var disabled: Bool
+    let updateInterval: TimeInterval
+    let disabled: Bool
     
     func body(content: Content) -> some View {
         content
@@ -30,22 +30,22 @@ struct MotionManagerViewModifier: ViewModifier {
             }
             .onChange(of: updateInterval, perform: motionManager.setUpdateInterval)
             .onChange(of: disabled, perform: motionManager.setDisabled)
-            .onChange(of: motionManager.updateInterval) {
-                if updateInterval != $0 {
-                    updateInterval = $0
-                }
-            }
-            .onChange(of: motionManager.disabled) {
-                if disabled != $0 {
-                    disabled = $0
-                }
-            }
+//            .onChange(of: motionManager.updateInterval) {
+//                if updateInterval != $0 {
+//                    updateInterval = $0
+//                }
+//            }
+//            .onChange(of: motionManager.disabled) {
+//                if disabled != $0 {
+//                    disabled = $0
+//                }
+//            }
     }
 }
 
 @available (iOS 14, *)
 public extension View {
-    func motionManager(updateInterval: Binding<TimeInterval>, disabled: Binding<Bool> = .constant(false)) -> some View {
+    func motionManager(updateInterval: TimeInterval, disabled: Bool = false) -> some View {
         self.modifier(MotionManagerViewModifier(updateInterval: updateInterval, disabled: disabled))
     }
 }
