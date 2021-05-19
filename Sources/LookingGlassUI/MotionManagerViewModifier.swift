@@ -29,6 +29,8 @@ struct MotionManagerViewModifier: ViewModifier {
                 motionManager.setUpdateInterval(updateInterval)
                 motionManager.setDisabled(disabled)
             }
+            .onChange(of: updateInterval, perform: motionManager.setUpdateInterval)
+            .onChange(of: disabled, perform: motionManager.setDisabled)
     }
 }
 
