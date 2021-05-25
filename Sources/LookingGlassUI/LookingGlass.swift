@@ -36,8 +36,8 @@ public struct LookingGlass<Content: View>: View {
         self.content = content()
     }
     
-    public init(_ type: DeviceRotationEffectType, distance: CGFloat, perspective: CGFloat? = nil, pitch: Angle? = nil, roll: Angle? = nil, yaw: Angle? = nil, isShowingInFourDirections: Bool? = nil, content: () -> Content) {
-        self.init(type, distance: distance, perspective: perspective, offsetRotation: Quat4f(pitch: pitch, yaw: yaw, roll: roll), isShowingInFourDirections: isShowingInFourDirections, content: content)
+    public init(_ type: DeviceRotationEffectType, distance: CGFloat, perspective: CGFloat? = nil, pitch: Angle? = nil, yaw: Angle? = nil, localRoll: Angle? = nil, isShowingInFourDirections: Bool? = nil, content: () -> Content) {
+        self.init(type, distance: distance, perspective: perspective, offsetRotation: Quat4f(pitch: pitch, yaw: yaw, localRoll: localRoll), isShowingInFourDirections: isShowingInFourDirections, content: content)
     }
     
     public var body: some View {

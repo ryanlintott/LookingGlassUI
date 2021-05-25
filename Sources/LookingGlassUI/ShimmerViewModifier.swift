@@ -38,12 +38,12 @@ struct ShimmerViewModifier: ViewModifier {
 
     let startRadius: CGFloat = 5
     let endRadius: CGFloat = 125
-    let scale: CGFloat = 10
+    let scale: CGFloat = 5
     let aspectRatio: CGFloat = 0.5
     let distance: CGFloat = 4000
     let pitch: Angle = .degrees(45)
-    let roll: Angle = .degrees(0)
-    let yaw: Angle = .degrees(30)
+    let yaw: Angle = .degrees(0)
+    let localRoll: Angle = .degrees(-30)
     
     init(mode: ShimmerMode? = nil, color: Color, background: Color? = nil, blendMode: BlendMode? = nil) {
         self.mode = mode ?? .on
@@ -72,9 +72,10 @@ struct ShimmerViewModifier: ViewModifier {
     }
     
     var shimmer: some View {
-        LookingGlass(.reflection, distance: distance, perspective: 0, pitch: pitch, roll: roll, yaw: yaw, isShowingInFourDirections: true) {
+        LookingGlass(.reflection, distance: distance, perspective: 0, pitch: pitch, yaw: yaw, localRoll: localRoll, isShowingInFourDirections: true) {
             RadialGradient(gradient: Gradient(colors: [color, background]), center: .center, startRadius: startRadius, endRadius: endRadius)
                 .frame(width: endRadius * 2, height: endRadius * 2)
+                .drawingGroup(opaque: false)
                 .scaleEffect(x: scale * aspectRatio, y: scale / aspectRatio, anchor: .center)
         }
         .background(background)

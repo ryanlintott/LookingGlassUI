@@ -11,8 +11,11 @@ import SwiftUI
 
 @available(iOS 13, *)
 extension Quat4f {
-    init(pitch: Angle? = nil, yaw: Angle? = nil, roll: Angle? = nil) {
-        self = Quat4f(pitch: Float(pitch?.radians ?? .zero), yaw: Float(yaw?.radians ?? .zero), roll: Float(roll?.radians ?? .zero))
+    init(pitch: Angle? = nil, yaw: Angle? = nil, localRoll: Angle? = nil) {
+        let pitch = Quat4f(angle: Float(pitch?.radians ?? .zero), axis: .axisX)
+        let yaw = Quat4f(angle: Float(yaw?.radians ?? .zero), axis: .axisZ)
+        let localRoll = Quat4f(angle: Float(localRoll?.radians ?? .zero), axis: .axisZ)
+        self = yaw * pitch * localRoll
     }
     
     // angle in radians between two quaternions

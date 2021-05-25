@@ -116,8 +116,8 @@ public extension View {
     }
     
     
-    func deviceRotationEffect(_ type: DeviceRotationEffectType, distance: CGFloat? = nil, perspective: CGFloat? = nil, pitch: Angle? = nil, roll: Angle? = nil, yaw: Angle? = nil, isShowingInFourDirections: Bool? = nil) -> some View {
-        self.deviceRotationEffect(type, distance: distance, perspective: perspective, offsetRotation: Quat4f(pitch: pitch ?? .zero, yaw: yaw ?? .zero, roll: roll ?? .zero), isShowingInFourDirections: isShowingInFourDirections)
+    func deviceRotationEffect(_ type: DeviceRotationEffectType, distance: CGFloat? = nil, perspective: CGFloat? = nil, pitch: Angle? = nil, yaw: Angle? = nil, localRoll: Angle? = nil, isShowingInFourDirections: Bool? = nil) -> some View {
+        self.deviceRotationEffect(type, distance: distance, perspective: perspective, offsetRotation: Quat4f(pitch: pitch, yaw: yaw, localRoll: localRoll), isShowingInFourDirections: isShowingInFourDirections)
     }
     
 }
