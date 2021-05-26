@@ -8,19 +8,19 @@
 import SwiftUI
 
 @available(iOS 13, *)
-public enum ShimmerMode {
-    case on, lightModeOnly, darkModeOnly, off
+public enum ShimmerMode: Int {
+    case off, on, darkModeOnly, lightModeOnly
     
-    func isOn(colorScheme: ColorScheme) -> Bool {
+    func isOn(colorScheme: @autoclosure () -> ColorScheme) -> Bool {
         switch self {
-        case .on:
-            return true
         case .off:
             return false
-        case .lightModeOnly:
-            return colorScheme == .light
+        case .on:
+            return true
         case .darkModeOnly:
-            return colorScheme == .dark
+            return colorScheme() == .dark
+        case .lightModeOnly:
+            return colorScheme() == .light
         }
     }
 }

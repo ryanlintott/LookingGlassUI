@@ -40,15 +40,19 @@ struct ShimmerView: View {
     }
     
     var body: some View {
-        if isShimmering {
-            LookingGlass(.reflection, distance: distance, perspective: 0, pitch: pitch, yaw: yaw, localRoll: localRoll, isShowingInFourDirections: true) {
-                RadialGradient(gradient: Gradient(colors: [color, background]), center: .center, startRadius: startRadius, endRadius: endRadius)
-                    .frame(width: endRadius * 2, height: endRadius * 2)
-                    .scaleEffect(x: scale * aspectRatio, y: scale / aspectRatio, anchor: .center)
-            }
-            .allowsHitTesting(false)
-            .background(background)
-        }
+        background
+            .overlay(
+                Group {
+                    if isShimmering {
+                        LookingGlass(.reflection, distance: distance, perspective: 0, pitch: pitch, yaw: yaw, localRoll: localRoll, isShowingInFourDirections: true) {
+                            RadialGradient(gradient: Gradient(colors: [color, background]), center: .center, startRadius: startRadius, endRadius: endRadius)
+                                .frame(width: endRadius * 2, height: endRadius * 2)
+                                .scaleEffect(x: scale * aspectRatio, y: scale / aspectRatio, anchor: .center)
+                        }
+                        .allowsHitTesting(false)
+                    }
+                }
+            )
     }
 }
 

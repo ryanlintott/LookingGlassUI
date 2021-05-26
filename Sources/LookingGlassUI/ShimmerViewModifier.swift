@@ -38,8 +38,12 @@ struct ShimmerViewModifier: ViewModifier {
     @ViewBuilder func body(content: Content) -> some View {
         content
             .overlay(
-                ShimmerView(color: color, background: background)
-                    .blendMode(blendMode)
+                Group {
+                    if isShimmering {
+                        ShimmerView(color: color, background: background)
+                            .blendMode(blendMode)
+                    }
+                }
             )
             .mask(
                 Group {
