@@ -8,7 +8,7 @@
 import SwiftUI
 
 @available(iOS 14, *)
-struct ShimmerView: View {
+public struct ShimmerView: View {
     @EnvironmentObject var motionManager: MotionManager
     @Environment(\.colorScheme) var colorScheme
     
@@ -25,13 +25,13 @@ struct ShimmerView: View {
     let yaw: Angle = .degrees(0)
     let localRoll: Angle = .degrees(-30)
     
-    init(mode: ShimmerMode? = nil, color: Color, background: Color) {
+    public init(mode: ShimmerMode? = nil, color: Color, background: Color) {
         self.mode = mode ?? .on
         self.color = color
         self.background = background
     }
     
-    init(isOn: Bool, color: Color, background: Color) {
+    public init(isOn: Bool, color: Color, background: Color) {
         self.init(mode: isOn ? .on : .off, color: color, background: background)
     }
     
@@ -39,7 +39,7 @@ struct ShimmerView: View {
         motionManager.updateInterval > 0 && mode.isOn(colorScheme: colorScheme)
     }
     
-    var body: some View {
+    public var body: some View {
         background
             .overlay(
                 Group {
@@ -53,6 +53,7 @@ struct ShimmerView: View {
                     }
                 }
             )
+            .clipped()
     }
 }
 
