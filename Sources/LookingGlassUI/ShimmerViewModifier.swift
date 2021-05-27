@@ -10,8 +10,10 @@ import SwiftUI
 
 @available(iOS 14, *)
 struct ShimmerViewModifier: ViewModifier {
-    @EnvironmentObject var motionManager: MotionManager
-    @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject private var motionManager: MotionManager
+    @Environment(\.colorScheme) private var colorScheme
+    
+    @Namespace private var namespace
     
     let mode: ShimmerMode
     let color: Color
@@ -36,24 +38,18 @@ struct ShimmerViewModifier: ViewModifier {
     }
     
     @ViewBuilder func body(content: Content) -> some View {
-        content
-            .overlay(
-                Group {
-                    if isShimmering {
-                        ShimmerView(color: color, background: background)
-                            .blendMode(blendMode)
-                    }
-                }
-            )
-            .mask(
-                Group {
-                    if isShimmering {
-                        content
-                    } else {
-                        Color.white
-                    }
-                }
-            )
+        if isShimmering {
+            content
+                .overlay(
+                    ShimmerView(color: color, background: background)
+                        .blendMode(blendMode)
+                )
+                .mask(content)
+                .matchedGeometryEffect(id: "content", in: namespace)
+        } else {
+            content
+                .matchedGeometryEffect(id: "content", in: namespace)
+        }
     }
 }
 

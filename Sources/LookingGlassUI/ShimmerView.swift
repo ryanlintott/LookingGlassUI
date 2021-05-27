@@ -50,10 +50,10 @@ public struct ShimmerView: View {
                                 .scaleEffect(x: scale * aspectRatio, y: scale / aspectRatio, anchor: .center)
                         }
                         .allowsHitTesting(false)
+                        .clipped()
                     }
                 }
             )
-            .clipped()
     }
 }
 
