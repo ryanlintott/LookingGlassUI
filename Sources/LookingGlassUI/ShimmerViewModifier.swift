@@ -55,10 +55,24 @@ struct ShimmerViewModifier: ViewModifier {
 
 @available(iOS 14, *)
 public extension View {
+    /// Add a shimmer effect to the view
+    /// - Parameters:
+    ///   - mode: Modes where shimmer should be enabled (on by default)
+    ///   - color: Shimmer color
+    ///   - background: Background color (default: `.clear`)
+    ///   - blendMode: How shimmer will blend with other views. (default: `.normal` when background is provided and `.screen` when not)
+    /// - Returns: A view with a shimmer effect overlayed that is masked by the same view
     func shimmer(mode: ShimmerMode? = nil, color: Color, background: Color? = nil, blendMode: BlendMode? = nil) -> some View {
         self.modifier(ShimmerViewModifier(mode: mode, color: color, background: background, blendMode: blendMode))
     }
     
+    /// Add a shimmer effect to the view
+    /// - Parameters:
+    ///   - isOn: Is shimmer enabled (default: `true`)
+    ///   - color: Shimmer color
+    ///   - background: Background color (default: `.clear`)
+    ///   - blendMode: How shimmer will blend with other views. (default: `.normal` when background is provided and `.screen` when not)
+    /// - Returns: A view with a shimmer effect overlayed that is masked by the same view
     func shimmer(isOn: Bool, color: Color, background: Color? = nil, blendMode: BlendMode? = nil) -> some View {
         self.modifier(ShimmerViewModifier(mode: isOn ? .on : .off, color: color, background: background, blendMode: blendMode))
     }

@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// An elliptical gradient that rotates in 3D space based on device orientation
+///
+/// Takes all available space similar to `Color`
 @available(iOS 14, *)
 public struct ShimmerView: View {
     @EnvironmentObject var motionManager: MotionManager
@@ -25,6 +28,14 @@ public struct ShimmerView: View {
     let yaw: Angle = .degrees(0)
     let localRoll: Angle = .degrees(-30)
     
+    /// Creates a shimmering view based on device orientation
+    ///
+    /// - Requires: `MotionManager` must be in the environment. (Use ViewModifier `.motionManager` above this view in the heirarchy)
+    ///
+    /// - Parameters:
+    ///   - mode: Modes where shimmer should be enabled
+    ///   - color: Shimmer color
+    ///   - background: Background color
     public init(mode: ShimmerMode? = nil, color: Color, background: Color) {
         self.mode = mode ?? .on
         self.color = color

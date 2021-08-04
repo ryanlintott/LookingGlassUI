@@ -30,6 +30,8 @@ struct MaskedOverlayViewModifier<OverlayContent: View>: ViewModifier {
 
 @available(iOS 13, *)
 extension View {
+    /// Overlays a secondary view then uses primary view as a mask
+    /// - Returns: A view that overlays a secondary view in front then masks it by the primary view
     func maskedOverlay<OverlayContent: View>(_ overlayContent: OverlayContent, alignment: Alignment = .center, blendMode: BlendMode = .normal) -> some View {
         self.modifier(MaskedOverlayViewModifier(overlayContent: overlayContent, alignment: alignment, blendMode: blendMode))
     }
