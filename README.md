@@ -9,14 +9,15 @@ A 3d rotation effect that uses Core Motion to allow SwiftUI views to appear proj
 This rotation effect is especially useful in faking a light reflection to create a shimmering effect when the device rotates. The package includes a default shimmer effect.
 
 ## Demo
-
 This package is currently used to create a gold shimmer effect on many gold elements in the [Old English Wordhord app](https://oldenglishwordhord.com/app). Download it to see the effect in action.
 
-<a href="https://apps.apple.com/us/app/old-english-wordhord/id1535982564?itscg=30200&amp;itsct=apps_box_appicon" style="width: 170px; height: 170px; border-top-left-radius: 22%; border-top-right-radius: 22%; border-bottom-right-radius: 22%; border-bottom-left-radius: 22%; overflow: hidden; display: inline-block; vertical-align: middle;"><img src="https://is4-ssl.mzstatic.com/image/thumb/Purple125/v4/57/90/ed/5790ed0a-c6a5-12a1-43f3-c348316f8b84/AppIcon-0-1x_U007emarketing-0-7-0-85-220.png/540x540bb.jpg&h=416ecfee6c63d783f1193f48596d62ca" alt="Old English Wordhord" style="width: 170px; height: 170px; border-top-left-radius: 22%; border-top-right-radius: 22%; border-bottom-right-radius: 22%; border-bottom-left-radius: 22%; overflow: hidden; display: inline-block; vertical-align: middle;"></a>
-<a href="https://apps.apple.com/us/app/old-english-wordhord/id1535982564?itsct=apps_box_badge&amp;itscg=30200" style="display: inline-block; overflow: hidden; border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;"><img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1626912000&h=8e86ea0b88a4e8559b76592c43b3fe60" alt="Download on the App Store" style="border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;"></a>
+<a href="https://apps.apple.com/us/app/old-english-wordhord/id1535982564?itsct=apps_box_badge&amp;itscg=30200" style="display: inline-block; overflow: hidden; border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;">
+<img alt="Wordhord App with shimmering gold elmenets" src="https://oldenglishwordhord.files.wordpress.com/2021/07/goldshimmerclip-v002.gif" width="20%" height="20%"/>
 
-## [LookingGlassUIExample](https://github.com/ryanlintott/LookingGlassUIExample)
-Open Source example app used for testing this package.
+<img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1626912000&h=8e86ea0b88a4e8559b76592c43b3fe60" alt="Download on the App Store" style="border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;"></a>
+
+## Example App
+Check out [LookingGlassUIExample](https://github.com/ryanlintott/LookingGlassUIExample) to see how to use this package in an iOS app.
 
 ## Installation
 
@@ -27,23 +28,27 @@ Open Source example app used for testing this package.
 
 Import the package using `import LookingGlassUI`
 
+### MotionManager
 Before adding any custom views, add the `.motionManager` view modifier once, somewhere in the heirarchy above any other views or modifiers used in this package.
 ```swift
 ContentView()
     .motionManager(updateInterval: 0.1, disabled: false)
 ```
 
+### ShimmerView
 Use `ShimmerView` if you want a view that acts like `Color` but with a default shimmer effect. If `MotionManager` is disabled only the background color will be shown.
 ```swift
 ShimmerView(color: .goldShimmer, background: .gold)
 ```
 
+### .shimmer()
 Use `.shimmer()` view modifier if you want to add a default shimmer effect to another SwiftUI View. If `MotionManager` is disabled the modifier has no effect.
 ```swift
 Text("Hello, World!")
     .shimmer(color: .gold)
 ```
 
+### LookingGlass
 Use `LookingGlass` if you want to project any SwiftUI view or create your own custom effect.  Content appears as if rotated and positioned from the center of the device regardless of positioin on the screen or if it's in a scrollview. If `MotionManager` is disabled nothing will be shown.
 ```swift
 LookingGlass(.reflection, distance: 4000, perspective: 0, pitch: .degrees(45), yaw: .zero, localRoll: .zero, isShowingInFourDirections: false) {
@@ -54,7 +59,8 @@ LookingGlass(.reflection, distance: 4000, perspective: 0, pitch: .degrees(45), y
 }
 ```
 
-Use `.deviceRotationEffect` if you want to rotate a view based on device rotation. Content is rotated and positioned based on it's own center. If `MotionManager` is disabled nothing will be shown.
+### .deviceRotationEffect()
+Use `.deviceRotationEffect()` if you want to rotate a view based on device rotation. Content is rotated and positioned based on it's own center. If `MotionManager` is disabled nothing will be shown.
 ```swift
 Text("Hello, World")
     .foregroundColor(.white)
@@ -79,4 +85,4 @@ Local Roll will spin the view in place.
 
 ## Dependencies
 
-![Fireblade Math](https://github.com/fireblade-engine/math)
+[Fireblade Math](https://github.com/fireblade-engine/math)
