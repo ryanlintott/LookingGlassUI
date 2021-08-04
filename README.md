@@ -1,5 +1,5 @@
 # LookingGlassUI
-![License](https://img.shields.io/github/license/ryanlintott/LookingGlassUI)
+![License - MIT](https://img.shields.io/github/license/ryanlintott/LookingGlassUI)
 ![Version](https://img.shields.io/github/v/tag/ryanlintott/LookingGlassUI?label=version)
 
 A 3d rotation effect that uses Core Motion to allow SwiftUI views to appear projected in a specific direction and distance relative to the device in real world space.
