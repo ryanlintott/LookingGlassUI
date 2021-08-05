@@ -1,4 +1,5 @@
-# LookingGlassUI
+# ![LookingGlassUI](https://user-images.githubusercontent.com/2143656/128274524-6aa6dc0e-b02d-408a-ad9d-9fa1e0cb06d2.gif)
+
 ![License - MIT](https://img.shields.io/github/license/ryanlintott/LookingGlassUI)
 ![Version](https://img.shields.io/github/v/tag/ryanlintott/LookingGlassUI?label=version)
 
