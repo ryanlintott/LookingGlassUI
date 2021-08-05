@@ -80,11 +80,23 @@ In reflection mode a view appears as if your phone has a camera pointing out of 
 
 ## Positioning Views
 
-Views are positioned based on a quaternion or simple pitch, yaw, and local roll angles.
-All angles at zero means the view will be visible when the phone is flat with the top pointing away from the user.
-Pitch of 90 degrees will bring the view up directly in front of the user.
-Yaw will move the view to the left or right.
-Local Roll will spin the view in place.
+Views are positioned based on a quaternion or pitch, yaw, and local roll angles.
+All angles at zero means the view will be visible when the phone is flat with the top pointing away from the user. (see diagram below)
+1. Local Roll rotate the view around the Z axis. 10 degrees will tilt the view counter-clockwise
+2. Pitch will rotate the view around the X axis. 90 degrees will bring the view up directly in front of the user.
+3. Yaw will rotate the view around the Z axis again. 5 degrees will move the view slightly to the left of the user. If you set isShowingInFourDirections to true the view will be copied 3 additional times and rotated at -90, 90, and 180 degrees from the position you chose.
+4. The view is then moved away from the origin based on the distance provided. The direction is dependant on choosing window or reflection.
+6. As the user moves their device around they will always see your view in the location you've set.
+
+Don't worry about device orientation. Although Core Motion doesn't compensate for this, LookingGlassUI does.
+
+![LookingGlassUI Rotation Diagram](https://user-images.githubusercontent.com/2143656/128418630-85f31175-a616-49cc-b25a-4b82f1a6d0b3.png)
+
+## Additional Rotation Diagrams
+
+3D space is confusing on iOS, especially as Core Motion and SwiftUI's rotation3dEffect each seem to use different axes. I created this diagram to keep track of how each one works. You probably won't need these unless you want to do something more custom.
+
+![iOS Rotation Diagrams](https://user-images.githubusercontent.com/2143656/128415862-6a1deb3b-52f6-447f-a4cd-fce0499b5d91.png)
 
 ## Dependencies
 
