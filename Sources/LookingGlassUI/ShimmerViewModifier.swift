@@ -43,6 +43,7 @@ struct ShimmerViewModifier: ViewModifier {
                 .overlay(
                     ShimmerView(color: color, background: background)
                         .blendMode(blendMode)
+                        .allowsHitTesting(false)
                 )
                 .mask(content)
                 .matchedGeometryEffect(id: "content", in: namespace)
