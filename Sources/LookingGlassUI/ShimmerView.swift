@@ -65,6 +65,7 @@ public struct ShimmerView: View {
                     }
                 }
             )
+            .accessibilityHidden(true)
     }
 }
 
