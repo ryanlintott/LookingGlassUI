@@ -100,4 +100,4 @@ Don't worry about device orientation. Although Core Motion doesn't compensate fo
 
 ## Dependencies
 
-[Fireblade Math](https://github.com/fireblade-engine/math)
+[Fireblade Math](https://github.com/fireblade-engine/math), Copyright (c) 2018-2021 Christian Treffs
