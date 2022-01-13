@@ -1,7 +1,11 @@
 # ![LookingGlassUI](https://user-images.githubusercontent.com/2143656/128274524-6aa6dc0e-b02d-408a-ad9d-9fa1e0cb06d2.gif)
 
+![Platform iOS 13](https://img.shields.io/badge/platform-iOS%2013-blue.svg)
+[![SPM compatible](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://github.com/apple/swift-package-manager)
 ![License - MIT](https://img.shields.io/github/license/ryanlintott/LookingGlassUI)
 ![Version](https://img.shields.io/github/v/tag/ryanlintott/LookingGlassUI?label=version)
+![GitHub last commit](https://img.shields.io/github/last-commit/ryanlintott/LookingGlassUI)
+[![Twitter](https://img.shields.io/badge/twitter-@ryanlintott-blue.svg?style=flat)](http://twitter.com/ryanlintott)
 
 # Overview
 A Swift Package with SwiftUI views that can rotate views based on device orientation. It's especially useful in faking a light reflection to create a shimmering effect when the device rotates.
@@ -31,6 +35,9 @@ Check out the example app to see how you can use this package in your iOS app.
 
 # Usage
 Import the package using `import LookingGlassUI`
+
+# Platforms
+This package is compatible with iOS 13 or later. It's technically compatible with macOS 10.15 or later but hasn't been tested.
 
 # Is this Production-Ready?
 Really it's up to you. I currently use this package in my own [Old English Wordhord app](https://oldenglishwordhord.com/app).
