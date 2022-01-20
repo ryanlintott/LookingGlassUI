@@ -1,4 +1,4 @@
-# ![LookingGlassUI](https://user-images.githubusercontent.com/2143656/128274524-6aa6dc0e-b02d-408a-ad9d-9fa1e0cb06d2.gif)
+<img height="128" alt="LookingGlassUI Logo" src="https://user-images.githubusercontent.com/2143656/128274524-6aa6dc0e-b02d-408a-ad9d-9fa1e0cb06d2.gif">
 
 ![Platform iOS 13](https://img.shields.io/badge/platform-iOS%2013-blue.svg)
 [![SPM compatible](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://github.com/apple/swift-package-manager)
