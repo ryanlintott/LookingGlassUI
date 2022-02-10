@@ -1,4 +1,4 @@
-<img height="128" alt="LookingGlassUI Logo with a rectangular border in shimmering gold on black" src="https://user-images.githubusercontent.com/2143656/128274524-6aa6dc0e-b02d-408a-ad9d-9fa1e0cb06d2.gif">
+<img width="650" alt="LookingGlassUI Logo with a rectangular border in shimmering gold on black" src="https://user-images.githubusercontent.com/2143656/128274524-6aa6dc0e-b02d-408a-ad9d-9fa1e0cb06d2.gif">
 
 [![Swift Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fryanlintott%2FLookingGlassUI%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/ryanlintott/LookingGlassUI)
 [![Platform Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fryanlintott%2FLookingGlassUI%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/ryanlintott/LookingGlassUI)
