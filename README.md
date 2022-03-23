@@ -13,6 +13,7 @@ A Swift Package with SwiftUI views that can rotate views based on device orienta
 - [`.motionManager()`](#motionmanager) - A view modifier that creates a `MotionManager` class that gets device rotation information from Core Motion and adds it into the environment for other views to access.
 - [`ShimmerView`](#shimmerview) - A view similar to color that shimmers with another color as if reflecting light when your device rotates.
 - [`.shimmer()`](#shimmer) - A view modifier that overlays a shimmer color on any view as the device rotates.
+- [`.parallax()`](#parallax) - A view modifier that applies a parallax effect on any view as the device rotates.
 - [`LookingGlass`](#lookingglass) - A view that rotates its child view to a specific 3d angle relative to the real world and positions it relative to the device.
 - [`.deviceRotationEffect()`](#devicerotationeffect) - A view modifier that rotates a view based on device rotation.
 
@@ -66,6 +67,13 @@ Use `.shimmer()` view modifier if you want to add a default shimmer effect to an
 ```swift
 Text("Hello, World!")
     .shimmer(color: .gold)
+```
+
+## .parallax()
+Use `.parallax(multiplier: CGFloat, maxOffset: CGFloat)` view modifier if you want to add a parallax effect to any SwiftUI View. If `MotionManager` is disabled the modifier has no effect.
+```swift
+Text("Hello, World!")
+    .parallax(multiplier: 40, maxOffset: 100)
 ```
 
 ## LookingGlass
