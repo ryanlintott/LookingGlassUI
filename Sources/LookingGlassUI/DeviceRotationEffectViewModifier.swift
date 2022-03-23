@@ -19,7 +19,6 @@ public enum DeviceRotationEffectType {
     case reflection
 }
 
-@available(iOS 14, *)
 public struct DeviceRotationEffectViewModifier: ViewModifier {
     @EnvironmentObject var motionManager: MotionManager
 

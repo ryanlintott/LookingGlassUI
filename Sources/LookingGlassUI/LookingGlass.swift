@@ -9,7 +9,6 @@ import CoreMotion
 import FirebladeMath
 import SwiftUI
 
-@available(iOS 14, *)
 public struct LookingGlass<Content: View>: View {
     @EnvironmentObject var motionManager: MotionManager
 

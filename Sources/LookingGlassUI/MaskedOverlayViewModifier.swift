@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@available(iOS 13, *)
 struct MaskedOverlayViewModifier<OverlayContent: View>: ViewModifier {
     let overlayContent: OverlayContent
     let alignment: Alignment
@@ -28,7 +27,6 @@ struct MaskedOverlayViewModifier<OverlayContent: View>: ViewModifier {
     }
 }
 
-@available(iOS 13, *)
 extension View {
     /// Overlays a secondary view then uses primary view as a mask
     /// - Returns: A view that overlays a secondary view in front then masks it by the primary view

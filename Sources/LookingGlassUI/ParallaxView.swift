@@ -8,7 +8,6 @@
 import FirebladeMath
 import SwiftUI
 
-@available(iOS 14, *)
 struct ParallaxViewModifier: ViewModifier {
     @EnvironmentObject var motionManager: MotionManager
 
@@ -32,7 +31,6 @@ struct ParallaxViewModifier: ViewModifier {
     }
 }
 
-@available(iOS 14, *)
 public extension View {
     func parallax(multiplier: CGFloat = 10, maxOffset: CGFloat? = nil) -> some View {
         modifier(ParallaxViewModifier(multiplier: multiplier, maxOffset: maxOffset))

@@ -9,7 +9,6 @@ import CoreMotion
 import FirebladeMath
 import SwiftUI
 
-@available(iOS 13, *)
 extension Quat4f {
     init(pitch: Angle? = nil, yaw: Angle? = nil, localRoll: Angle? = nil) {
         let pitch = Quat4f(angle: Float(pitch?.radians ?? .zero), axis: .axisX)
@@ -44,7 +43,6 @@ extension Quat4f {
     }
 }
 
-@available(iOS 14, *)
 extension Float {
     var angle: Angle {
         .radians(Double(self))

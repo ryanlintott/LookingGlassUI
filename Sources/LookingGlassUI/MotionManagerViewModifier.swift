@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@available (iOS 14, *)
 struct MotionManagerViewModifier: ViewModifier {
     @StateObject var motionManager = MotionManager()
     
@@ -34,7 +33,6 @@ struct MotionManagerViewModifier: ViewModifier {
     }
 }
 
-@available (iOS 14, *)
 public extension View {
     /// Adds `MotionManager` into the environment.
     /// - Adjusts for landscape/portrait changes to device orientation.

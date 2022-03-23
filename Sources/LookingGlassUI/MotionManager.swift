@@ -9,7 +9,6 @@ import CoreMotion
 import FirebladeMath
 import SwiftUI
 
-@available(iOS 13, *)
 public class MotionManager: ObservableObject {
     public static let defaultUpdateInterval: TimeInterval = 0.1
     static let motionQueue = OperationQueue()

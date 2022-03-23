@@ -8,7 +8,6 @@
 import FirebladeMath
 import SwiftUI
 
-@available(iOS 14, *)
 struct ShimmerViewModifier: ViewModifier {
     @EnvironmentObject private var motionManager: MotionManager
     @Environment(\.colorScheme) private var colorScheme
@@ -54,7 +53,6 @@ struct ShimmerViewModifier: ViewModifier {
     }
 }
 
-@available(iOS 14, *)
 public extension View {
     /// Add a shimmer effect to the view
     /// - Parameters:

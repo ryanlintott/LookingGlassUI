@@ -8,7 +8,6 @@
 import SwiftUI
 
 /// Mode that toggles a `Bool` based on supplied `ColorScheme`
-@available(iOS 13, *)
 public enum ShimmerMode: Int {
     case off, on, darkModeOnly, lightModeOnly
     

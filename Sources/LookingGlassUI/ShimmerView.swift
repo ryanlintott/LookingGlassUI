@@ -10,7 +10,6 @@ import SwiftUI
 /// An elliptical gradient that rotates in 3D space based on device orientation
 ///
 /// Takes all available space similar to `Color`
-@available(iOS 14, *)
 public struct ShimmerView: View {
     @EnvironmentObject var motionManager: MotionManager
     @Environment(\.colorScheme) var colorScheme
@@ -66,12 +65,5 @@ public struct ShimmerView: View {
                 }
             )
             .accessibilityHidden(true)
-    }
-}
-
-@available(iOS 14, *)
-struct SwiftUIView_Previews: PreviewProvider {
-    static var previews: some View {
-        ShimmerView(color: .red, background: .blue)
     }
 }
