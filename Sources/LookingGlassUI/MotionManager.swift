@@ -10,8 +10,8 @@ import FirebladeMath
 import SwiftUI
 
 @available(iOS 13, *)
-class MotionManager: ObservableObject {
-    static let defaultUpdateInterval: TimeInterval = 0.1
+public class MotionManager: ObservableObject {
+    public static let defaultUpdateInterval: TimeInterval = 0.1
     static let motionQueue = OperationQueue()
     static let screenSize = UIScreen.main.bounds.size
     static let maxScreenDimension = max(MotionManager.screenSize.height, MotionManager.screenSize.width)
@@ -31,8 +31,21 @@ class MotionManager: ObservableObject {
         }
     }
     
-    @Published private(set) var animatedQuaternion: Quat4f = .identity
-    @Published private(set) var quaternion: Quat4f = .identity
+    /// Rotation of device relative to zero position. Value is updated with SwiftUI animation to smooth between update intervals.
+    @Published public private(set) var animatedQuaternion: Quat4f = .identity
+    
+    /// Rotation of device relative to zero position. Value is updated based on update intervals without animation or smoothing.
+    @Published public private(set) var quaternion: Quat4f = .identity
+    
+    @Published public private(set) var initialDeviceRotation: Quat4f? = nil
+    
+    /// Rotation from initial device rotation to current.
+    var deltaRotation: Quat4f? {
+        guard let zero = initialDeviceRotation else {
+            return nil
+        }
+        return animatedQuaternion * zero.inverse
+    }
     
     @Published var deviceOrientation: UIDeviceOrientation = .unknown
     
@@ -67,6 +80,7 @@ class MotionManager: ObservableObject {
         }
         
         if InfoDictionary.supportedOrientations.contains(newOrientation) {
+            initialDeviceRotation = nil
             self.deviceOrientation = newOrientation
         }
     }
@@ -100,6 +114,10 @@ class MotionManager: ObservableObject {
         cmManager.startDeviceMotionUpdates(to: .main) { motionData, error in
             if let motionData = motionData {
                 let quaternion = motionData.attitude.quaternion.quat4f
+                
+                if self.initialDeviceRotation == nil {
+                    self.initialDeviceRotation = quaternion
+                }
                 
                 self.quaternion = quaternion
                 withAnimation(Animation.linear(duration: self.updateInterval)) {
