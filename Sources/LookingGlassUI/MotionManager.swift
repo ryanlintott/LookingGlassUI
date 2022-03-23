@@ -39,11 +39,30 @@ public class MotionManager: ObservableObject {
     @Published public private(set) var initialDeviceRotation: Quat4f? = nil
     
     /// Rotation from initial device rotation to current.
-    var deltaRotation: Quat4f? {
-        guard let zero = initialDeviceRotation else {
-            return nil
+    var deltaRotation: Quat4f {
+        guard let initialDeviceRotation = initialDeviceRotation else {
+            return .identity
         }
-        return animatedQuaternion * zero.inverse
+        
+        return (animatedQuaternion * initialDeviceRotation.inverse)
+    }
+    
+    // quaternion representing the interface rotation based on the deviceOrientation with some double-checking
+    // note that the interface rotates in the opposite direction to the device to compensate
+    // device reference frame
+    var interfaceRotation: Quat4f {
+        switch deviceOrientation {
+        // top of device to the left
+        case .landscapeLeft:
+            return Quat4f(angle: -.pi / 2, axis: .axisZ)
+        // top of device to the right
+        case .landscapeRight:
+            return Quat4f(angle: .pi / 2, axis: .axisZ)
+        case .portraitUpsideDown:
+            return Quat4f(angle: .pi, axis: .axisZ)
+        default:
+            return .identity
+        }
     }
     
     @Published var deviceOrientation: UIDeviceOrientation = .unknown
