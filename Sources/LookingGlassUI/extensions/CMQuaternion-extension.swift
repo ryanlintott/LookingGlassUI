@@ -13,7 +13,8 @@ extension CMQuaternion: Equatable {
         lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z && lhs.w == rhs.w
     }
     
-    var quat4f: Quat4f {
+    /// Quat4f version of Core Motion quaternion
+    public var quat4f: Quat4f {
         Quat4f(Float(self.x), Float(self.y), Float(self.z), Float(self.w))
     }
 }

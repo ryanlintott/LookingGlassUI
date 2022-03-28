@@ -18,13 +18,13 @@ public class MotionManager: ObservableObject {
     private let cmManager = CMMotionManager()
 
     // set to 0 for off
-    @Published private(set) var updateInterval: TimeInterval {
+    @Published public private(set) var updateInterval: TimeInterval {
         didSet {
             toggleIfNeeded()
         }
     }
     
-    @Published private(set) var disabled: Bool = false {
+    @Published public private(set) var disabled: Bool = false {
         didSet {
             toggleIfNeeded()
         }
@@ -36,10 +36,13 @@ public class MotionManager: ObservableObject {
     /// Rotation of device relative to zero position. Value is updated based on update intervals without animation or smoothing.
     @Published public private(set) var quaternion: Quat4f = .identity
     
+    /// Rotation from zero to initial position of device when motion updates started.
+    ///
+    /// This value is reset whenever motion manager is re-enabled.
     @Published public private(set) var initialDeviceRotation: Quat4f? = nil
     
     /// Rotation from initial device rotation to current.
-    var deltaRotation: Quat4f {
+    public var deltaRotation: Quat4f {
         guard let initialDeviceRotation = initialDeviceRotation else {
             return .identity
         }
@@ -50,7 +53,7 @@ public class MotionManager: ObservableObject {
     // quaternion representing the interface rotation based on the deviceOrientation with some double-checking
     // note that the interface rotates in the opposite direction to the device to compensate
     // device reference frame
-    var interfaceRotation: Quat4f {
+    public var interfaceRotation: Quat4f {
         switch deviceOrientation {
         // top of device to the left
         case .landscapeLeft:
@@ -65,7 +68,7 @@ public class MotionManager: ObservableObject {
         }
     }
     
-    @Published var deviceOrientation: UIDeviceOrientation = .unknown
+    @Published public var deviceOrientation: UIDeviceOrientation = .unknown
     
     public init(updateInterval: TimeInterval = defaultUpdateInterval) {
         self.updateInterval = updateInterval
@@ -77,19 +80,22 @@ public class MotionManager: ObservableObject {
         cmManager.stopDeviceMotionUpdates()
     }
     
-    var isDetectingMotion: Bool {
+    /// True if update interval greater than zero and not disabled.
+    public var isDetectingMotion: Bool {
         updateInterval > 0 && !disabled
     }
     
+    /// The device screen size taking into account device orientation.
     var interfaceSize: CGSize {
         switch deviceOrientation {
         case .landscapeRight, .landscapeLeft:
-            return CGSize(width: MotionManager.screenSize.height, height: MotionManager.screenSize.width)
+            return CGSize(width: Self.screenSize.height, height: Self.screenSize.width)
         default:
-            return MotionManager.screenSize
+            return Self.screenSize
         }
     }
     
+    /// Changes the device orientation property if the new orientation is supported.
     public func changeDeviceOrientation() {
         let newOrientation = UIDevice.current.orientation
 
@@ -103,23 +109,29 @@ public class MotionManager: ObservableObject {
         }
     }
     
+    /// Sets the update interval to the value specified
+    /// - Parameter newUpdateInterval: New update interval
     public func setUpdateInterval(_ newUpdateInterval: TimeInterval) {
         if updateInterval != newUpdateInterval {
             updateInterval = newUpdateInterval
         }
     }
     
+    /// Sets the disabled property to the value specified
+    /// - Parameter newDisabled: New disabled value.
     public func setDisabled(_ newDisabled: Bool) {
         if disabled != newDisabled {
             disabled = newDisabled
         }
     }
     
+    /// Restarts motion updates
     public func restart() {
         cmManager.stopDeviceMotionUpdates()        
         toggleIfNeeded()
     }
     
+    /// Toggles motion updates off if on or on if off (and not disabled and update interval greater than zero).
     private func toggleIfNeeded() {
         if cmManager.isDeviceMotionActive {
             cmManager.stopDeviceMotionUpdates()

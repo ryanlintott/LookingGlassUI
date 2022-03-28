@@ -96,7 +96,6 @@ public struct DeviceRotationEffectViewModifier: ViewModifier {
     }
 }
 
-@available (iOS 14, *)
 public extension View {
     /// Position a view on a sphere centered on the device and rotated using real world coordinates. This view will rotate to compensate for device rotation and appear to be seen either through a window or as a kind of reflection.
     /// - Parameters:
