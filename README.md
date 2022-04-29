@@ -27,8 +27,8 @@ This package is currently used to create a gold shimmer effect on many gold elem
 
 <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1626912000&h=8e86ea0b88a4e8559b76592c43b3fe60" alt="Download on the App Store" style="border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;"></a>
 
-# [LookingGlassUIExample](https://github.com/ryanlintott/LookingGlassUIExample)
-Check out the example app to see how you can use this package in your iOS app.
+# LookingGlassUIExample
+Check out the [example app](https://github.com/ryanlintott/LookingGlassUIExample) to see how you can use this package in your iOS app.
 
 # Installation
 1. In XCode 12 go to `File -> Swift Packages -> Add Package Dependency` or in XCode 13 `File -> Add Packages`
