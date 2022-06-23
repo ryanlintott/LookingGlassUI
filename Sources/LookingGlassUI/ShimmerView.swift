@@ -63,7 +63,7 @@ public struct ShimmerView: View {
                         .clipped()
                     }
                 }
+                    .accessibilityHidden(true)
             )
-            .accessibilityHidden(true)
     }
 }
