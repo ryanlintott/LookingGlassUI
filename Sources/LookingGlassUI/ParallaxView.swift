@@ -5,7 +5,6 @@
 //  Created by Ryan Lintott on 2022-03-23.
 //
 
-import FirebladeMath
 import SwiftUI
 
 struct ParallaxViewModifier: ViewModifier {
@@ -14,7 +13,7 @@ struct ParallaxViewModifier: ViewModifier {
     let multiplier: CGFloat
     let maxOffset: CGFloat?
     
-    var deltaScreenRotation: Quat4f {
+    var deltaScreenRotation: Quat {
         /// all rotations are provided in the device reference frame
         /// Rotations occur in reverse order
         /// 1. Reference frame is changed from screen to device (x and z flip)
@@ -28,8 +27,8 @@ struct ParallaxViewModifier: ViewModifier {
             return .zero
         }
         
-        let x = -min(maxOffset ?? .infinity, CGFloat(deltaScreenRotation.yaw) * multiplier)
-        let y = min(maxOffset ?? .infinity, CGFloat(deltaScreenRotation.pitch) * multiplier)
+        let x = -min(maxOffset ?? .infinity, deltaScreenRotation.yaw.radians * multiplier)
+        let y = min(maxOffset ?? .infinity, deltaScreenRotation.pitch.radians * multiplier)
         
         return CGSize(width: x, height: y)
     }

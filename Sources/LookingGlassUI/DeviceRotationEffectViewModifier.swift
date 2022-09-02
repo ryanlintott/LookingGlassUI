@@ -6,17 +6,22 @@
 //
 
 import CoreMotion
-import FirebladeMath
 import SwiftUI
 
 /// How a view will appear based on device rotation
-public enum DeviceRotationEffectType {
+public enum DeviceRotationEffectType: String, RawRepresentable, CaseIterable, Hashable, Equatable, Identifiable {
+    
     /// Device acts as a window showing whatever views are positioned behind the screen.
+    ///
     /// Content views can be rotated and positioned on a sphere centered on the device and can only be seen if the back of the device is pointing at them.
     case window
+    
     /// Device acts as a mirror showing whatever views are positioned in front of the screen.
+    ///
     /// Content views can be rotated and positioned on a sphere centered on the device and can only be seen if the front of the device is pointing at them.
     case reflection
+    
+    public var id: Self { self }
 }
 
 public struct DeviceRotationEffectViewModifier: ViewModifier {
@@ -24,14 +29,14 @@ public struct DeviceRotationEffectViewModifier: ViewModifier {
 
     let distance: CGFloat
     let perspective: CGFloat
-    let offsetRotation: Quat4f
+    let offsetRotation: Quat
     let isShowingInFourDirections: Bool
     
     public init(
         type: DeviceRotationEffectType,
         distance: CGFloat? = nil,
         perspective: CGFloat? = nil,
-        offsetRotation: Quat4f? = nil,
+        offsetRotation: Quat? = nil,
         isShowingInFourDirections: Bool? = nil
     ) {
         self.distance = (distance ?? 0) * (type == .window ? 1 : -1)
@@ -44,26 +49,26 @@ public struct DeviceRotationEffectViewModifier: ViewModifier {
 
     // rotation that moves to the content to the closest xy axis to the one the phone is pointing at
     // device reference frame
-    var cloneRotation: Quat4f {
+    var cloneRotation: Quat {
         guard isShowingInFourDirections else {
             return .identity
         }
         
         // start with a vector pointing straight down
-        let originVector = Vec3f(x: 0, y: 0, z: -1)
+        let originVector = Vec3(x: 0, y: 0, z: -1)
         
         // rotate the vector by the device orientation to see where the bottom of the device is pointing
-        let rotatedVector = motionManager.quaternion * originVector
+        let rotatedVector = motionManager.quaternion.rotating(originVector)
 
         // check if the device is pointing more towards the x or y axis
-        if rotatedVector.x.magnitude > rotatedVector.y.magnitude {
+        if abs(rotatedVector.x) > abs(rotatedVector.y) {
             // check which way it's pointing on the x axis and provide the appropriate rotation
             if rotatedVector.x >= 0 {
                 // rotate -90 degrees
-                return Quat4f(angle: -.pi / 2, axis: .axisZ)
+                return Quat(angle: .radians(-.pi / 2), axis: .zAxis)
             } else {
                 // rotate 90 degrees
-                return Quat4f(angle: .pi / 2, axis: .axisZ)
+                return Quat(angle: .radians(.pi / 2), axis: .zAxis)
             }
         } else {
             // check which way it's pointing on the y axis and provide the appropriate rotation
@@ -72,12 +77,12 @@ public struct DeviceRotationEffectViewModifier: ViewModifier {
                 return .identity
             } else {
                 // rotate 180 degrees
-                return Quat4f(angle: .pi, axis: .axisZ)
+                return Quat(angle: .radians(.pi), axis: .zAxis)
             }
         }
     }
     
-    var rotation: Quat4f {
+    var rotation: Quat {
         /// all rotations are provided in the device reference frame
         /// Rotations occur in reverse order
         /// 1. Reference frame is changed from screen to device (x and z flip)
@@ -105,7 +110,7 @@ public extension View {
     ///   - offsetRotation: Quaternion that represents the view's position on the sphere. (zero positions the view on the ground)
     ///   - isShowingInFourDirections: If active the view will be copied and rotated around the Z axis so there are 4 copies. This is helpful in ensuring a view is seen even when a device is turned to the left or right and loses sight of the original.
     /// - Returns: The view is positioned centered on the device and rotated using real world coordinates. It will rotate to compensate for device rotation and appear to be seen either through a window or as a kind of reflection.
-    func deviceRotationEffect(_ type: DeviceRotationEffectType, distance: CGFloat? = nil, perspective: CGFloat? = nil, offsetRotation: Quat4f? = nil, isShowingInFourDirections: Bool? = nil) -> some View {
+    func deviceRotationEffect(_ type: DeviceRotationEffectType, distance: CGFloat? = nil, perspective: CGFloat? = nil, offsetRotation: Quat? = nil, isShowingInFourDirections: Bool? = nil) -> some View {
         self.modifier(DeviceRotationEffectViewModifier(type: type, distance: distance, perspective: perspective, offsetRotation: offsetRotation, isShowingInFourDirections: isShowingInFourDirections))
     }
     
@@ -120,7 +125,7 @@ public extension View {
     ///   - isShowingInFourDirections: If active the view will be copied and rotated around the Z axis so there are 4 copies. This is helpful in ensuring a view is seen even when a device is turned to the left or right and loses sight of the original.
     /// - Returns: The view is positioned centered on the device and rotated using real world coordinates. It will rotate to compensate for device rotation and appear to be seen either through a window or as a kind of reflection.
     func deviceRotationEffect(_ type: DeviceRotationEffectType, distance: CGFloat? = nil, perspective: CGFloat? = nil, pitch: Angle? = nil, yaw: Angle? = nil, localRoll: Angle? = nil, isShowingInFourDirections: Bool? = nil) -> some View {
-        self.deviceRotationEffect(type, distance: distance, perspective: perspective, offsetRotation: Quat4f(pitch: pitch, yaw: yaw, localRoll: localRoll), isShowingInFourDirections: isShowingInFourDirections)
+        self.deviceRotationEffect(type, distance: distance, perspective: perspective, offsetRotation: Quat(pitch: pitch, yaw: yaw, localRoll: localRoll), isShowingInFourDirections: isShowingInFourDirections)
     }
     
 }

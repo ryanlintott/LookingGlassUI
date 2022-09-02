@@ -1,12 +1,11 @@
 //
 //  LookingGlass.swift
-//  
+//
 //
 //  Created by Ryan Lintott on 2021-05-14.
 //
 
 import CoreMotion
-import FirebladeMath
 import SwiftUI
 
 public struct LookingGlass<Content: View>: View {
@@ -15,7 +14,7 @@ public struct LookingGlass<Content: View>: View {
     let type: DeviceRotationEffectType
     let distance: CGFloat?
     let perspective: CGFloat?
-    let offsetRotation: Quat4f?
+    let offsetRotation: Quat?
     let isShowingInFourDirections: Bool?
     let content: Content
     
@@ -23,7 +22,7 @@ public struct LookingGlass<Content: View>: View {
         _ type: DeviceRotationEffectType,
         distance: CGFloat? = nil,
         perspective: CGFloat? = nil,
-        offsetRotation: Quat4f? = nil,
+        offsetRotation: Quat? = nil,
         isShowingInFourDirections: Bool? = nil,
         content: () -> Content
     ) {
@@ -35,8 +34,24 @@ public struct LookingGlass<Content: View>: View {
         self.content = content()
     }
     
-    public init(_ type: DeviceRotationEffectType, distance: CGFloat, perspective: CGFloat? = nil, pitch: Angle? = nil, yaw: Angle? = nil, localRoll: Angle? = nil, isShowingInFourDirections: Bool? = nil, content: () -> Content) {
-        self.init(type, distance: distance, perspective: perspective, offsetRotation: Quat4f(pitch: pitch, yaw: yaw, localRoll: localRoll), isShowingInFourDirections: isShowingInFourDirections, content: content)
+    public init(
+        _ type: DeviceRotationEffectType,
+        distance: CGFloat,
+        perspective: CGFloat? = nil,
+        pitch: Angle? = nil,
+        yaw: Angle? = nil,
+        localRoll: Angle? = nil,
+        isShowingInFourDirections: Bool? = nil,
+        content: () -> Content
+    ) {
+        self.init(
+            type,
+            distance: distance,
+            perspective: perspective,
+            offsetRotation: Quat(pitch: pitch, yaw: yaw, localRoll: localRoll),
+            isShowingInFourDirections: isShowingInFourDirections,
+            content: content
+        )
     }
     
     public var body: some View {

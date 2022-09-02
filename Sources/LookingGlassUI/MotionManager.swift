@@ -6,7 +6,6 @@
 //
 
 import CoreMotion
-import FirebladeMath
 import SwiftUI
 
 public class MotionManager: ObservableObject {
@@ -31,18 +30,18 @@ public class MotionManager: ObservableObject {
     }
     
     /// Rotation of device relative to zero position. Value is updated with SwiftUI animation to smooth between update intervals.
-    @Published public private(set) var animatedQuaternion: Quat4f = .identity
+    @Published public private(set) var animatedQuaternion: Quat = .identity
     
     /// Rotation of device relative to zero position. Value is updated based on update intervals without animation or smoothing.
-    @Published public private(set) var quaternion: Quat4f = .identity
+    @Published public private(set) var quaternion: Quat = .identity
     
     /// Rotation from zero to initial position of device when motion updates started.
     ///
     /// This value is reset whenever motion manager is re-enabled.
-    @Published public private(set) var initialDeviceRotation: Quat4f? = nil
+    @Published public private(set) var initialDeviceRotation: Quat? = nil
     
     /// Rotation from initial device rotation to current.
-    public var deltaRotation: Quat4f {
+    public var deltaRotation: Quat {
         guard let initialDeviceRotation = initialDeviceRotation else {
             return .identity
         }
@@ -53,16 +52,16 @@ public class MotionManager: ObservableObject {
     // quaternion representing the interface rotation based on the deviceOrientation with some double-checking
     // note that the interface rotates in the opposite direction to the device to compensate
     // device reference frame
-    public var interfaceRotation: Quat4f {
+    public var interfaceRotation: Quat {
         switch deviceOrientation {
         // top of device to the left
         case .landscapeLeft:
-            return Quat4f(angle: -.pi / 2, axis: .axisZ)
+            return Quat(angle: .radians(-.pi / 2), axis: .zAxis)
         // top of device to the right
         case .landscapeRight:
-            return Quat4f(angle: .pi / 2, axis: .axisZ)
+            return Quat(angle: .radians(.pi / 2), axis: .zAxis)
         case .portraitUpsideDown:
-            return Quat4f(angle: .pi, axis: .axisZ)
+            return Quat(angle: .radians(.pi), axis: .zAxis)
         default:
             return .identity
         }
@@ -143,7 +142,7 @@ public class MotionManager: ObservableObject {
 
         cmManager.startDeviceMotionUpdates(to: .main) { motionData, error in
             if let motionData = motionData {
-                let quaternion = motionData.attitude.quaternion.quat4f
+                let quaternion = motionData.attitude.quaternion.quat
                 
                 if self.initialDeviceRotation == nil {
                     self.initialDeviceRotation = quaternion
