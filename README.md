@@ -22,11 +22,8 @@ This package is currently used to create a gold shimmer effect on many gold elem
 
 ![An iphone rotated back and forth showing the Old English Wordhord App with all the gold elements shimmering as if reflecting light. A screen recording on the right shows the same content.](https://user-images.githubusercontent.com/2143656/128365446-6f9edb2a-e318-44c7-b095-4ab8b9c820f5.gif)
 
-<!-- <a href="https://apps.apple.com/us/app/old-english-wordhord/id1535982564?itsct=apps_box_badge&amp;itscg=30200" style="display: inline-block; overflow: hidden; border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;">
-<img alt="Wordhord App with shimmering gold elmenets" src="https://oldenglishwordhord.files.wordpress.com/2021/07/goldshimmerclip-v002.gif" width="20%" height="20%"/> -->
-
 <a href="https://apps.apple.com/us/app/old-english-wordhord/id1535982564?itsct=apps_box_badge&amp;itscg=30200">
-    <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1626912000&h=8e86ea0b88a4e8559b76592c43b3fe60" alt="Download on the App Store" style="border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;">
+<img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1626912000&h=8e86ea0b88a4e8559b76592c43b3fe60" alt="Download on the App Store" style="border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;">
 </a>
 
 # LookingGlassUIExample
