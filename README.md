@@ -25,7 +25,9 @@ This package is currently used to create a gold shimmer effect on many gold elem
 <!-- <a href="https://apps.apple.com/us/app/old-english-wordhord/id1535982564?itsct=apps_box_badge&amp;itscg=30200" style="display: inline-block; overflow: hidden; border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;">
 <img alt="Wordhord App with shimmering gold elmenets" src="https://oldenglishwordhord.files.wordpress.com/2021/07/goldshimmerclip-v002.gif" width="20%" height="20%"/> -->
 
-<img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1626912000&h=8e86ea0b88a4e8559b76592c43b3fe60" alt="Download on the App Store" style="border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;"></a>
+<a href="https://apps.apple.com/us/app/old-english-wordhord/id1535982564?itsct=apps_box_badge&amp;itscg=30200">
+    <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1626912000&h=8e86ea0b88a4e8559b76592c43b3fe60" alt="Download on the App Store" style="border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;">
+</a>
 
 # LookingGlassUIExample
 Check out the [example app](https://github.com/ryanlintott/LookingGlassUIExample) to see how you can use this package in your iOS app.
