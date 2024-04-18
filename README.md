@@ -122,5 +122,3 @@ Don't worry about device orientation. Although Core Motion doesn't compensate fo
 
 ![iOS Rotation. One diagram on the left titled: Device Rotation Axes (Core Motion) shows a tall grey rectangle flat on a surface with positive Z up, positive Y to the top of the rectangle and positive X to the right. Axes have Yaw, Roll, and Pitch rotational arrows respectively, each following the right hand rule. An additional note says: Device axis do not change when orientation changes. Another diagram on the right titled: Screen Rotation Axes (SwiftUI .rotation3dEffect) shows a tall grey rectangle flat on a surface with negative Z up, positive Y to the top of the device and negative X to the right. Axes have Yaw, Roll, and Pitch rotational arrows respectively, each following the right hand rule. Another rectangle rotated 90 degrees is on top and a note reads: Screen top changes if app supports multiple orientation.](https://user-images.githubusercontent.com/2143656/152568546-00365387-9fd9-4eb7-9048-22adc92800c3.png)
 
-# Dependencies
-[Fireblade Math](https://github.com/fireblade-engine/math), Copyright (c) 2018-2021 Christian Treffs
