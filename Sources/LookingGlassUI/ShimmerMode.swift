@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  ShimmerMode.swift
+//  LookingGlassUI
 //
 //  Created by Ryan Lintott on 2021-05-25.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// Mode that toggles a `Bool` based on supplied `ColorScheme`
-public enum ShimmerMode: Int {
+public enum ShimmerMode: Int, Sendable {
     case off, on, darkModeOnly, lightModeOnly
     
     /// Checks if shimmering should be on based on `ColorScheme`

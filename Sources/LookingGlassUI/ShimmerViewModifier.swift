@@ -1,6 +1,6 @@
 //
 //  ShimmerViewModifier.swift
-//  ReflectiveUI
+//  LookingGlassUI
 //
 //  Created by Ryan Lintott on 2020-09-17.
 //
@@ -31,11 +31,13 @@ struct ShimmerViewModifier: ViewModifier {
         }
     }
     
+    @MainActor
     var isShimmering: Bool {
         motionManager.updateInterval > 0 && mode.isOn(colorScheme: colorScheme)
     }
     
-    @ViewBuilder func body(content: Content) -> some View {
+    @ViewBuilder
+    func body(content: Content) -> some View {
         if isShimmering {
             content
                 .overlay(

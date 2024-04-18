@@ -1,6 +1,6 @@
 //
 //  MotionManager.swift
-//  ReflectiveUI
+//  LookingGlassUI
 //
 //  Created by Ryan Lintott on 2020-09-17.
 //
@@ -8,6 +8,7 @@
 import CoreMotion
 import SwiftUI
 
+@MainActor
 public class MotionManager: ObservableObject {
     public static let defaultUpdateInterval: TimeInterval = 0.1
     static let motionQueue = OperationQueue()
@@ -15,9 +16,9 @@ public class MotionManager: ObservableObject {
     static let maxScreenDimension = max(MotionManager.screenSize.height, MotionManager.screenSize.width)
     
     private let cmManager = CMMotionManager()
-
+    
     // set to 0 for off
-    @Published public private(set) var updateInterval: TimeInterval {
+    @Published public private(set) var updateInterval: TimeInterval = 0 {
         didSet {
             toggleIfNeeded()
         }
@@ -69,14 +70,17 @@ public class MotionManager: ObservableObject {
     
     @Published public var deviceOrientation: UIDeviceOrientation = .unknown
     
-    public init(updateInterval: TimeInterval = defaultUpdateInterval) {
-        self.updateInterval = updateInterval
-
-        toggleIfNeeded()
-    }
+    //    public init(updateInterval: TimeInterval) {
+    //        self.updateInterval = updateInterval
+    //
+    //        toggleIfNeeded()
+    //    }
+    public nonisolated init() { }
     
     deinit {
-        cmManager.stopDeviceMotionUpdates()
+        Task { @MainActor in
+            cmManager.stopDeviceMotionUpdates()
+        }
     }
     
     /// True if update interval greater than zero and not disabled.

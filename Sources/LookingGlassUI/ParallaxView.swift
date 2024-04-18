@@ -1,6 +1,6 @@
 //
 //  ParallaxView.swift
-//  
+//  LookingGlassUI
 //
 //  Created by Ryan Lintott on 2022-03-23.
 //
@@ -13,6 +13,7 @@ struct ParallaxViewModifier: ViewModifier {
     let multiplier: CGFloat
     let maxOffset: CGFloat?
     
+    @MainActor
     var deltaScreenRotation: Quat {
         /// all rotations are provided in the device reference frame
         /// Rotations occur in reverse order
@@ -22,6 +23,7 @@ struct ParallaxViewModifier: ViewModifier {
         return (motionManager.interfaceRotation.inverse * motionManager.deltaRotation).deviceToScreenReferenceFrame
     }
     
+    @MainActor
     var parallaxOffset: CGSize {
         guard motionManager.isDetectingMotion else {
             return .zero

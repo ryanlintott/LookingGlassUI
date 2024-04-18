@@ -1,6 +1,6 @@
 //
 //  MaskedOverlayViewModifier.swift
-//  ReflectiveUI
+//  LookingGlassUI
 //
 //  Created by Ryan Lintott on 2020-09-18.
 //

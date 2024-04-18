@@ -1,15 +1,14 @@
 //
 //  Quat.swift
-//  
+//  LookingGlassUI
 //
 //  Created by Ryan Lintott on 2022-08-31.
 //
 
-import Foundation
 import simd.quaternion
 import SwiftUI
 
-public struct Quat {
+public struct Quat: Sendable {
     /// The data for this quaternion stored as a simd quaternion.
     public var simd: simd_quatd
     

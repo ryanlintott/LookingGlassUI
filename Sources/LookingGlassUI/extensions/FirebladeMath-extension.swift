@@ -1,6 +1,6 @@
 //
 //  FirebladeMath-extension.swift
-//  ReflectiveUI
+//  LookingGlassUI
 //
 //  Created by Ryan Lintott on 2021-05-07.
 //

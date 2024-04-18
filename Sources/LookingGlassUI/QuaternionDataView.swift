@@ -1,6 +1,6 @@
 //
 //  QuaternionDataView.swift
-//  LookingGlassUIExample
+//  LookingGlassUI
 //
 //  Created by Ryan Lintott on 2022-09-01.
 //

@@ -1,6 +1,6 @@
 //
-//  SwiftUIView.swift
-//  
+//  DeviceRotationEffectViewModifier.swift
+//  LookingGlassUI
 //
 //  Created by Ryan Lintott on 2021-05-14.
 //
@@ -9,7 +9,7 @@ import CoreMotion
 import SwiftUI
 
 /// How a view will appear based on device rotation
-public enum DeviceRotationEffectType: String, RawRepresentable, CaseIterable, Hashable, Equatable, Identifiable {
+public enum DeviceRotationEffectType: String, RawRepresentable, CaseIterable, Hashable, Equatable, Identifiable, Sendable {
     
     /// Device acts as a window showing whatever views are positioned behind the screen.
     ///
@@ -44,11 +44,10 @@ public struct DeviceRotationEffectViewModifier: ViewModifier {
         self.offsetRotation = offsetRotation ?? .identity
         self.isShowingInFourDirections = isShowingInFourDirections ?? false
     }
-    
-    let maxDimension = max(MotionManager.screenSize.height, MotionManager.screenSize.width)
 
     // rotation that moves to the content to the closest xy axis to the one the phone is pointing at
     // device reference frame
+    @MainActor
     var cloneRotation: Quat {
         guard isShowingInFourDirections else {
             return .identity
@@ -82,6 +81,7 @@ public struct DeviceRotationEffectViewModifier: ViewModifier {
         }
     }
     
+    @MainActor
     var rotation: Quat {
         /// all rotations are provided in the device reference frame
         /// Rotations occur in reverse order

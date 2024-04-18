@@ -1,6 +1,6 @@
 //
 //  LookingGlass.swift
-//
+//  LookingGlassUI
 //
 //  Created by Ryan Lintott on 2021-05-14.
 //

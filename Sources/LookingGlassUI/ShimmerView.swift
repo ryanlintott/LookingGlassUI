@@ -1,6 +1,6 @@
 //
 //  ShimmerView.swift
-//  
+//  LookingGlassUI
 //
 //  Created by Ryan Lintott on 2021-05-25.
 //
@@ -45,6 +45,7 @@ public struct ShimmerView: View {
         self.init(mode: isOn ? .on : .off, color: color, background: background)
     }
     
+    @MainActor
     var isShimmering: Bool {
         motionManager.updateInterval > 0 && mode.isOn(colorScheme: colorScheme)
     }

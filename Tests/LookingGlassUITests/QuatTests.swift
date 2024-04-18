@@ -1,6 +1,6 @@
 //
 //  QuatTests.swift
-//
+//  LookingGlassUI
 //
 //  Created by Ryan Lintott on 2022-09-01.
 //
@@ -37,7 +37,7 @@ final class QuatTests: XCTestCase {
         let quat = Quat(angle: angle, axis: .xAxis)
         
         // then
-        XCTAssertEqual(angle, quat.rotationAngle)
+        XCTAssertEqual(angle, quat.angle)
     }
     
     func testSimdYAxisAngle() throws {
@@ -46,7 +46,7 @@ final class QuatTests: XCTestCase {
         let quat = Quat(angle: angle, axis: .yAxis)
         
         // then
-        XCTAssertEqual(angle, quat.rotationAngle)
+        XCTAssertEqual(angle, quat.angle)
     }
     
     func testSimdZAxisAngle() throws {
@@ -55,7 +55,7 @@ final class QuatTests: XCTestCase {
         let quat = Quat(angle: angle, axis: .zAxis)
         
         // then
-        XCTAssertEqual(angle, quat.rotationAngle)
+        XCTAssertEqual(angle, quat.angle)
     }
     
     func testSimdArbitraryNormalizedAxisAngleNormalized() throws {
@@ -71,7 +71,7 @@ final class QuatTests: XCTestCase {
             XCTAssertEqual(axis.x, quat.axis.x, accuracy: 1e-7)
             XCTAssertEqual(axis.y, quat.axis.y, accuracy: 1e-7)
             XCTAssertEqual(axis.z, quat.axis.z, accuracy: 1e-7)
-            XCTAssertEqual(angle.radians, quat.rotationAngle.radians, accuracy: 1e-7)
+            XCTAssertEqual(angle.radians, quat.angle.radians, accuracy: 1e-7)
         }
     }
 }
