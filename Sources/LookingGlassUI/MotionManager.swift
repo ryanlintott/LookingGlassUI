@@ -10,7 +10,6 @@ import SwiftUI
 
 @MainActor
 public class MotionManager: ObservableObject {
-    public static let defaultUpdateInterval: TimeInterval = 0.1
     static let motionQueue = OperationQueue()
     static let screenSize = UIScreen.main.bounds.size
     static let maxScreenDimension = max(MotionManager.screenSize.height, MotionManager.screenSize.width)
@@ -18,13 +17,19 @@ public class MotionManager: ObservableObject {
     private let cmManager = CMMotionManager()
     
     // set to 0 for off
-    @Published public private(set) var updateInterval: TimeInterval = 0 {
+    public private(set) var updateInterval: TimeInterval = 0 {
+        willSet {
+            objectWillChange.send()
+        }
         didSet {
             toggleIfNeeded()
         }
     }
     
-    @Published public private(set) var disabled: Bool = false {
+    public private(set) var disabled: Bool = false {
+        willSet {
+            objectWillChange.send()
+        }
         didSet {
             toggleIfNeeded()
         }
@@ -70,11 +75,6 @@ public class MotionManager: ObservableObject {
     
     @Published public var deviceOrientation: UIDeviceOrientation = .unknown
     
-    //    public init(updateInterval: TimeInterval) {
-    //        self.updateInterval = updateInterval
-    //
-    //        toggleIfNeeded()
-    //    }
     public nonisolated init() { }
     
     deinit {

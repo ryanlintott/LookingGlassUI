@@ -30,12 +30,10 @@ This package is currently used to create a gold shimmer effect on many gold elem
 # LookingGlassUIExample
 Check out the [example app](https://github.com/ryanlintott/LookingGlassUIExample) to see how you can use this package in your iOS app.
 
-# Installation
+# Installation and Usage
 1. In Xcode go to `File -> Add Packages`
 2. Paste in the repo's url: `https://github.com/ryanlintott/LookingGlassUI` and select main branch or select by version.
-
-# Usage
-Import the package using `import LookingGlassUI`
+3. Import the package using `import LookingGlassUI`
 
 # Platforms
 This package is compatible with iOS 13 or later. It's technically compatible with macOS 10.15 or later but hasn't been tested.

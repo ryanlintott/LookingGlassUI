@@ -25,12 +25,12 @@ struct ParallaxViewModifier: ViewModifier {
     
     @MainActor
     var parallaxOffset: CGSize {
-        guard motionManager.isDetectingMotion else {
-            return .zero
-        }
+        guard motionManager.isDetectingMotion else { return .zero }
         
-        let x = -min(maxOffset ?? .infinity, deltaScreenRotation.yaw.radians * multiplier)
-        let y = min(maxOffset ?? .infinity, deltaScreenRotation.pitch.radians * multiplier)
+        let maxOffset = maxOffset ?? .infinity
+        
+        let x = -min(max(-maxOffset, deltaScreenRotation.yaw.radians * multiplier), maxOffset)
+        let y = min(max(-maxOffset, deltaScreenRotation.pitch.radians * multiplier), maxOffset)
         
         return CGSize(width: x, height: y)
     }

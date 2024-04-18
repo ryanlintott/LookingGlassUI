@@ -127,5 +127,4 @@ public extension View {
     func deviceRotationEffect(_ type: DeviceRotationEffectType, distance: CGFloat? = nil, perspective: CGFloat? = nil, pitch: Angle? = nil, yaw: Angle? = nil, localRoll: Angle? = nil, isShowingInFourDirections: Bool? = nil) -> some View {
         self.deviceRotationEffect(type, distance: distance, perspective: perspective, offsetRotation: Quat(pitch: pitch, yaw: yaw, localRoll: localRoll), isShowingInFourDirections: isShowingInFourDirections)
     }
-    
 }
