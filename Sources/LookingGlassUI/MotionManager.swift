@@ -146,7 +146,7 @@ public class MotionManager: ObservableObject {
 
         cmManager.startDeviceMotionUpdates(to: .main) { motionData, error in
             if let motionData = motionData {
-                let quaternion = motionData.attitude.quaternion.quat
+                let quaternion = Quat(motionData.attitude.quaternion)
                 
                 if self.initialDeviceRotation == nil {
                     self.initialDeviceRotation = quaternion

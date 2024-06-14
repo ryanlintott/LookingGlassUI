@@ -22,17 +22,6 @@ let package = Package(
         .testTarget(
             name: "LookingGlassUITests",
             dependencies: ["LookingGlassUI"]),
-    ]
+    ],
+    swiftLanguageVersions: [.v5, .version("6")]
 )
-
-let swiftSettings: [SwiftSetting] = [
-    .enableExperimentalFeature("StrictConcurrency"),
-    .enableUpcomingFeature("DisableOutwardActorInference"),
-    .enableUpcomingFeature("IsolatedDefaultValues"),
-]
-
-for target in package.targets {
-    var settings = target.swiftSettings ?? []
-    settings.append(contentsOf: swiftSettings)
-    target.swiftSettings = settings
-}
