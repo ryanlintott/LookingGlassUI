@@ -47,7 +47,6 @@ public struct DeviceRotationEffectViewModifier: ViewModifier {
 
     // rotation that moves to the content to the closest xy axis to the one the phone is pointing at
     // device reference frame
-    @MainActor
     var cloneRotation: Quat {
         guard isShowingInFourDirections else {
             return .identity
@@ -81,7 +80,6 @@ public struct DeviceRotationEffectViewModifier: ViewModifier {
         }
     }
     
-    @MainActor
     var rotation: Quat {
         /// all rotations are provided in the device reference frame
         /// Rotations occur in reverse order

@@ -31,7 +31,6 @@ struct ShimmerViewModifier: ViewModifier {
         }
     }
     
-    @MainActor
     var isShimmering: Bool {
         motionManager.updateInterval > 0 && mode.isOn(colorScheme: colorScheme)
     }
