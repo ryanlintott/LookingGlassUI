@@ -10,6 +10,11 @@ import SwiftUI
 
 @MainActor
 public class MotionManager: ObservableObject {
+    /// Only one shared MotionManager should be used in an app
+    static let shared = MotionManager()
+    
+    private init() { }
+    
     static let motionQueue = OperationQueue()
     static let screenSize = UIScreen.main.bounds.size
     static let maxScreenDimension = max(MotionManager.screenSize.height, MotionManager.screenSize.width)
@@ -17,23 +22,11 @@ public class MotionManager: ObservableObject {
     private let cmManager = CMMotionManager()
     
     // set to 0 for off
-    public private(set) var updateInterval: TimeInterval = 0 {
-        willSet {
-            objectWillChange.send()
-        }
-        didSet {
-            toggleIfNeeded()
-        }
-    }
+    @Published public private(set) var updateInterval: TimeInterval = 0
     
-    public private(set) var disabled: Bool = false {
-        willSet {
-            objectWillChange.send()
-        }
-        didSet {
-            toggleIfNeeded()
-        }
-    }
+    @Published public private(set) var disabled: Bool = false
+    
+    @Published public private(set) var deviceOrientation: UIDeviceOrientation = .unknown
     
     /// Rotation of device relative to zero position. Value is updated with SwiftUI animation to smooth between update intervals.
     @Published public private(set) var animatedQuaternion: Quat = .identity
@@ -73,16 +66,6 @@ public class MotionManager: ObservableObject {
         }
     }
     
-    @Published public var deviceOrientation: UIDeviceOrientation = .unknown
-    
-    public nonisolated init() { }
-    
-    deinit {
-        Task { @MainActor in
-            cmManager.stopDeviceMotionUpdates()
-        }
-    }
-    
     /// True if update interval greater than zero and not disabled.
     public var isDetectingMotion: Bool {
         updateInterval > 0 && !disabled
@@ -109,6 +92,7 @@ public class MotionManager: ObservableObject {
         if InfoDictionary.supportedOrientations.contains(newOrientation) {
             initialDeviceRotation = nil
             self.deviceOrientation = newOrientation
+            restartMotionUpdatesIfNeeded()
         }
     }
     
@@ -117,6 +101,7 @@ public class MotionManager: ObservableObject {
     public func setUpdateInterval(_ newUpdateInterval: TimeInterval) {
         if updateInterval != newUpdateInterval {
             updateInterval = newUpdateInterval
+            restartMotionUpdatesIfNeeded()
         }
     }
     
@@ -125,20 +110,52 @@ public class MotionManager: ObservableObject {
     public func setDisabled(_ newDisabled: Bool) {
         if disabled != newDisabled {
             disabled = newDisabled
+            restartMotionUpdatesIfNeeded()
         }
+    }
+    
+    /// Method to update several properties at once.
+    /// - Parameters:
+    ///   - updateInterval: Time between motion updates.
+    ///   - disabled: If true, motion updates are disabled.
+    ///   - setDeviceOrientation: If true, device orientation is updated.
+    public func startMotionUpdates(updateInterval: TimeInterval? = nil, disabled: Bool? = nil, setDeviceOrientation: Bool = false) {
+        
+        if let disabled, self.disabled != disabled {
+            self.disabled = disabled
+        }
+        
+        if let updateInterval, self.updateInterval != updateInterval {
+            self.updateInterval = updateInterval
+        }
+        
+        if setDeviceOrientation {
+            let newOrientation = UIDevice.current.orientation
+            if deviceOrientation != newOrientation,
+               InfoDictionary.supportedOrientations.contains(newOrientation) {
+                initialDeviceRotation = nil
+                deviceOrientation = newOrientation
+            }
+        }
+        
+        restartMotionUpdatesIfNeeded()
     }
     
     /// Restarts motion updates
     public func restart() {
-        cmManager.stopDeviceMotionUpdates()        
-        toggleIfNeeded()
+        restartMotionUpdatesIfNeeded()
     }
     
-    /// Toggles motion updates off if on or on if off (and not disabled and update interval greater than zero).
-    private func toggleIfNeeded() {
+    /// Stops motion updates. This must be run before deinit
+    public func stopMotionUpdates() {
         if cmManager.isDeviceMotionActive {
             cmManager.stopDeviceMotionUpdates()
         }
+    }
+    
+    /// Toggles motion updates off if on or on if off (and not disabled and update interval greater than zero).
+    private func restartMotionUpdatesIfNeeded() {
+        stopMotionUpdates()
         
         guard updateInterval > 0 && !disabled else { return }
 
@@ -163,5 +180,12 @@ public class MotionManager: ObservableObject {
                 print("Error - Unknown motion update error")
             }
         }
+    }
+}
+
+struct MotionManager_Previews: PreviewProvider {
+    static var previews: some View {
+        Color.blue
+            .motionManager(updateInterval: 0)
     }
 }

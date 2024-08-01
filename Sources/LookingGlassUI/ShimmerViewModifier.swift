@@ -18,17 +18,18 @@ struct ShimmerViewModifier: ViewModifier {
     let background: Color
     let blendMode: BlendMode
     
-    init(mode: ShimmerMode? = nil, color: Color, background: Color? = nil, blendMode: BlendMode? = nil) {
+    init(mode: ShimmerMode? = nil, color: Color, blendMode: BlendMode? = nil) {
         self.mode = mode ?? .on
         self.color = color
-        
-        if let background = background {
-            self.background = background
-            self.blendMode = blendMode ?? .normal
-        } else {
-            self.background = .clear
-            self.blendMode = blendMode ?? .screen
-        }
+        self.background = .clear
+        self.blendMode = blendMode ?? .screen
+    }
+    
+    init(mode: ShimmerMode? = nil, color: Color, background: Color) {
+        self.mode = mode ?? .on
+        self.color = color
+        self.background = background
+        self.blendMode = .sourceAtop
     }
     
     var isShimmering: Bool {
@@ -37,42 +38,63 @@ struct ShimmerViewModifier: ViewModifier {
     
     @ViewBuilder
     func body(content: Content) -> some View {
-        if isShimmering {
-            content
-                .overlay(
-                    ShimmerView(color: color, background: background)
-                        .blendMode(blendMode)
-                        .allowsHitTesting(false)
-                )
-                .mask(content)
-                .matchedGeometryEffect(id: "content", in: namespace)
-        } else {
-            content
-                .matchedGeometryEffect(id: "content", in: namespace)
-        }
+        content
+            .overlay(
+                VStack {
+                    if isShimmering {
+                        content
+                            .hidden()
+                            .overlay(
+                                ShimmerView(color: color, background: background)
+                            )
+                            .mask(content)
+                            .blendMode(blendMode)
+                            .accessibilityHidden(true)
+                            .allowsHitTesting(false)
+                    }
+                }
+            )
     }
 }
 
 public extension View {
-    /// Add a shimmer effect to the view
+    /// Add a shimmer effect with a background masked to this view.
+    /// - Parameters:
+    ///   - mode: Modes where shimmer should be enabled (on by default)
+    ///   - color: Shimmer color.
+    ///   - background: Background color.
+    /// - Returns: A shimmer effect with a background masked to this view.
+    func shimmer(mode: ShimmerMode? = nil, color: Color, background: Color) -> some View {
+        self.modifier(ShimmerViewModifier(mode: mode, color: color, background: background))
+    }
+    
+    /// Add a shimmer effect with a background masked to this view.
+    /// - Parameters:
+    ///   - isOn: Is shimmer enabled (default: `true`)
+    ///   - color: Shimmer color.
+    ///   - background: Background color.
+    /// - Returns: A shimmer effect with a background masked to this view.
+    func shimmer(isOn: Bool, color: Color, background: Color) -> some View {
+        self.modifier(ShimmerViewModifier(mode: isOn ? .on : .off, color: color, background: background))
+    }
+    
+    /// Add a shimmer effect masked to this view with a specified blend mode.
     /// - Parameters:
     ///   - mode: Modes where shimmer should be enabled (on by default)
     ///   - color: Shimmer color
-    ///   - background: Background color (default: `.clear`)
-    ///   - blendMode: How shimmer will blend with other views. (default: `.normal` when background is provided and `.screen` when not)
+    ///   - blendMode: How shimmer will blend with other views. (default: `.screen`)
     /// - Returns: A view with a shimmer effect overlayed that is masked by the same view
-    func shimmer(mode: ShimmerMode? = nil, color: Color, background: Color? = nil, blendMode: BlendMode? = nil) -> some View {
-        self.modifier(ShimmerViewModifier(mode: mode, color: color, background: background, blendMode: blendMode))
+    func shimmer(mode: ShimmerMode? = nil, color: Color, blendMode: BlendMode? = nil) -> some View {
+        self.modifier(ShimmerViewModifier(mode: mode, color: color, blendMode: blendMode))
     }
     
-    /// Add a shimmer effect to the view
+    /// Add a shimmer effect masked to this view with a specified blend mode.
     /// - Parameters:
     ///   - isOn: Is shimmer enabled (default: `true`)
     ///   - color: Shimmer color
-    ///   - background: Background color (default: `.clear`)
-    ///   - blendMode: How shimmer will blend with other views. (default: `.normal` when background is provided and `.screen` when not)
+    ///   - blendMode: How shimmer will blend with other views. (default: `.screen`)
     /// - Returns: A view with a shimmer effect overlayed that is masked by the same view
-    func shimmer(isOn: Bool, color: Color, background: Color? = nil, blendMode: BlendMode? = nil) -> some View {
-        self.modifier(ShimmerViewModifier(mode: isOn ? .on : .off, color: color, background: background, blendMode: blendMode))
+    func shimmer(isOn: Bool, color: Color, blendMode: BlendMode? = nil) -> some View {
+        self.modifier(ShimmerViewModifier(mode: isOn ? .on : .off, color: color, blendMode: blendMode))
     }
 }

@@ -52,7 +52,7 @@ public struct ShimmerView: View {
     public var body: some View {
         background
             .overlay(
-                Group {
+                VStack {
                     if isShimmering {
                         LookingGlass(
                             .reflection,
@@ -67,10 +67,11 @@ public struct ShimmerView: View {
                                 .frame(width: endRadius * 2, height: endRadius * 2)
                                 .scaleEffect(x: scale * aspectRatio, y: scale / aspectRatio, anchor: .center)
                         }
-                        .allowsHitTesting(false)
                         .clipped()
                     }
                 }
+                /// This ensures the shimmering effect does not change the content shape for hit testing and accessibility purporses.
+                    .contentShape(EmptyShape())
             )
     }
 }

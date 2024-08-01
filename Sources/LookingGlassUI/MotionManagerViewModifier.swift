@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MotionManagerViewModifier: ViewModifier {
-    @StateObject var motionManager = MotionManager()
+    @ObservedObject var motionManager = MotionManager.shared
     
     let updateInterval: TimeInterval
     let disabled: Bool
@@ -20,16 +20,23 @@ struct MotionManagerViewModifier: ViewModifier {
                 motionManager.changeDeviceOrientation()
             }
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-                motionManager.changeDeviceOrientation()
-                motionManager.restart()
+                motionManager.startMotionUpdates(updateInterval: updateInterval, disabled: disabled, setDeviceOrientation: true)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+                motionManager.stopMotionUpdates()
             }
             .onAppear {
-                motionManager.changeDeviceOrientation()
-                motionManager.setUpdateInterval(updateInterval)
-                motionManager.setDisabled(disabled)
+                motionManager.startMotionUpdates(updateInterval: updateInterval, disabled: disabled, setDeviceOrientation: true)
             }
-            .onChange(of: updateInterval, perform: motionManager.setUpdateInterval)
-            .onChange(of: disabled, perform: motionManager.setDisabled)
+            .onDisappear {
+                motionManager.stopMotionUpdates()
+            }
+            .onChange(of: updateInterval) {
+                motionManager.setUpdateInterval($0)
+            }
+            .onChange(of: disabled) {
+                motionManager.setDisabled($0)
+            }
     }
 }
 
