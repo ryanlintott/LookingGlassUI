@@ -9,17 +9,29 @@
 [![Twitter](https://img.shields.io/badge/twitter-@ryanlintott-blue.svg?style=flat)](http://twitter.com/ryanlintott)
 
 # Overview
-A Swift Package with SwiftUI views that can rotate views based on device orientation. It's especially useful in faking a light reflection to create a shimmering effect when the device rotates.
+Create shimmer, parallax or other rotation effects based on device orientation.
 
-- [`.motionManager()`](#motionmanager) - A view modifier that creates a `MotionManager` class that gets device rotation information from Core Motion and adds it into the environment for other views to access.
-- [`ShimmerView`](#shimmerview) - A view similar to color that shimmers with another color as if reflecting light when your device rotates.
-- [`.shimmer()`](#shimmer) - A view modifier that overlays a shimmer color on any view as the device rotates.
-- [`.parallax()`](#parallax) - A view modifier that applies a parallax effect on any view as the device rotates.
+- [`.motionManager()`](#motionmanager) - A view modifier that adds a `MotionManager` class into the environment.
+- [`ShimmerView`](#shimmerview) - A color that shimmers with another color as if reflecting light when the device rotates.
+- [`.shimmer()`](#shimmer) - A view modifier that overlays a shimmer color as if reflecting light when the device rotates.
+- [`.parallax()`](#parallax) - A view modifier that moves the view to add a parallax effect when the device rotates.
 - [`LookingGlass`](#lookingglass) - A view that rotates its child view to a specific 3d angle relative to the real world and positions it relative to the device.
 - [`.deviceRotationEffect()`](#devicerotationeffect) - A view modifier that rotates a view based on device rotation.
+- [`.rotation3dEffect()`](#rotation3deffect) - A view modifier that rotates a view based on a quaternion.
+- [`Quat`](#quat) - A wrapper for simd.quaternion with handy extensions.
 
-# Gold Shimmer Demo
-This package is currently used to create a gold shimmer effect on many gold elements in the [Old English Wordhord app](https://oldenglishwordhord.com/app). Download it to see the effect in action.
+# Demo App
+Check out [LookingGlassUIExample](https://github.com/ryanlintott/LookingGlassUIExample) to see how to use this package in your app.
+
+# Installation and Usage
+This package is compatible with iOS 14+.
+
+1. In Xcode go to `File -> Add Packages`
+2. Paste in the repo's url: `https://github.com/ryanlintott/LookingGlassUI` and select by version.
+3. Import the package using `import LookingGlassUI`
+
+# Is this Production-Ready?
+Really it's up to you. I currently use this package to create a gold shimmer effect on many gold elements in the [Old English Wordhord app](https://oldenglishwordhord.com/app). Download it for free and turn on the shimmer effect in Settings.
 
 ![An iphone rotated back and forth showing the Old English Wordhord App with all the gold elements shimmering as if reflecting light. A screen recording on the right shows the same content.](https://user-images.githubusercontent.com/2143656/128365446-6f9edb2a-e318-44c7-b095-4ab8b9c820f5.gif)
 
@@ -27,39 +39,30 @@ This package is currently used to create a gold shimmer effect on many gold elem
 <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1626912000&h=8e86ea0b88a4e8559b76592c43b3fe60" alt="Download on the App Store" style="border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;">
 </a>
 
-# LookingGlassUIExample
-Check out the [example app](https://github.com/ryanlintott/LookingGlassUIExample) to see how you can use this package in your iOS app.
-
-# Installation and Usage
-This package is compatible with iOS 14+.
-
-1. In Xcode go to `File -> Add Packages`
-2. Paste in the repo's url: `https://github.com/ryanlintott/LookingGlassUI` and select main branch or select by version.
-3. Import the package using `import LookingGlassUI`
-
-# Is this Production-Ready?
-Really it's up to you. I currently use this package in my own [Old English Wordhord app](https://oldenglishwordhord.com/app).
-
-# Support
-If you like this package, buy me a coffee to say thanks!
+# Support This Project
+LookingGlassUI is open source and free but if you like using it, please consider supporting my work.
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/X7X04PU6T)
 
 # Details
 ## .motionManager()
-Before adding any custom views, add the `.motionManager` view modifier once, somewhere in the heirarchy above any other views or modifiers used in this package.
+Before adding any custom views, add the `.motionManager` view modifier once in your app, somewhere in the heirarchy above any other views or modifiers used in this package.
 ```swift
 ContentView()
     .motionManager(updateInterval: 0.1, disabled: false)
 ```
 
 ## ShimmerView
-Use `ShimmerView` if you want a view that acts like `Color` but with a default shimmer effect. If `MotionManager` is disabled only the background color will be shown.
+*Requires [`.motionManager()`](#motionmanager)*
+
+This view acts like `Color` but a second shimmer color will appear when device is rotated. The effect can be enabled via a parameter or set to only show in dark or light mode. If `MotionManager` is disabled only the background color will be shown.
 ```swift
-ShimmerView(color: .goldShimmer, background: .gold)
+ShimmerView(mode: .darkModeOnly, color: .goldShimmer, background: .gold)
 ```
 
 ## .shimmer()
+*Requires [`.motionManager()`](#motionmanager)*
+
 Use `.shimmer()` view modifier if you want to add a default shimmer effect to another SwiftUI View. If `MotionManager` is disabled the modifier has no effect.
 ```swift
 Text("Hello, World!")
@@ -67,6 +70,8 @@ Text("Hello, World!")
 ```
 
 ## .parallax()
+*Requires [`.motionManager()`](#motionmanager)*
+
 Use `.parallax(multiplier: CGFloat, maxOffset: CGFloat)` view modifier if you want to add a parallax effect to any SwiftUI View. If `MotionManager` is disabled the modifier has no effect.
 ```swift
 Text("Hello, World!")
@@ -74,7 +79,9 @@ Text("Hello, World!")
 ```
 
 ## LookingGlass
-Use `LookingGlass` if you want to project any SwiftUI view or create your own custom effect.  Content appears as if rotated and positioned from the center of the device regardless of positioin on the screen or if it's in a scrollview. If `MotionManager` is disabled nothing will be shown.
+*Requires [`.motionManager()`](#motionmanager)*
+
+Use `LookingGlass` if you want to project any SwiftUI view based on a real-world rotation and create your own custom effect. Content appears as if rotated and positioned from the center of the device regardless of positioin on the screen or if it's in a scrollview. If `MotionManager` is disabled nothing will be shown.
 ```swift
 LookingGlass(.reflection, distance: 4000, perspective: 0, pitch: .degrees(45), yaw: .zero, localRoll: .zero, isShowingInFourDirections: false) {
     Text("Hello, World")
@@ -85,6 +92,8 @@ LookingGlass(.reflection, distance: 4000, perspective: 0, pitch: .degrees(45), y
 ```
 
 ## .deviceRotationEffect()
+*Requires [`.motionManager()`](#motionmanager)*
+
 Use `.deviceRotationEffect()` if you want to rotate a view based on device rotation. Content is rotated and positioned based on it's own center. If `MotionManager` is disabled nothing will be shown.
 ```swift
 Text("Hello, World")
@@ -93,6 +102,16 @@ Text("Hello, World")
     .background(Color.red)
     .deviceRotationEffect(.reflection, distance: 4000, perspective: 0, pitch: .degrees(10), yaw: .zero, localRoll: .zero, isShowingInFourDirections: false)
 ```
+
+## rotation3dEffect()
+Rotate SwiftUI Views based on quaterions. This ensures a smooth rotation from any point to any other point.
+```swift
+Text("Hello, World")
+    .rotation3dEffect(quaternion: Quat(pitch: .degrees(45), yaw: .zero, localRoll: .degrees(-30)), anchor: .center, anchorZ: 200, perspective: 0.2)
+```
+
+## Quat
+`Quat` is a wrapper for simd.quaternion with handy parameters like yaw, pitch, and roll and a way to init from pitch, yaw and localRoll.
 
 # How it Works
 

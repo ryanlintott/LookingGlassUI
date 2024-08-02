@@ -19,7 +19,8 @@ struct ParallaxViewModifier: ViewModifier {
         /// 1. Reference frame is changed from screen to device (x and z flip)
         /// 2. result is rotated by the delta between the initial rotation and the current rotation
         /// 3. result is rotated by the inverse of the interface rotation to counteract any interface orientation changes
-        return (motionManager.interfaceRotation.inverse * motionManager.deltaRotation).deviceToScreenReferenceFrame
+        (motionManager.interfaceRotation.inverse * motionManager.deltaRotation)
+            .deviceToScreenReferenceFrame
     }
     
     var parallaxOffset: CGSize {
@@ -40,6 +41,14 @@ struct ParallaxViewModifier: ViewModifier {
 }
 
 public extension View {
+    /// Moves the view to create a parallax effect based on device orientation.
+    ///
+    /// - Requires: `MotionManager` must be in the environment. (Use ViewModifier `.motionManager` above this view in the heirarchy)
+    ///
+    /// - Parameters:
+    ///   - multiplier: How much to move the view. Distance is the radians of the rotation multiplied by this multiplier.
+    ///   - maxOffset: Clamps the movement to a maximum distance in x and y directions..
+    /// - Returns: The view moved to create a parallax effect based on device orientation.
     func parallax(multiplier: CGFloat = 50, maxOffset: CGFloat? = nil) -> some View {
         modifier(ParallaxViewModifier(multiplier: multiplier, maxOffset: maxOffset))
     }

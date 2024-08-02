@@ -59,8 +59,11 @@ struct ShimmerViewModifier: ViewModifier {
 
 public extension View {
     /// Add a shimmer effect with a background masked to this view.
+    ///
+    /// - Requires: `MotionManager` must be in the environment. (Use ViewModifier `.motionManager` above this view in the heirarchy)
+    ///
     /// - Parameters:
-    ///   - mode: Modes where shimmer should be enabled (on by default)
+    ///   - mode: Modes where shimmer should be enabled (default: `.on`)
     ///   - color: Shimmer color.
     ///   - background: Background color.
     /// - Returns: A shimmer effect with a background masked to this view.
@@ -69,6 +72,9 @@ public extension View {
     }
     
     /// Add a shimmer effect with a background masked to this view.
+    ///
+    /// - Requires: `MotionManager` must be in the environment. (Use ViewModifier `.motionManager` above this view in the heirarchy)
+    ///
     /// - Parameters:
     ///   - isOn: Is shimmer enabled (default: `true`)
     ///   - color: Shimmer color.
@@ -79,8 +85,11 @@ public extension View {
     }
     
     /// Add a shimmer effect masked to this view with a specified blend mode.
+    ///
+    /// - Requires: `MotionManager` must be in the environment. (Use ViewModifier `.motionManager` above this view in the heirarchy)
+    ///
     /// - Parameters:
-    ///   - mode: Modes where shimmer should be enabled (on by default)
+    ///   - mode: Modes where shimmer should be enabled (default: `.on`)
     ///   - color: Shimmer color
     ///   - blendMode: How shimmer will blend with other views. (default: `.screen`)
     /// - Returns: A view with a shimmer effect overlayed that is masked by the same view
@@ -89,8 +98,11 @@ public extension View {
     }
     
     /// Add a shimmer effect masked to this view with a specified blend mode.
+    ///
+    /// - Requires: `MotionManager` must be in the environment. (Use ViewModifier `.motionManager` above this view in the heirarchy)
+    ///
     /// - Parameters:
-    ///   - isOn: Is shimmer enabled (default: `true`)
+    ///   - isOn: Is shimmer enabled.
     ///   - color: Shimmer color
     ///   - blendMode: How shimmer will blend with other views. (default: `.screen`)
     /// - Returns: A view with a shimmer effect overlayed that is masked by the same view

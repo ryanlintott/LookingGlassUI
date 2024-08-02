@@ -24,7 +24,7 @@ public struct ShimmerView: View {
     let aspectRatio: CGFloat = 0.5
     let distance: CGFloat = 4000
     let pitch: Angle = .degrees(45)
-    let yaw: Angle = .degrees(0)
+    let yaw: Angle = .zero
     let localRoll: Angle = .degrees(-30)
     
     /// Creates a shimmering view based on device orientation
@@ -32,7 +32,7 @@ public struct ShimmerView: View {
     /// - Requires: `MotionManager` must be in the environment. (Use ViewModifier `.motionManager` above this view in the heirarchy)
     ///
     /// - Parameters:
-    ///   - mode: Modes where shimmer should be enabled
+    ///   - mode: Modes where shimmer should be enabled. (default: `.on`)
     ///   - color: Shimmer color
     ///   - background: Background color
     public init(mode: ShimmerMode? = nil, color: Color, background: Color) {
@@ -41,6 +41,14 @@ public struct ShimmerView: View {
         self.background = background
     }
     
+    /// Creates a shimmering view based on device orientation
+    ///
+    /// - Requires: `MotionManager` must be in the environment. (Use ViewModifier `.motionManager` above this view in the heirarchy)
+    ///
+    /// - Parameters:
+    ///   - isOn: Is shimmer enabled.
+    ///   - color: Shimmer color
+    ///   - background: Background color
     public init(isOn: Bool, color: Color, background: Color) {
         self.init(mode: isOn ? .on : .off, color: color, background: background)
     }

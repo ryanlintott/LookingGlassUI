@@ -8,6 +8,7 @@
 import simd.quaternion
 import SwiftUI
 
+/// A wrapper for simd.quaternion with handy extensions.
 public struct Quat: Sendable {
     /// The data for this quaternion stored as a simd quaternion.
     public var simd: simd_quatd
