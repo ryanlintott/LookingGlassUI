@@ -9,13 +9,13 @@ import SwiftUI
 
 /// An empty shape used in the contentShape modifier to create an empty contentShape. This is useful for visible view that you don't want effecting accessibility frames.
 struct EmptyShape: InsettableShape {
-    nonisolated init() { }
+    init() { }
     
     func path(in rect: CGRect) -> Path {
         Path()
     }
     
-    nonisolated func inset(by amount: CGFloat) -> EmptyShape {
+    func inset(by amount: CGFloat) -> EmptyShape {
         EmptyShape()
     }
 }
