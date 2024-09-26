@@ -146,7 +146,7 @@ public class MotionManager: ObservableObject {
         restartMotionUpdatesIfNeeded()
     }
     
-    /// Stops motion updates. This must be run before deinit
+    /// Stops motion updates. This must be run before deinit. Currently this is done with `.onDisappear()` in ``MotionManagerViewModifier``
     public func stopMotionUpdates() {
         if cmManager.isDeviceMotionActive {
             cmManager.stopDeviceMotionUpdates()

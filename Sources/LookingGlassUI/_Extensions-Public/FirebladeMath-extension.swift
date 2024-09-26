@@ -6,9 +6,9 @@
 //
 
 /// Representation of a quaternion from FirebladeMath
-@available(*, deprecated, renamed: "Quat")
+@available(*, unavailable, renamed: "Quat")
 public struct Quat4f { }
 
 /// Representation of a vector from FirebladeMath
-@available(*, deprecated, renamed: "Vec3")
+@available(*, unavailable, renamed: "Vec3")
 public struct Vec3f { }

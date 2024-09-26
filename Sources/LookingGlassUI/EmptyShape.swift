@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// An empty shape used in the contentShape modifier to create an empty contentShape. This is useful for visible view that you don't want effecting accessibility frames.
+/// An empty shape used in the `contentShape()` modifier to create an empty content shape. This is useful for visible view that you don't want effecting accessibility frames.
 struct EmptyShape: InsettableShape {
     init() { }
     

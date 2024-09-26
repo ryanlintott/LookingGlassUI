@@ -60,7 +60,7 @@ struct ShimmerViewModifier: ViewModifier {
 public extension View {
     /// Add a shimmer effect with a background masked to this view.
     ///
-    /// - Requires: `MotionManager` must be in the environment. (Use ViewModifier `.motionManager` above this view in the heirarchy)
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
     ///
     /// - Parameters:
     ///   - mode: Modes where shimmer should be enabled (default: `.on`)
@@ -73,7 +73,7 @@ public extension View {
     
     /// Add a shimmer effect with a background masked to this view.
     ///
-    /// - Requires: `MotionManager` must be in the environment. (Use ViewModifier `.motionManager` above this view in the heirarchy)
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
     ///
     /// - Parameters:
     ///   - isOn: Is shimmer enabled (default: `true`)
@@ -86,7 +86,7 @@ public extension View {
     
     /// Add a shimmer effect masked to this view with a specified blend mode.
     ///
-    /// - Requires: `MotionManager` must be in the environment. (Use ViewModifier `.motionManager` above this view in the heirarchy)
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
     ///
     /// - Parameters:
     ///   - mode: Modes where shimmer should be enabled (default: `.on`)
@@ -99,7 +99,7 @@ public extension View {
     
     /// Add a shimmer effect masked to this view with a specified blend mode.
     ///
-    /// - Requires: `MotionManager` must be in the environment. (Use ViewModifier `.motionManager` above this view in the heirarchy)
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
     ///
     /// - Parameters:
     ///   - isOn: Is shimmer enabled.

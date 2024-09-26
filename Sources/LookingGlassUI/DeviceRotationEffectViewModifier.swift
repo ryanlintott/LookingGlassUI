@@ -94,7 +94,7 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         if motionManager.isDetectingMotion {
             content
-                .rotation3dEffect(quaternion: rotation, anchor: .center, anchorZ: distance, perspective: perspective)
+                .rotation3DEffect(quaternion: rotation, anchor: .center, anchorZ: distance, perspective: perspective)
         }
     }
 }
@@ -111,8 +111,22 @@ public extension View {
     ///   - offsetRotation: Quaternion that represents the view's position in the real world. (zero positions the view on the ground)
     ///   - isShowingInFourDirections: If active the view will be rotated around the Z axis at 90 degree intervals to always face the direction the device is pointing.
     /// - Returns: The view is positioned centered on the device and rotated using real world coordinates. It will rotate to compensate for device rotation and appear to be seen either through a window or as a kind of reflection.
-    func deviceRotationEffect(_ type: DeviceRotationEffectType, distance: CGFloat? = nil, perspective: CGFloat? = nil, offsetRotation: Quat? = nil, isShowingInFourDirections: Bool? = nil) -> some View {
-        self.modifier(DeviceRotationEffectViewModifier(type: type, distance: distance, perspective: perspective, offsetRotation: offsetRotation, isShowingInFourDirections: isShowingInFourDirections))
+    func deviceRotationEffect(
+        _ type: DeviceRotationEffectType,
+        distance: CGFloat? = nil,
+        perspective: CGFloat? = nil,
+        offsetRotation: Quat? = nil,
+        isShowingInFourDirections: Bool? = nil
+    ) -> some View {
+        self.modifier(
+            DeviceRotationEffectViewModifier(
+                type: type,
+                distance: distance,
+                perspective: perspective,
+                offsetRotation: offsetRotation,
+                isShowingInFourDirections: isShowingInFourDirections
+            )
+        )
     }
     
     /// Position a view on a sphere centered on the device and rotated using real world coordinates. This view will rotate to compensate for device rotation and appear to be seen either through a window or as a kind of reflection.
@@ -128,7 +142,23 @@ public extension View {
     ///   - localRoll: Local roll rotation of the view.
     ///   - isShowingInFourDirections: If active the view will be rotated around the Z axis at 90 degree intervals to always face the direction the device is pointing.
     /// - Returns: The view is positioned centered on the device and rotated using real world coordinates. It will rotate to compensate for device rotation and appear to be seen either through a window or as a kind of reflection.
-    func deviceRotationEffect(_ type: DeviceRotationEffectType, distance: CGFloat? = nil, perspective: CGFloat? = nil, pitch: Angle? = nil, yaw: Angle? = nil, localRoll: Angle? = nil, isShowingInFourDirections: Bool? = nil) -> some View {
-        self.deviceRotationEffect(type, distance: distance, perspective: perspective, offsetRotation: Quat(pitch: pitch, yaw: yaw, localRoll: localRoll), isShowingInFourDirections: isShowingInFourDirections)
+    func deviceRotationEffect(
+        _ type: DeviceRotationEffectType,
+        distance: CGFloat? = nil,
+        perspective: CGFloat? = nil,
+        pitch: Angle? = nil,
+        yaw: Angle? = nil,
+        localRoll: Angle? = nil,
+        isShowingInFourDirections: Bool? = nil
+    ) -> some View {
+        deviceRotationEffect(
+            type,
+            distance: distance,
+            perspective: perspective,
+            offsetRotation: Quat(pitch: pitch,
+            yaw: yaw,
+            localRoll: localRoll),
+            isShowingInFourDirections: isShowingInFourDirections
+        )
     }
 }

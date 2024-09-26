@@ -10,11 +10,11 @@ import SwiftUI
 
 /// A view that rotates another view so it appears locked to real-world orientations. Useful if you want a view that is only visible when the phone is pointed in a specific direction.
 ///
-/// This view will take all proposed space similar to GeometryReader. The content view will always be aligned to the centre of the device and the centre of the screen regardless of where the view is on the screen or inside a scrollview.
+/// This view will take all proposed space similar to `GeometryReader`. The content view will always be aligned to the centre of the device and the centre of the screen regardless of where the view is on the screen or inside a scrollview.
 ///
 /// If motion updates are off the content will not be shown.
 /// 
-/// - Requires: Use the `.motionManager` view modifier only once in your app somewhere above this view in the heirarchy.
+/// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
 public struct LookingGlass<Content: View>: View {
     @EnvironmentObject var motionManager: MotionManager
 
@@ -27,11 +27,11 @@ public struct LookingGlass<Content: View>: View {
     
     /// A view that rotates another view so it appears locked to real-world orientations. Useful if you want a view that is only visible when the phone is pointed in a specific direction.
     ///
-    /// This view will take all proposed space similar to GeometryReader. The content view will always be aligned to the centre of the device and the centre of the screen regardless of where the view is on the screen or inside a scrollview.
+    /// This view will take all proposed space similar to `GeometryReader`. The content view will always be aligned to the centre of the device and the centre of the screen regardless of where the view is on the screen or inside a scrollview.
     ///
     /// If motion updates are off the content will not be shown.
     ///
-    /// - Requires: Use the `.motionManager` view modifier only once in your app somewhere above this view in the heirarchy.
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
     /// - Parameters:
     ///   - type: Device rotation effect.
     ///   - distance: Distance the view is positioned from the device in points.
@@ -57,11 +57,11 @@ public struct LookingGlass<Content: View>: View {
     
     /// A view that rotates another view so it appears locked to real-world orientations. Useful if you want a view that is only visible when the phone is pointed in a specific direction.
     ///
-    /// This view will take all proposed space similar to GeometryReader. The content view will always be aligned to the centre of the device and the centre of the screen regardless of where the view is on the screen or inside a scrollview.
+    /// This view will take all proposed space similar to `GeometryReader`. The content view will always be aligned to the centre of the device and the centre of the screen regardless of where the view is on the screen or inside a scrollview.
     ///
     /// If motion updates are off the content will not be shown.
     ///
-    /// - Requires: Use the `.motionManager` view modifier only once in your app somewhere above this view in the heirarchy.
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
     ///
     /// - Parameters:
     ///   - type: Device rotation effect.

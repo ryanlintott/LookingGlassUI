@@ -19,7 +19,7 @@ public extension Vec3 {
     /// A vector representation of the z axis.
     static let zAxis: Vec3 = [0, 0, 1]
     
-    /// This vector represented as a tuple of CGFloat (used in SwiftUI rotation3dEffect)
+    /// This vector represented as a tuple of `CGFloat` (used in SwiftUI `rotation3dEffect()`)
     var cgFloat: (x: CGFloat, y: CGFloat, z: CGFloat) {
         (x: x, y: y, z: z)
     }

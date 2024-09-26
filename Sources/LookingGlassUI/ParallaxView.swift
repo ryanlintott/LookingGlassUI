@@ -43,7 +43,7 @@ struct ParallaxViewModifier: ViewModifier {
 public extension View {
     /// Moves the view to create a parallax effect based on device orientation.
     ///
-    /// - Requires: `MotionManager` must be in the environment. (Use ViewModifier `.motionManager` above this view in the heirarchy)
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
     ///
     /// - Parameters:
     ///   - multiplier: How much to move the view. Distance is the radians of the rotation multiplied by this multiplier.
