@@ -1,0 +1,414 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 60;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CF01A72326BB565E00D30F17 /* LookingGlassUIExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF01A72226BB565E00D30F17 /* LookingGlassUIExampleView.swift */; };
+		CF1AB2AF2CB5BCF20049E553 /* LookingGlassUI in Frameworks */ = {isa = PBXBuildFile; productRef = CF1AB2AE2CB5BCF20049E553 /* LookingGlassUI */; };
+		CF1AF40F265D4B5200B75D0D /* ShimmerTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1AF40E265D4B5200B75D0D /* ShimmerTestView.swift */; };
+		CF4D35B726540516001D5F2A /* LookingGlassUIExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4D35B626540516001D5F2A /* LookingGlassUIExampleApp.swift */; };
+		CF4D35B926540516001D5F2A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4D35B826540516001D5F2A /* ContentView.swift */; };
+		CF4D35BB26540517001D5F2A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF4D35BA26540517001D5F2A /* Assets.xcassets */; };
+		CF4D35BE26540517001D5F2A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF4D35BD26540517001D5F2A /* Preview Assets.xcassets */; };
+		CF4D35E9265405AF001D5F2A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4D35E4265405AE001D5F2A /* SettingsView.swift */; };
+		CF4D35EB265405AF001D5F2A /* ArrowRotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4D35E6265405AE001D5F2A /* ArrowRotationView.swift */; };
+		CF4D35EC265405AF001D5F2A /* TextReflectionExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4D35E7265405AE001D5F2A /* TextReflectionExampleView.swift */; };
+		CF4D35ED265405AF001D5F2A /* ShimmerExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4D35E8265405AE001D5F2A /* ShimmerExampleView.swift */; };
+		CF8A40FE28C1A3F900A8843D /* DeviceRotationEffectExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF8A40FD28C1A3F900A8843D /* DeviceRotationEffectExample.swift */; };
+		CFAA6D0327EB8FB300BA97C1 /* ParallaxExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAA6D0227EB8FB300BA97C1 /* ParallaxExample.swift */; };
+		CFFEAF0F27F212820086ECC5 /* MotionManagerExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFFEAF0E27F212820086ECC5 /* MotionManagerExample.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		CF01A72226BB565E00D30F17 /* LookingGlassUIExampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LookingGlassUIExampleView.swift; sourceTree = "<group>"; };
+		CF1AF40E265D4B5200B75D0D /* ShimmerTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShimmerTestView.swift; sourceTree = "<group>"; };
+		CF4D35B326540516001D5F2A /* LookingGlassUIExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LookingGlassUIExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF4D35B626540516001D5F2A /* LookingGlassUIExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LookingGlassUIExampleApp.swift; sourceTree = "<group>"; };
+		CF4D35B826540516001D5F2A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		CF4D35BA26540517001D5F2A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CF4D35BD26540517001D5F2A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		CF4D35BF26540517001D5F2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CF4D35E4265405AE001D5F2A /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		CF4D35E6265405AE001D5F2A /* ArrowRotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrowRotationView.swift; sourceTree = "<group>"; };
+		CF4D35E7265405AE001D5F2A /* TextReflectionExampleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextReflectionExampleView.swift; sourceTree = "<group>"; };
+		CF4D35E8265405AE001D5F2A /* ShimmerExampleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShimmerExampleView.swift; sourceTree = "<group>"; };
+		CF8A40FD28C1A3F900A8843D /* DeviceRotationEffectExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRotationEffectExample.swift; sourceTree = "<group>"; };
+		CFAA6D0227EB8FB300BA97C1 /* ParallaxExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParallaxExample.swift; sourceTree = "<group>"; };
+		CFFEAF0E27F212820086ECC5 /* MotionManagerExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManagerExample.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CF4D35B026540516001D5F2A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF1AB2AF2CB5BCF20049E553 /* LookingGlassUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CF4D35AA26540516001D5F2A = {
+			isa = PBXGroup;
+			children = (
+				CF4D35B526540516001D5F2A /* LookingGlassUIExample */,
+				CF4D35B426540516001D5F2A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CF4D35B426540516001D5F2A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CF4D35B326540516001D5F2A /* LookingGlassUIExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CF4D35B526540516001D5F2A /* LookingGlassUIExample */ = {
+			isa = PBXGroup;
+			children = (
+				CF4D35B626540516001D5F2A /* LookingGlassUIExampleApp.swift */,
+				CF4D35B826540516001D5F2A /* ContentView.swift */,
+				CF4D35E6265405AE001D5F2A /* ArrowRotationView.swift */,
+				CF8A40FD28C1A3F900A8843D /* DeviceRotationEffectExample.swift */,
+				CF1AF40E265D4B5200B75D0D /* ShimmerTestView.swift */,
+				CFAA6D0227EB8FB300BA97C1 /* ParallaxExample.swift */,
+				CFFEAF0E27F212820086ECC5 /* MotionManagerExample.swift */,
+				CF4D35E4265405AE001D5F2A /* SettingsView.swift */,
+				CF4D35E8265405AE001D5F2A /* ShimmerExampleView.swift */,
+				CF01A72226BB565E00D30F17 /* LookingGlassUIExampleView.swift */,
+				CF4D35E7265405AE001D5F2A /* TextReflectionExampleView.swift */,
+				CF4D35BA26540517001D5F2A /* Assets.xcassets */,
+				CF4D35BF26540517001D5F2A /* Info.plist */,
+				CF4D35BC26540517001D5F2A /* Preview Content */,
+			);
+			path = LookingGlassUIExample;
+			sourceTree = "<group>";
+		};
+		CF4D35BC26540517001D5F2A /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				CF4D35BD26540517001D5F2A /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CF4D35B226540516001D5F2A /* LookingGlassUIExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CF4D35D826540517001D5F2A /* Build configuration list for PBXNativeTarget "LookingGlassUIExample" */;
+			buildPhases = (
+				CF4D35AF26540516001D5F2A /* Sources */,
+				CF4D35B026540516001D5F2A /* Frameworks */,
+				CF4D35B126540516001D5F2A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LookingGlassUIExample;
+			packageProductDependencies = (
+				CF1AB2AE2CB5BCF20049E553 /* LookingGlassUI */,
+			);
+			productName = LookingGlassUIExample;
+			productReference = CF4D35B326540516001D5F2A /* LookingGlassUIExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CF4D35AB26540516001D5F2A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastSwiftUpdateCheck = 1250;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					CF4D35B226540516001D5F2A = {
+						CreatedOnToolsVersion = 12.5;
+					};
+				};
+			};
+			buildConfigurationList = CF4D35AE26540516001D5F2A /* Build configuration list for PBXProject "LookingGlassUIExample" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CF4D35AA26540516001D5F2A;
+			packageReferences = (
+				CF1AB2AD2CB5BCF20049E553 /* XCLocalSwiftPackageReference "../../LookingGlassUI" */,
+			);
+			productRefGroup = CF4D35B426540516001D5F2A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CF4D35B226540516001D5F2A /* LookingGlassUIExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CF4D35B126540516001D5F2A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF4D35BE26540517001D5F2A /* Preview Assets.xcassets in Resources */,
+				CF4D35BB26540517001D5F2A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CF4D35AF26540516001D5F2A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF1AF40F265D4B5200B75D0D /* ShimmerTestView.swift in Sources */,
+				CFAA6D0327EB8FB300BA97C1 /* ParallaxExample.swift in Sources */,
+				CF4D35E9265405AF001D5F2A /* SettingsView.swift in Sources */,
+				CF8A40FE28C1A3F900A8843D /* DeviceRotationEffectExample.swift in Sources */,
+				CF4D35ED265405AF001D5F2A /* ShimmerExampleView.swift in Sources */,
+				CF4D35EB265405AF001D5F2A /* ArrowRotationView.swift in Sources */,
+				CFFEAF0F27F212820086ECC5 /* MotionManagerExample.swift in Sources */,
+				CF01A72326BB565E00D30F17 /* LookingGlassUIExampleView.swift in Sources */,
+				CF4D35B926540516001D5F2A /* ContentView.swift in Sources */,
+				CF4D35B726540516001D5F2A /* LookingGlassUIExampleApp.swift in Sources */,
+				CF4D35EC265405AF001D5F2A /* TextReflectionExampleView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CF4D35D626540517001D5F2A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = LookingGlassUI;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = "";
+			};
+			name = Debug;
+		};
+		CF4D35D726540517001D5F2A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = LookingGlassUI;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = "";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CF4D35D926540517001D5F2A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"LookingGlassUIExample/Preview Content\"";
+				DEVELOPMENT_TEAM = 97423JQ8B9;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = LookingGlassUIExample/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.abetterwaytodo.LookingGlassUIExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CF4D35DA26540517001D5F2A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"LookingGlassUIExample/Preview Content\"";
+				DEVELOPMENT_TEAM = 97423JQ8B9;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = LookingGlassUIExample/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.abetterwaytodo.LookingGlassUIExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CF4D35AE26540516001D5F2A /* Build configuration list for PBXProject "LookingGlassUIExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF4D35D626540517001D5F2A /* Debug */,
+				CF4D35D726540517001D5F2A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CF4D35D826540517001D5F2A /* Build configuration list for PBXNativeTarget "LookingGlassUIExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF4D35D926540517001D5F2A /* Debug */,
+				CF4D35DA26540517001D5F2A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		CF1AB2AD2CB5BCF20049E553 /* XCLocalSwiftPackageReference "../../LookingGlassUI" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../LookingGlassUI;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CF1AB2AE2CB5BCF20049E553 /* LookingGlassUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LookingGlassUI;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = CF4D35AB26540516001D5F2A /* Project object */;
+}

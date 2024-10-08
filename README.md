@@ -21,7 +21,7 @@ Create shimmer, parallax or other rotation effects based on device orientation.
 - [`Quat`](#quat) - A wrapper for simd.quaternion with handy extensions.
 
 # Demo App
-Check out [LookingGlassUIExample](https://github.com/ryanlintott/LookingGlassUIExample) to see how to use this package in your app.
+The `Example` folder has an app that demonstrates the features of this package.
 
 # Installation and Usage
 This package is compatible with iOS 14+.
