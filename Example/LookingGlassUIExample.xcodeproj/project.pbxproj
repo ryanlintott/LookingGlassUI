@@ -146,7 +146,7 @@
 			);
 			mainGroup = CF4D35AA26540516001D5F2A;
 			packageReferences = (
-				CF1AB2AD2CB5BCF20049E553 /* XCLocalSwiftPackageReference "../../LookingGlassUI" */,
+				CF1AB2AD2CB5BCF20049E553 /* XCLocalSwiftPackageReference ".." */,
 			);
 			productRefGroup = CF4D35B426540516001D5F2A /* Products */;
 			projectDirPath = "";
@@ -328,7 +328,7 @@
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = LookingGlassUIExample/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -356,7 +356,7 @@
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = LookingGlassUIExample/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -397,9 +397,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		CF1AB2AD2CB5BCF20049E553 /* XCLocalSwiftPackageReference "../../LookingGlassUI" */ = {
+		CF1AB2AD2CB5BCF20049E553 /* XCLocalSwiftPackageReference ".." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../LookingGlassUI;
+			relativePath = ..;
 		};
 /* End XCLocalSwiftPackageReference section */
 

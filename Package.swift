@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "LookingGlassUI",
     platforms: [
-        .iOS(.v14)
+        .iOS(.v15)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -26,6 +26,5 @@ let package = Package(
             name: "LookingGlassUITests",
             dependencies: ["LookingGlassUI"]
         ),
-    ],
-    swiftLanguageVersions: [.v5, .version("6")]
+    ]
 )
