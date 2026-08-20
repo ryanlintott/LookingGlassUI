@@ -5,6 +5,7 @@
 ![License - MIT](https://img.shields.io/github/license/ryanlintott/LookingGlassUI)
 ![Version](https://img.shields.io/github/v/tag/ryanlintott/LookingGlassUI?label=version)
 ![GitHub last commit](https://img.shields.io/github/last-commit/ryanlintott/LookingGlassUI)
+[![Documentation](https://img.shields.io/badge/documentation-Swift%20Package%20Index-blue)](https://swiftpackageindex.com/ryanlintott/LookingGlassUI/documentation/lookingglassui)
 [![Mastodon](https://img.shields.io/badge/mastodon-@ryanlintott-5c4ee4.svg?style=flat)](http://mastodon.social/@ryanlintott)
 [![Twitter](https://img.shields.io/badge/twitter-@ryanlintott-blue.svg?style=flat)](http://twitter.com/ryanlintott)
 
@@ -17,18 +18,21 @@ Create shimmer, parallax or other rotation effects based on device orientation.
 - [`.parallax()`](#parallax) - A view modifier that moves the view to add a parallax effect when the device rotates.
 - [`LookingGlass`](#lookingglass) - A view that rotates its child view to a specific 3d angle relative to the real world and positions it relative to the device.
 - [`.deviceRotationEffect()`](#devicerotationeffect) - A view modifier that rotates a view based on device rotation.
-- [`.rotation3dEffect()`](#rotation3deffect) - A view modifier that rotates a view based on a quaternion.
+- [`.rotation3DEffect()`](#rotation3deffect) - A view modifier that rotates a view based on a quaternion.
 - [`Quat`](#quat) - A wrapper for simd.quaternion with handy extensions.
 
 # Demo App
 The `Example` folder has an app that demonstrates the features of this package.
 
 # Installation and Usage
-This package is compatible with iOS 14+.
+This package is compatible with iOS 15+.
 
 1. In Xcode go to `File -> Add Packages`
 2. Paste in the repo's url: `https://github.com/ryanlintott/LookingGlassUI` and select by version.
 3. Import the package using `import LookingGlassUI`
+
+# Documentation
+Full API documentation is hosted on the [Swift Package Index](https://swiftpackageindex.com/ryanlintott/LookingGlassUI/documentation/lookingglassui).
 
 # Is this Production-Ready?
 Really it's up to you. I currently use this package to create a gold shimmer effect on many gold elements in the [Old English Wordhord app](https://oldenglishwordhord.com/app). Download it for free and turn on the shimmer effect in Settings.
@@ -105,11 +109,11 @@ Text("Hello, World")
     .deviceRotationEffect(.reflection, distance: 4000, perspective: 0, pitch: .degrees(10), yaw: .zero, localRoll: .zero, isShowingInFourDirections: false)
 ```
 
-## rotation3dEffect()
+## rotation3DEffect()
 Rotate SwiftUI Views based on quaterions. This ensures a smooth rotation from any point to any other point.
 ```swift
 Text("Hello, World")
-    .rotation3dEffect(quaternion: Quat(pitch: .degrees(45), yaw: .zero, localRoll: .degrees(-30)), anchor: .center, anchorZ: 200, perspective: 0.2)
+    .rotation3DEffect(quaternion: Quat(pitch: .degrees(45), yaw: .zero, localRoll: .degrees(-30)), anchor: .center, anchorZ: 200, perspective: 0.2)
 ```
 
 ## Quat

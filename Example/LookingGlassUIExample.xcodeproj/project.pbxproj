@@ -3,43 +3,30 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CF01A72326BB565E00D30F17 /* LookingGlassUIExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF01A72226BB565E00D30F17 /* LookingGlassUIExampleView.swift */; };
 		CF1AB2AF2CB5BCF20049E553 /* LookingGlassUI in Frameworks */ = {isa = PBXBuildFile; productRef = CF1AB2AE2CB5BCF20049E553 /* LookingGlassUI */; };
-		CF1AF40F265D4B5200B75D0D /* ShimmerTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1AF40E265D4B5200B75D0D /* ShimmerTestView.swift */; };
-		CF4D35B726540516001D5F2A /* LookingGlassUIExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4D35B626540516001D5F2A /* LookingGlassUIExampleApp.swift */; };
-		CF4D35B926540516001D5F2A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4D35B826540516001D5F2A /* ContentView.swift */; };
-		CF4D35BB26540517001D5F2A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF4D35BA26540517001D5F2A /* Assets.xcassets */; };
-		CF4D35BE26540517001D5F2A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF4D35BD26540517001D5F2A /* Preview Assets.xcassets */; };
-		CF4D35E9265405AF001D5F2A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4D35E4265405AE001D5F2A /* SettingsView.swift */; };
-		CF4D35EB265405AF001D5F2A /* ArrowRotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4D35E6265405AE001D5F2A /* ArrowRotationView.swift */; };
-		CF4D35EC265405AF001D5F2A /* TextReflectionExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4D35E7265405AE001D5F2A /* TextReflectionExampleView.swift */; };
-		CF4D35ED265405AF001D5F2A /* ShimmerExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4D35E8265405AE001D5F2A /* ShimmerExampleView.swift */; };
-		CF8A40FE28C1A3F900A8843D /* DeviceRotationEffectExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF8A40FD28C1A3F900A8843D /* DeviceRotationEffectExample.swift */; };
-		CFAA6D0327EB8FB300BA97C1 /* ParallaxExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAA6D0227EB8FB300BA97C1 /* ParallaxExample.swift */; };
-		CFFEAF0F27F212820086ECC5 /* MotionManagerExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFFEAF0E27F212820086ECC5 /* MotionManagerExample.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CF01A72226BB565E00D30F17 /* LookingGlassUIExampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LookingGlassUIExampleView.swift; sourceTree = "<group>"; };
-		CF1AF40E265D4B5200B75D0D /* ShimmerTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShimmerTestView.swift; sourceTree = "<group>"; };
 		CF4D35B326540516001D5F2A /* LookingGlassUIExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LookingGlassUIExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CF4D35B626540516001D5F2A /* LookingGlassUIExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LookingGlassUIExampleApp.swift; sourceTree = "<group>"; };
-		CF4D35B826540516001D5F2A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		CF4D35BA26540517001D5F2A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		CF4D35BD26540517001D5F2A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		CF4D35BF26540517001D5F2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CF4D35E4265405AE001D5F2A /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		CF4D35E6265405AE001D5F2A /* ArrowRotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrowRotationView.swift; sourceTree = "<group>"; };
-		CF4D35E7265405AE001D5F2A /* TextReflectionExampleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextReflectionExampleView.swift; sourceTree = "<group>"; };
-		CF4D35E8265405AE001D5F2A /* ShimmerExampleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShimmerExampleView.swift; sourceTree = "<group>"; };
-		CF8A40FD28C1A3F900A8843D /* DeviceRotationEffectExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRotationEffectExample.swift; sourceTree = "<group>"; };
-		CFAA6D0227EB8FB300BA97C1 /* ParallaxExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParallaxExample.swift; sourceTree = "<group>"; };
-		CFFEAF0E27F212820086ECC5 /* MotionManagerExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManagerExample.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CF0D2D613033671E009D649A /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CF4D35B226540516001D5F2A /* LookingGlassUIExample */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		CF0D2D523033671D009D649A /* LookingGlassUIExample */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (CF0D2D613033671E009D649A /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LookingGlassUIExample; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		CF4D35B026540516001D5F2A /* Frameworks */ = {
@@ -56,7 +43,7 @@
 		CF4D35AA26540516001D5F2A = {
 			isa = PBXGroup;
 			children = (
-				CF4D35B526540516001D5F2A /* LookingGlassUIExample */,
+				CF0D2D523033671D009D649A /* LookingGlassUIExample */,
 				CF4D35B426540516001D5F2A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -67,35 +54,6 @@
 				CF4D35B326540516001D5F2A /* LookingGlassUIExample.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		CF4D35B526540516001D5F2A /* LookingGlassUIExample */ = {
-			isa = PBXGroup;
-			children = (
-				CF4D35B626540516001D5F2A /* LookingGlassUIExampleApp.swift */,
-				CF4D35B826540516001D5F2A /* ContentView.swift */,
-				CF4D35E6265405AE001D5F2A /* ArrowRotationView.swift */,
-				CF8A40FD28C1A3F900A8843D /* DeviceRotationEffectExample.swift */,
-				CF1AF40E265D4B5200B75D0D /* ShimmerTestView.swift */,
-				CFAA6D0227EB8FB300BA97C1 /* ParallaxExample.swift */,
-				CFFEAF0E27F212820086ECC5 /* MotionManagerExample.swift */,
-				CF4D35E4265405AE001D5F2A /* SettingsView.swift */,
-				CF4D35E8265405AE001D5F2A /* ShimmerExampleView.swift */,
-				CF01A72226BB565E00D30F17 /* LookingGlassUIExampleView.swift */,
-				CF4D35E7265405AE001D5F2A /* TextReflectionExampleView.swift */,
-				CF4D35BA26540517001D5F2A /* Assets.xcassets */,
-				CF4D35BF26540517001D5F2A /* Info.plist */,
-				CF4D35BC26540517001D5F2A /* Preview Content */,
-			);
-			path = LookingGlassUIExample;
-			sourceTree = "<group>";
-		};
-		CF4D35BC26540517001D5F2A /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				CF4D35BD26540517001D5F2A /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +70,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CF0D2D523033671D009D649A /* LookingGlassUIExample */,
 			);
 			name = LookingGlassUIExample;
 			packageProductDependencies = (
@@ -162,8 +123,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CF4D35BE26540517001D5F2A /* Preview Assets.xcassets in Resources */,
-				CF4D35BB26540517001D5F2A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -174,17 +133,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CF1AF40F265D4B5200B75D0D /* ShimmerTestView.swift in Sources */,
-				CFAA6D0327EB8FB300BA97C1 /* ParallaxExample.swift in Sources */,
-				CF4D35E9265405AF001D5F2A /* SettingsView.swift in Sources */,
-				CF8A40FE28C1A3F900A8843D /* DeviceRotationEffectExample.swift in Sources */,
-				CF4D35ED265405AF001D5F2A /* ShimmerExampleView.swift in Sources */,
-				CF4D35EB265405AF001D5F2A /* ArrowRotationView.swift in Sources */,
-				CFFEAF0F27F212820086ECC5 /* MotionManagerExample.swift in Sources */,
-				CF01A72326BB565E00D30F17 /* LookingGlassUIExampleView.swift in Sources */,
-				CF4D35B926540516001D5F2A /* ContentView.swift in Sources */,
-				CF4D35B726540516001D5F2A /* LookingGlassUIExampleApp.swift in Sources */,
-				CF4D35EC265405AF001D5F2A /* TextReflectionExampleView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
