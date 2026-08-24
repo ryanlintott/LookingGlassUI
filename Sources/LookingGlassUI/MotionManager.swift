@@ -21,6 +21,14 @@ public class MotionManager: ObservableObject {
     
     private let cmManager = CMMotionManager()
     
+    /// Set to true to print the reason each LookingGlassUI view updates.
+    ///
+    /// Each motion update is preceded by a numbered marker so the view updates that follow it can be attributed to that motion update. Useful for checking how many view updates each motion update triggers. Printing is slow enough to distort timings so use this to count updates, not to measure their cost. Has no effect outside debug builds.
+    public static var isPrintingViewChanges: Bool = false
+    
+    /// Counts motion updates while ``isPrintingViewChanges`` is on.
+    private static var motionUpdateCount: Int = 0
+    
     // set to 0 for off
     @Published public private(set) var updateInterval: TimeInterval = 0
     
@@ -33,6 +41,18 @@ public class MotionManager: ObservableObject {
     
     /// Rotation of device relative to zero position. Value is updated based on update intervals without animation or smoothing.
     @Published public private(set) var quaternion: Quat = .identity
+    
+    /// Rotation that moves content to the closest xy axis to the one the device is pointing at.
+    ///
+    /// Used by views with `isShowingInFourDirections` active. The value is the same for every view so it's calculated once per motion update and it only changes when the device crosses a 45 degree boundary.
+    ///
+    /// Device reference frame.
+    @Published private(set) var cloneRotation: Quat = .identity
+    
+    /// True if ``cloneRotation`` changed on the most recent motion update.
+    ///
+    /// Used to suppress the smoothing animation for that update as the clone rotation snaps between 90 degree intervals and animating it would sweep the view around instead. This is deliberately not published as it's only read during view updates that are already triggered by ``animatedQuaternion``.
+    private(set) var cloneRotationDidChange: Bool = false
     
     /// Rotation from zero to initial position of device when motion updates started.
     ///
@@ -153,6 +173,38 @@ public class MotionManager: ObservableObject {
         }
     }
     
+    /// Calculates the rotation that moves content to the closest xy axis to the one the device is pointing at.
+    /// - Parameter quaternion: Rotation of the device relative to zero position.
+    /// - Returns: A rotation around the z axis of 0, 90, 180, or -90 degrees. (device reference frame)
+    private static func cloneRotation(for quaternion: Quat) -> Quat {
+        // start with a vector pointing straight down
+        let originVector = Vec3(x: 0, y: 0, z: -1)
+        
+        // rotate the vector by the device orientation to see where the bottom of the device is pointing
+        let rotatedVector = quaternion.rotating(originVector)
+        
+        // check if the device is pointing more towards the x or y axis
+        if abs(rotatedVector.x) > abs(rotatedVector.y) {
+            // check which way it's pointing on the x axis and provide the appropriate rotation
+            if rotatedVector.x >= 0 {
+                // rotate -90 degrees
+                return Quat(angle: .radians(-.pi / 2), axis: .zAxis)
+            } else {
+                // rotate 90 degrees
+                return Quat(angle: .radians(.pi / 2), axis: .zAxis)
+            }
+        } else {
+            // check which way it's pointing on the y axis and provide the appropriate rotation
+            if rotatedVector.y >= 0 {
+                // rotate 0 degrees
+                return .identity
+            } else {
+                // rotate 180 degrees
+                return Quat(angle: .radians(.pi), axis: .zAxis)
+            }
+        }
+    }
+    
     /// Toggles motion updates off if on or on if off (and not disabled and update interval greater than zero).
     private func restartMotionUpdatesIfNeeded() {
         stopMotionUpdates()
@@ -163,16 +215,29 @@ public class MotionManager: ObservableObject {
 
         cmManager.startDeviceMotionUpdates(to: .main) { motionData, error in
             if let motionData = motionData {
+                #if DEBUG
+                if Self.isPrintingViewChanges {
+                    Self.motionUpdateCount += 1
+                    print("=== motion update \(Self.motionUpdateCount) ===")
+                }
+                #endif
+                
                 let quaternion = Quat(motionData.attitude.quaternion)
                 
                 if self.initialDeviceRotation == nil {
                     self.initialDeviceRotation = quaternion
                 }
                 
-                self.quaternion = quaternion
-                withAnimation(Animation.linear(duration: self.updateInterval)) {
-                    self.animatedQuaternion = quaternion
+                /// This only changes when the device crosses a 45 degree boundary.
+                let cloneRotation = Self.cloneRotation(for: quaternion)
+                self.cloneRotationDidChange = self.cloneRotation != cloneRotation
+                if self.cloneRotationDidChange {
+                    self.cloneRotation = cloneRotation
                 }
+                
+                /// Both values are set without animation so every observing view is invalidated once per motion update with a single transaction. Smoothing between updates is applied by the view that needs it in ``DeviceRotationEffectViewModifier`` which leaves `quaternion` free to deliver unanimated updates.
+                self.quaternion = quaternion
+                self.animatedQuaternion = quaternion
                 
             } else if let error = error {
                 print(error.localizedDescription)

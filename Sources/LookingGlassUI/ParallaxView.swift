@@ -35,6 +35,7 @@ struct ParallaxViewModifier: ViewModifier {
     }
     
     func body(content: Content) -> some View {
+        let _ = Self.printChangesIfEnabled()
         content
             .offset(parallaxOffset)
     }

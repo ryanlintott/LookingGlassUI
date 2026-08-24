@@ -93,6 +93,7 @@ public struct LookingGlass<Content: View>: View {
     }
     
     public var body: some View {
+        let _ = Self.printChangesIfEnabled()
         if motionManager.isDetectingMotion {
             GeometryReader { proxy in
                 content

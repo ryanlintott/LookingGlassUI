@@ -58,6 +58,7 @@ public struct ShimmerView: View {
     }
     
     public var body: some View {
+        let _ = Self.printChangesIfEnabled()
         background
             .overlay(
                 VStack {

@@ -48,36 +48,7 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
     // rotation that moves to the content to the closest xy axis to the one the phone is pointing at
     // device reference frame
     var cloneRotation: Quat {
-        guard isShowingInFourDirections else {
-            return .identity
-        }
-        
-        // start with a vector pointing straight down
-        let originVector = Vec3(x: 0, y: 0, z: -1)
-        
-        // rotate the vector by the device orientation to see where the bottom of the device is pointing
-        let rotatedVector = motionManager.quaternion.rotating(originVector)
-
-        // check if the device is pointing more towards the x or y axis
-        if abs(rotatedVector.x) > abs(rotatedVector.y) {
-            // check which way it's pointing on the x axis and provide the appropriate rotation
-            if rotatedVector.x >= 0 {
-                // rotate -90 degrees
-                return Quat(angle: .radians(-.pi / 2), axis: .zAxis)
-            } else {
-                // rotate 90 degrees
-                return Quat(angle: .radians(.pi / 2), axis: .zAxis)
-            }
-        } else {
-            // check which way it's pointing on the y axis and provide the appropriate rotation
-            if rotatedVector.y >= 0 {
-                // rotate 0 degrees
-                return .identity
-            } else {
-                // rotate 180 degrees
-                return Quat(angle: .radians(.pi), axis: .zAxis)
-            }
-        }
+        isShowingInFourDirections ? motionManager.cloneRotation : .identity
     }
     
     var rotation: Quat {
@@ -91,10 +62,23 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
         (motionManager.interfaceRotation.inverse * motionManager.animatedQuaternion.inverse * cloneRotation * offsetRotation).deviceToScreenReferenceFrame
     }
     
+    /// Animation that smooths movement between motion updates.
+    ///
+    /// No animation is used on updates where ``MotionManager/cloneRotation`` changes as that rotation snaps between 90 degree intervals and animating it would sweep the view around instead.
+    var animation: Animation? {
+        if isShowingInFourDirections && motionManager.cloneRotationDidChange {
+            return nil
+        }
+        return .linear(duration: motionManager.updateInterval)
+    }
+    
     func body(content: Content) -> some View {
+        let _ = Self.printChangesIfEnabled()
         if motionManager.isDetectingMotion {
+            let currentRotation = rotation
             content
-                .rotation3DEffect(quaternion: rotation, anchor: .center, anchorZ: distance, perspective: perspective)
+                .rotation3DEffect(quaternion: currentRotation, anchor: .center, anchorZ: distance, perspective: perspective)
+                .animation(animation, value: currentRotation)
         }
     }
 }

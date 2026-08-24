@@ -38,6 +38,7 @@ struct ShimmerViewModifier: ViewModifier {
     
     @ViewBuilder
     func body(content: Content) -> some View {
+        let _ = Self.printChangesIfEnabled()
         content
             .overlay(
                 VStack {
