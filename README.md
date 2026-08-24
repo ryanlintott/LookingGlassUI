@@ -7,7 +7,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/ryanlintott/LookingGlassUI)
 [![Documentation](https://img.shields.io/badge/documentation-Swift%20Package%20Index-blue)](https://swiftpackageindex.com/ryanlintott/LookingGlassUI/documentation/lookingglassui)
 [![Mastodon](https://img.shields.io/badge/mastodon-@ryanlintott-5c4ee4.svg?style=flat)](http://mastodon.social/@ryanlintott)
-[![Twitter](https://img.shields.io/badge/twitter-@ryanlintott-blue.svg?style=flat)](http://twitter.com/ryanlintott)
+[![Bluesky](https://img.shields.io/badge/bluesky-@ryanlintott-0285FF.svg?style=flat)](https://bsky.app/profile/ryanlintott.bsky.social)
 
 # Overview
 Create shimmer, parallax or other rotation effects based on device orientation.
