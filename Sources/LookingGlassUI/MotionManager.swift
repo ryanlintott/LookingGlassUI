@@ -16,8 +16,13 @@ public class MotionManager: ObservableObject {
     private init() { }
     
     static let motionQueue = OperationQueue()
-    static let screenSize = UIScreen.main.bounds.size
-    static let maxScreenDimension = max(MotionManager.screenSize.height, MotionManager.screenSize.width)
+    
+    /// The screen size in portrait orientation.
+    ///
+    /// This is captured once and `UIScreen.main.bounds` is reported in the current interface orientation, so it's normalised to portrait rather than depending on the orientation the app happened to be in at that moment.
+    static let portraitScreenSize = UIScreen.main.bounds.size.rotatedToPortrait
+    
+    static let maxScreenDimension = max(MotionManager.portraitScreenSize.height, MotionManager.portraitScreenSize.width)
     
     private let cmManager = CMMotionManager()
     
@@ -80,9 +85,9 @@ public class MotionManager: ObservableObject {
     var interfaceSize: CGSize {
         switch deviceOrientation {
         case .landscapeRight, .landscapeLeft:
-            return CGSize(width: Self.screenSize.height, height: Self.screenSize.width)
+            return CGSize(width: Self.portraitScreenSize.height, height: Self.portraitScreenSize.width)
         default:
-            return Self.screenSize
+            return Self.portraitScreenSize
         }
     }
     
