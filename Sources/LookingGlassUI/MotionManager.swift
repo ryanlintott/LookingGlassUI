@@ -8,6 +8,11 @@
 import CoreMotion
 import SwiftUI
 
+/// Configuration for device motion updates.
+///
+/// Add ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` once near the top of your view hierarchy rather than using this type directly. That modifier places this object and ``DeviceRotation`` in the environment.
+///
+/// The values here change rarely. The rotation of the device is on ``DeviceRotation`` so views reading only configuration aren't updated on every motion update.
 @MainActor
 public class MotionManager: ObservableObject {
     /// Only one shared MotionManager should be used in an app
@@ -19,8 +24,8 @@ public class MotionManager: ObservableObject {
     
     /// The screen size in portrait orientation.
     ///
-    /// This is captured once and `UIScreen.main.bounds` is reported in the current interface orientation, so it's normalised to portrait rather than depending on the orientation the app happened to be in at that moment.
-    static let portraitScreenSize = UIScreen.main.bounds.size.rotatedToPortrait
+    /// `UIScreen.bounds` is reported in the current interface orientation and this value is captured once, so the fixed coordinate space is used instead. Its bounds always reflect a portrait-up orientation and are measured in points.
+    static let portraitScreenSize = UIScreen.main.fixedCoordinateSpace.bounds.size
     
     static let maxScreenDimension = max(MotionManager.portraitScreenSize.height, MotionManager.portraitScreenSize.width)
     
@@ -46,7 +51,7 @@ public class MotionManager: ObservableObject {
     
     @Published public private(set) var deviceOrientation: UIDeviceOrientation = .unknown
     
-    @available(*, unavailable, message: "Merged into DeviceRotation.quaternion, which is no longer smoothed. Smoothing is now applied by the view that displays it with `.animation(_:value:)`.")
+    @available(*, unavailable, message: "Removed to improve performance. Use `motionManager.deviceRotation.quaternion` instead and apply animation as per the documentation for that property.")
     public var animatedQuaternion: Quat { fatalError() }
     
     @available(*, unavailable, message: "Moved to DeviceRotation. Read it from `motionManager.deviceRotation` or add `@EnvironmentObject var deviceRotation: DeviceRotation` to your view.")

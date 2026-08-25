@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// A view that lists the components of a quaternion for debugging.
+///
+/// Shows the axis vector and angle, followed by the pitch, yaw, and roll. Designed to be placed inside a `List` as it uses `Section`.
 public struct QuaternionDataView: View {
     let quat: Quat?
     

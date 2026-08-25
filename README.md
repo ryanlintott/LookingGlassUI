@@ -20,6 +20,7 @@ Create shimmer, parallax or other rotation effects based on device orientation.
 - [`.deviceRotationEffect()`](#devicerotationeffect) - A view modifier that rotates a view based on device rotation.
 - [`.rotation3DEffect()`](#rotation3deffect) - A view modifier that rotates a view based on a quaternion.
 - [`Quat`](#quat) - A wrapper for simd.quaternion with handy extensions.
+- [`MotionManager` and `DeviceRotation`](#motionmanager-and-devicerotation) - Direct access to the motion configuration and the current device rotation.
 
 # Demo App
 The `Example` folder has an app that demonstrates the features of this package.
@@ -52,7 +53,7 @@ LookingGlassUI is open source and free but if you like using it, please consider
 
 # Details
 ## .motionManager()
-Before adding any custom views, add the `.motionManager` view modifier once in your app, somewhere in the heirarchy above any other views or modifiers used in this package.
+Before adding any custom views, add the `.motionManager` view modifier *once* in your app, somewhere in the heirarchy above any other views or modifiers used in this package.
 ```swift
 ContentView()
     .motionManager(updateInterval: 0.1, disabled: false)
@@ -118,6 +119,20 @@ Text("Hello, World")
 
 ## Quat
 `Quat` is a wrapper for simd.quaternion with handy parameters like yaw, pitch, and roll and a way to init from pitch, yaw and localRoll.
+
+## MotionManager and DeviceRotation
+
+`MotionManager` holds configuration data and changes rarely. `DeviceRotation` holds the rotation of the device and changes on every motion update. If you want direct access to either you can read them from the environment if you have added a [`.motionManager()`](#motionmanager) modifier higher up in the heirarchy.
+
+```swift
+@EnvironmentObject var motionManager: MotionManager
+@EnvironmentObject var deviceRotation: DeviceRotation
+```
+
+`DeviceRotation.quaternion` steps once per motion update with no smoothing. If you want to animate the change, use a linear animation matching the update interval.
+```swift
+.animation(.linear(duration: motionManager.updateInterval), value: deviceRotation.quaternion)
+```
 
 # How it Works
 
