@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ParallaxViewModifier: ViewModifier {
     @EnvironmentObject var motionManager: MotionManager
+    @EnvironmentObject var deviceRotation: DeviceRotation
 
     let multiplier: CGFloat
     let maxOffset: CGFloat?
@@ -19,7 +20,7 @@ struct ParallaxViewModifier: ViewModifier {
         /// 1. Reference frame is changed from screen to device (x and z flip)
         /// 2. result is rotated by the delta between the initial rotation and the current rotation
         /// 3. result is rotated by the inverse of the interface rotation to counteract any interface orientation changes
-        (motionManager.interfaceRotation.inverse * motionManager.deltaRotation)
+        (motionManager.interfaceRotation.inverse * deviceRotation.deltaRotation)
             .deviceToScreenReferenceFrame
     }
     

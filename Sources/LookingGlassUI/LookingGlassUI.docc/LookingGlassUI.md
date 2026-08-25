@@ -4,7 +4,7 @@ A Swift Package that creates shimmer, parallax, and other SwiftUI effects based 
 
 ## Overview
 
-Add ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` once near the top of your view hierarchy and every other feature in this package can use device motion.
+Add ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` once near the top of your view hierarchy and every other feature in this package can use device motion. It places ``MotionManager`` and ``DeviceRotation`` in the environment, holding the configuration and the current device rotation respectively.
 
 Make a color catch the light as the device turns with ``ShimmerView``, or add that shimmer to any view with ``SwiftUICore/View/shimmer(mode:color:background:)``. Shift a view as the device tilts with ``SwiftUICore/View/parallax(multiplier:maxOffset:)``. Lock a view to a real-world angle with ``LookingGlass`` or ``SwiftUICore/View/deviceRotationEffect(_:distance:perspective:pitch:yaw:localRoll:isShowingInFourDirections:)`` so it appears through the screen as if seen through a window or a reflection, and is only visible when the device points at it.
 
@@ -37,6 +37,7 @@ For a feature-by-feature guide with examples, see the [README](https://github.co
 
 - ``SwiftUICore/View/motionManager(updateInterval:disabled:)``
 - ``MotionManager``
+- ``DeviceRotation``
 
 ### Shimmer
 

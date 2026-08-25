@@ -12,7 +12,7 @@
 # Overview
 Create shimmer, parallax or other rotation effects based on device orientation.
 
-- [`.motionManager()`](#motionmanager) - A view modifier that adds a `MotionManager` class into the environment.
+- [`.motionManager()`](#motionmanager) - A view modifier that adds `MotionManager` and `DeviceRotation` into the environment.
 - [`ShimmerView`](#shimmerview) - A color that shimmers with another color as if reflecting light when the device rotates.
 - [`.shimmer()`](#shimmer) - A view modifier that overlays a shimmer color as if reflecting light when the device rotates.
 - [`.parallax()`](#parallax) - A view modifier that moves the view to add a parallax effect when the device rotates.
@@ -69,7 +69,7 @@ ShimmerView(mode: .darkModeOnly, color: .goldShimmer, background: .gold)
 ## .shimmer()
 *Requires [`.motionManager()`](#motionmanager)*
 
-Use `.shimmer()` view modifier if you want to add a default shimmer effect to another SwiftUI View. If `MotionManager` is disabled the modifier has no effect.
+Use `.shimmer()` view modifier if you want to add a default shimmer effect to another SwiftUI View. If `MotionManager` is disabled the shimmer effect will not appear.
 ```swift
 Text("Hello, World!")
     .shimmer(color: .gold)

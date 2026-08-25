@@ -32,8 +32,11 @@ struct ShimmerViewModifier: ViewModifier {
         self.blendMode = .sourceAtop
     }
     
-    var isShimmering: Bool {
-        motionManager.updateInterval > 0 && mode.isOn(colorScheme: colorScheme)
+    /// True if anything needs to be drawn over the content.
+    ///
+    /// The background is drawn whether or not motion updates are running so the view doesn't change colour when motion is disabled. With a clear background there's nothing left to draw once the shimmer is off, and skipping it avoids compositing a fully transparent layer over the content every frame.
+    var isVisible: Bool {
+        mode.isOn(colorScheme: colorScheme) && (motionManager.isDetectingMotion || background != .clear)
     }
     
     @ViewBuilder
@@ -42,11 +45,11 @@ struct ShimmerViewModifier: ViewModifier {
         content
             .overlay(
                 VStack {
-                    if isShimmering {
+                    if isVisible {
                         content
                             .hidden()
                             .overlay(
-                                ShimmerView(color: color, background: background)
+                                ShimmerView(mode: mode, color: color, background: background)
                             )
                             .mask(content)
                             .blendMode(blendMode)

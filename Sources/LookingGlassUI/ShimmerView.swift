@@ -11,7 +11,7 @@ import SwiftUI
 ///
 /// Takes all available space similar to `Color`
 public struct ShimmerView: View {
-    @EnvironmentObject var motionManager: MotionManager
+    @EnvironmentObject private var motionManager: MotionManager
     @Environment(\.colorScheme) var colorScheme
     
     let mode: ShimmerMode
@@ -54,7 +54,7 @@ public struct ShimmerView: View {
     }
     
     var isShimmering: Bool {
-        motionManager.updateInterval > 0 && mode.isOn(colorScheme: colorScheme)
+        motionManager.isDetectingMotion && mode.isOn(colorScheme: colorScheme)
     }
     
     public var body: some View {

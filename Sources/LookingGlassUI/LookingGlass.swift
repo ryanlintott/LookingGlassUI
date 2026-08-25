@@ -16,7 +16,7 @@ import SwiftUI
 /// 
 /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
 public struct LookingGlass<Content: View>: View {
-    @EnvironmentObject var motionManager: MotionManager
+    @EnvironmentObject private var motionManager: MotionManager
 
     let type: DeviceRotationEffectType
     let distance: CGFloat?

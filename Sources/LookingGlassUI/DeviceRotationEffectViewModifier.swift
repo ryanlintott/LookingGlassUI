@@ -26,6 +26,7 @@ public enum DeviceRotationEffectType: String, RawRepresentable, CaseIterable, Ha
 
 struct DeviceRotationEffectViewModifier: ViewModifier {
     @EnvironmentObject var motionManager: MotionManager
+    @EnvironmentObject var deviceRotation: DeviceRotation
 
     let distance: CGFloat
     let perspective: CGFloat
@@ -48,7 +49,7 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
     // rotation that moves to the content to the closest xy axis to the one the phone is pointing at
     // device reference frame
     var cloneRotation: Quat {
-        isShowingInFourDirections ? motionManager.cloneRotation : .identity
+        isShowingInFourDirections ? deviceRotation.cloneRotation : .identity
     }
     
     var rotation: Quat {
@@ -59,14 +60,14 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
         /// 3. result is rotated by cloneRotation to put it in front of the viewer if they face 0, -90, 90, or 180 degrees
         /// 4. result is rotated by the inverse of the device rotation to bring it to zero
         /// 5. result is rotated by the inverse of the interface rotation to counteract any interface orientation changes
-        (motionManager.interfaceRotation.inverse * motionManager.animatedQuaternion.inverse * cloneRotation * offsetRotation).deviceToScreenReferenceFrame
+        (motionManager.interfaceRotation.inverse * deviceRotation.quaternion.inverse * cloneRotation * offsetRotation).deviceToScreenReferenceFrame
     }
     
     /// Animation that smooths movement between motion updates.
     ///
     /// No animation is used on updates where ``MotionManager/cloneRotation`` changes as that rotation snaps between 90 degree intervals and animating it would sweep the view around instead.
     var animation: Animation? {
-        if isShowingInFourDirections && motionManager.cloneRotationDidChange {
+        if isShowingInFourDirections && deviceRotation.cloneRotationDidChange {
             return nil
         }
         return .linear(duration: motionManager.updateInterval)
