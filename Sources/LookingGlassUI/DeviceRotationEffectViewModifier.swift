@@ -65,7 +65,7 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
     
     /// Animation that smooths movement between motion updates.
     ///
-    /// No animation is used on updates where ``MotionManager/cloneRotation`` changes as that rotation snaps between 90 degree intervals and animating it would sweep the view around instead.
+    /// No animation is used on updates where ``DeviceRotation/cloneRotation`` changes as that rotation snaps between 90 degree intervals and animating it would sweep the view around instead.
     var animation: Animation? {
         if isShowingInFourDirections && deviceRotation.cloneRotationDidChange {
             return nil
@@ -76,10 +76,10 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         let _ = Self.printChangesIfEnabled()
         if motionManager.isDetectingMotion {
-            let currentRotation = rotation
             content
-                .rotation3DEffect(quaternion: currentRotation, anchor: .center, anchorZ: distance, perspective: perspective)
-                .animation(animation, value: currentRotation)
+                .rotation3DEffect(quaternion: rotation, anchor: .center, anchorZ: distance, perspective: perspective)
+                /// Animated on the device rotation rather than on `rotation` so only device movement is smoothed. `rotation` also changes when the interface orientation changes and that 90 degree step must snap.
+                .animation(animation, value: deviceRotation.quaternion)
         }
     }
 }
