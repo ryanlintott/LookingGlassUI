@@ -39,6 +39,7 @@ struct ParallaxViewModifier: ViewModifier {
         let _ = Self.printChangesIfEnabled()
         content
             .offset(parallaxOffset)
+            .animation(motionManager.animation, value: parallaxOffset)
     }
 }
 

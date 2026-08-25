@@ -131,7 +131,7 @@ Text("Hello, World")
 
 `DeviceRotation.quaternion` steps once per motion update with no smoothing. If you want to animate the change, use a linear animation matching the update interval.
 ```swift
-.animation(.linear(duration: motionManager.updateInterval), value: deviceRotation.quaternion)
+.animation(motionManager.animation, value: deviceRotation.quaternion)
 ```
 
 # How it Works

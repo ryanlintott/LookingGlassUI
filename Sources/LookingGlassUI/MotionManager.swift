@@ -59,6 +59,11 @@ public class MotionManager: ObservableObject {
     @available(*, unavailable, message: "Moved to DeviceRotation. Read it from `motionManager.deviceRotation` or add `@EnvironmentObject var deviceRotation: DeviceRotation` to your view.")
     public var deltaRotation: Quat { fatalError() }
     
+    /// A linear animation that can smooth changes using the update interval as a duration.
+    public var animation: Animation {
+        .linear(duration: updateInterval)
+    }
+    
     // quaternion representing the interface rotation based on the deviceOrientation with some double-checking
     // note that the interface rotates in the opposite direction to the device to compensate
     // device reference frame

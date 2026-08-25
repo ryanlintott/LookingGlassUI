@@ -25,7 +25,7 @@ public final class DeviceRotation: ObservableObject {
     /// This value steps once per motion update with no smoothing. Views that need smooth movement between updates animate it themselves, as `.deviceRotationEffect()` does:
     ///
     /// ```swift
-    /// .animation(.linear(duration: motionManager.updateInterval), value: deviceRotation.quaternion)
+    /// .animation(motionManager.animation, value: deviceRotation.quaternion)
     /// ```
     @Published public private(set) var quaternion: Quat = .identity
     

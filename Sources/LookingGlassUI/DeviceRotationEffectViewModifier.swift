@@ -70,7 +70,7 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
         if isShowingInFourDirections && deviceRotation.cloneRotationDidChange {
             return nil
         }
-        return .linear(duration: motionManager.updateInterval)
+        return motionManager.animation
     }
     
     func body(content: Content) -> some View {
