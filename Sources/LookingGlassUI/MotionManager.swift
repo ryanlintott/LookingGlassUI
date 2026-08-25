@@ -20,14 +20,10 @@ public class MotionManager: ObservableObject {
     
     private init() { }
     
-    static let motionQueue = OperationQueue()
-    
     /// The screen size in portrait orientation.
     ///
     /// `UIScreen.bounds` is reported in the current interface orientation and this value is captured once, so the fixed coordinate space is used instead. Its bounds always reflect a portrait-up orientation and are measured in points.
     static let portraitScreenSize = UIScreen.main.fixedCoordinateSpace.bounds.size
-    
-    static let maxScreenDimension = max(MotionManager.portraitScreenSize.height, MotionManager.portraitScreenSize.width)
     
     private let cmManager = CMMotionManager()
     
@@ -39,7 +35,7 @@ public class MotionManager: ObservableObject {
     /// Set to true to print the reason each LookingGlassUI view updates.
     ///
     /// Each motion update is preceded by a numbered marker so the view updates that follow it can be attributed to that motion update. Useful for checking how many view updates each motion update triggers. Printing is slow enough to distort timings so use this to count updates, not to measure their cost. Has no effect outside debug builds.
-    public static var isPrintingViewChanges: Bool = false
+    static var isPrintingViewChanges: Bool = false
     
     /// Counts motion updates while ``isPrintingViewChanges`` is on.
     private static var motionUpdateCount: Int = 0

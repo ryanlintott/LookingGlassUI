@@ -11,8 +11,6 @@ struct ShimmerViewModifier: ViewModifier {
     @EnvironmentObject private var motionManager: MotionManager
     @Environment(\.colorScheme) private var colorScheme
     
-    @Namespace private var namespace
-    
     let mode: ShimmerMode
     let color: Color
     let background: Color
