@@ -43,10 +43,8 @@ final class MotionService: ObservableObject {
     /// Seeded from `UIScreen.bounds`, which reports the interface orientation the app launched in, and updated whenever the device turns to an orientation the interface follows. It's stored rather than derived from ``deviceOrientation`` because that starts out unknown: a device lying flat has no supported orientation to report, so at launch the bounds are the only thing that knows which way the interface is facing.
     @Published private(set) var interfaceSize: CGSize = UIScreen.main.bounds.size
 
-    /// The most recent supported physical orientation reported by the device.
-    ///
-    /// Unknown, face-up, face-down, and orientations excluded by the app's supported interface orientations do not replace the current value.
-    private var deviceOrientation: UIDeviceOrientation = .unknown
+    /// The orientation the interface is currently showing.
+    private var interfaceOrientation: UIInterfaceOrientation = .unknown
 
     /// Whether the application is outside the background and may run the sensor.
     private var isApplicationActive: Bool
@@ -58,7 +56,7 @@ final class MotionService: ObservableObject {
     private init() {
         isApplicationActive = UIApplication.shared.applicationState != .background
         startObservingNotifications()
-        _ = setDeviceOrientationIfNeeded()
+        _ = setInterfaceOrientationIfNeeded()
     }
 
     /// Whether the Core Motion service should be running.
@@ -102,22 +100,30 @@ final class MotionService: ObservableObject {
         restartMotionUpdatesIfNeeded()
     }
 
-    /// Applies the current device orientation when it is supported and different from ``deviceOrientation``.
+    /// Re-reads the interface orientation and restarts the service when it has changed.
+    ///
+    /// The scene is the only thing that knows which way the interface is facing, and it can become readable after this service is created, so this is called again whenever that could have happened rather than only at launch.
+    func refreshInterfaceOrientation() {
+        guard setInterfaceOrientationIfNeeded() else { return }
+
+        restartMotionUpdatesIfNeeded(forceRestart: true)
+    }
+
+    /// Applies the window scene's interface orientation when it differs from ``interfaceOrientation``.
     ///
     /// - Returns: `true` when a different orientation was applied; otherwise, `false`.
-    private func setDeviceOrientationIfNeeded() -> Bool {
-        let newOrientation = UIDevice.current.orientation
-
-        guard deviceOrientation != newOrientation,
-              InfoDictionary.supportedOrientations.contains(newOrientation) else {
+    private func setInterfaceOrientationIfNeeded() -> Bool {
+        guard let newInterfaceOrientation = UIInterfaceOrientation.current,
+              interfaceOrientation != newInterfaceOrientation else {
             return false
         }
 
         deviceMotion.resetInitialRotation()
-        deviceOrientation = newOrientation
-        deviceMotion.setDeviceOrientation(newOrientation)
+        interfaceOrientation = newInterfaceOrientation
+        deviceMotion.setInterfaceOrientation(newInterfaceOrientation)
 
-        if let newInterfaceSize = newOrientation.interfaceSize, interfaceSize != newInterfaceSize {
+        let newInterfaceSize = newInterfaceOrientation.screenSize
+        if interfaceSize != newInterfaceSize {
             interfaceSize = newInterfaceSize
         }
 
@@ -170,14 +176,24 @@ final class MotionService: ObservableObject {
         let notificationCenter = NotificationCenter.default
 
         notificationObservers = [
+            /// The device turning is what makes the interface turn, so this is the signal that the scene may now report something new.
             notificationCenter.addObserver(
                 forName: UIDevice.orientationDidChangeNotification,
                 object: nil,
                 queue: .main
             ) { [weak self] _ in
                 Task { @MainActor [weak self] in
-                    guard let self, self.setDeviceOrientationIfNeeded() else { return }
-                    self.restartMotionUpdatesIfNeeded(forceRestart: true)
+                    self?.refreshInterfaceOrientation()
+                }
+            },
+            /// A scene has no readable orientation until it activates, which can happen after this service is created.
+            notificationCenter.addObserver(
+                forName: UIScene.didActivateNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    self?.refreshInterfaceOrientation()
                 }
             },
             notificationCenter.addObserver(
@@ -187,7 +203,7 @@ final class MotionService: ObservableObject {
             ) { [weak self] _ in
                 Task { @MainActor [weak self] in
                     guard let self else { return }
-                    _ = self.setDeviceOrientationIfNeeded()
+                    _ = self.setInterfaceOrientationIfNeeded()
                     self.setApplicationActive(true)
                 }
             },

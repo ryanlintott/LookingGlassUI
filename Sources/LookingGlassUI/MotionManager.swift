@@ -111,7 +111,7 @@ public final class MotionManager: ObservableObject {
     @available(*, unavailable, message: "Moved to DeviceMotion. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view.")
     public var deltaRotation: Quat { fatalError() }
 
-    @available(*, unavailable, message: "Moved to DeviceMotion, which changes with the device rather than with this scene's configuration. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view.")
+    @available(*, unavailable, renamed: "DeviceMotion.interfaceOrientation", message: "Replaced by `DeviceMotion.interfaceOrientation`, which follows the interface rather than the device and so stays correct while the device is lying flat. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view.")
     public var deviceOrientation: UIDeviceOrientation { fatalError() }
 
     @available(*, unavailable, message: "Moved to DeviceMotion, which changes with the device rather than with this scene's configuration. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view.")

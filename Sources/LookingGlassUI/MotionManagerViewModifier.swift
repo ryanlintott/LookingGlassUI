@@ -43,6 +43,7 @@ struct MotionManagerViewModifier: ViewModifier {
             .environment(\.motionUpdatesEnabled, motionManager.motionUpdatesEnabled)
             .environment(\.interfaceSize, motionService.interfaceSize)
             .onAppear {
+                motionService.refreshInterfaceOrientation()
                 motionManager.update(updateInterval: updateInterval, disabled: disabled, scenePhase: scenePhase)
             }
             .onChange(of: updateInterval) {

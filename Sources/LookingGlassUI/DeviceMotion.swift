@@ -31,7 +31,7 @@ public final class DeviceMotion: ObservableObject {
     
     /// Rotation from zero to initial position of device when motion updates started.
     ///
-    /// Reset whenever the device turns to a supported orientation, so ``deltaRotation`` measures from where the device was when the interface last settled rather than carrying a ninety degree step across the rotation. The next motion update after a reset becomes the new zero position.
+    /// Reset whenever the interface orientation changes, so ``deltaRotation`` measures from where the device was when the interface last settled rather than carrying a ninety degree step across the rotation. The next motion update after a reset becomes the new zero position.
     @Published public private(set) var initialDeviceRotation: Quat? = nil
     
     /// Rotation that moves content to the closest xy axis to the one the device is pointing at.
@@ -46,10 +46,10 @@ public final class DeviceMotion: ObservableObject {
     /// Used to suppress the smoothing animation for that update as the clone rotation snaps between 90 degree intervals and animating it would sweep the view around instead. This is deliberately not published as it's only read during view updates that are already triggered by ``quaternion``.
     private(set) var cloneRotationDidChange: Bool = false
     
-    /// The most recent supported physical orientation reported by the device.
+    /// The orientation the interface is currently showing.
     ///
-    /// Unknown, face-up, face-down, and orientations excluded by the app's supported interface orientations do not replace the current value.
-    @Published public private(set) var deviceOrientation: UIDeviceOrientation = .unknown
+    /// This follows the interface rather than the device, so it stays correct while the device is lying flat and is right from launch in any orientation.
+    @Published public private(set) var interfaceOrientation: UIInterfaceOrientation = .unknown
 
     /// The interval the shared motion service is running at, in seconds.
     ///
@@ -71,18 +71,7 @@ public final class DeviceMotion: ObservableObject {
     ///
     /// Use this rotation when converting device-reference motion into screen-relative motion.
     public var interfaceRotation: Quat {
-        switch deviceOrientation {
-        // top of device to the left
-        case .landscapeLeft:
-            return Quat(angle: .radians(-.pi / 2), axis: .zAxis)
-        // top of device to the right
-        case .landscapeRight:
-            return Quat(angle: .radians(.pi / 2), axis: .zAxis)
-        case .portraitUpsideDown:
-            return Quat(angle: .radians(.pi), axis: .zAxis)
-        default:
-            return .identity
-        }
+        interfaceOrientation.rotation
     }
 
     /// Rotation from initial device rotation to current.
@@ -99,12 +88,12 @@ public final class DeviceMotion: ObservableObject {
         initialDeviceRotation = nil
     }
 
-    /// Stores a supported device orientation.
-    /// - Parameter deviceOrientation: An orientation the interface rotates to meet.
-    func setDeviceOrientation(_ deviceOrientation: UIDeviceOrientation) {
-        guard self.deviceOrientation != deviceOrientation else { return }
+    /// Stores the orientation the interface is showing.
+    /// - Parameter interfaceOrientation: The window scene's interface orientation.
+    func setInterfaceOrientation(_ interfaceOrientation: UIInterfaceOrientation) {
+        guard self.interfaceOrientation != interfaceOrientation else { return }
 
-        self.deviceOrientation = deviceOrientation
+        self.interfaceOrientation = interfaceOrientation
     }
 
     /// Stores the interval the shared motion service is running at.
