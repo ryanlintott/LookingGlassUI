@@ -12,7 +12,7 @@
 # Overview
 Create shimmer, parallax or other rotation effects based on device orientation.
 
-- [`.motionManager()`](#motionmanager) - A view modifier that adds `MotionManager` and `DeviceRotation` into the environment.
+- [`.motionManager()`](#motionmanager) - A view modifier that adds `MotionManager` and `DeviceMotion` into the environment.
 - [`ShimmerView`](#shimmerview) - A color that shimmers with another color as if reflecting light when the device rotates.
 - [`.shimmer()`](#shimmer) - A view modifier that overlays a shimmer color as if reflecting light when the device rotates.
 - [`.parallax()`](#parallax) - A view modifier that moves the view to add a parallax effect when the device rotates.
@@ -20,7 +20,7 @@ Create shimmer, parallax or other rotation effects based on device orientation.
 - [`.deviceRotationEffect()`](#devicerotationeffect) - A view modifier that rotates a view based on device rotation.
 - [`.rotation3DEffect()`](#rotation3deffect) - A view modifier that rotates a view based on a quaternion.
 - [`Quat`](#quat) - A wrapper for simd.quaternion with handy extensions.
-- [`MotionManager` and `DeviceRotation`](#motionmanager-and-devicerotation) - Direct access to the motion configuration and the current device rotation.
+- [`MotionManager` and `DeviceMotion`](#motionmanager-and-devicerotation) - Direct access to the motion configuration and the current device rotation.
 
 # Demo App
 The `Example` folder has an app that demonstrates the features of this package.
@@ -57,7 +57,7 @@ ContentView()
     .motionManager(updateInterval: 0.1, disabled: false)
 ```
 
-Every scene shares the app's single Core Motion manager. The updateInterval used by Core Motion will be the smallest value among scenes that are not disabled and not in the backgound. Backgrounding, closing, or disabling one scene does not stop updates needed by another scene.
+Every scene gets its own `MotionManager` holding the values you passed, and they all share one Core Motion service. That service runs at the smallest updateInterval among scenes that aren't disabled and aren't in the background, so a scene can receive updates faster than it asked for but never slower. Backgrounding, closing, or disabling one scene does not stop updates needed by another.
 
 ## ShimmerView
 *Requires [`.motionManager()`](#motionmanager)*
@@ -120,18 +120,18 @@ Text("Hello, World")
 ## Quat
 `Quat` is a wrapper for simd.quaternion with handy parameters like yaw, pitch, and roll and a way to init from pitch, yaw and localRoll.
 
-## MotionManager and DeviceRotation
+## MotionManager and DeviceMotion
 
-`MotionManager` holds the shared configuration data and changes rarely. `DeviceRotation` holds the rotation of the device and changes on every motion update. If you want direct access to either you can read them from the environment if you have added a [`.motionManager()`](#motionmanager) modifier higher up in the hierarchy.
+`MotionManager` holds one scene's configuration and changes rarely. `DeviceMotion` holds everything that changes with the device — the rotation, the device orientation, and the interval the shared service is running at — and changes on every motion update. If you want direct access to either you can read them from the environment if you have added a [`.motionManager()`](#motionmanager) modifier higher up in the hierarchy.
 
 ```swift
 @EnvironmentObject var motionManager: MotionManager
-@EnvironmentObject var deviceRotation: DeviceRotation
+@EnvironmentObject var deviceMotion: DeviceMotion
 ```
 
-`DeviceRotation.quaternion` steps once per motion update with no smoothing. If you want to animate the change, use a linear animation matching the update interval.
+`DeviceMotion.quaternion` steps once per motion update with no smoothing. If you want to animate the change, use a linear animation matching the update interval.
 ```swift
-.animation(motionManager.animation, value: deviceRotation.quaternion)
+.animation(deviceMotion.animation, value: deviceMotion.quaternion)
 ```
 
 ## motionUpdatesEnabled
@@ -142,7 +142,7 @@ Every effect in this package draws only while motion updates are enabled for its
 @Environment(\.motionUpdatesEnabled) private var motionUpdatesEnabled
 ```
 
-It's true when the nearest [`.motionManager()`](#motionmanager) modifier was given a positive `updateInterval` and was not disabled, and false when there's no such modifier above your view.
+It's true when the nearest [`.motionManager()`](#motionmanager) modifier was given a positive `updateInterval` and was not disabled, and false when there's no such modifier above your view. `\.interfaceSize` is passed down alongside it with the screen size in the current interface orientation, which is what `LookingGlass` uses to size its projection.
 
 Note that this describes the configuration a scene asked for, not whether samples are currently arriving. It stays true while the app is in the background: updates stop there, but effects stay on screen at their last rotation so they're still in the app switcher snapshot.
 

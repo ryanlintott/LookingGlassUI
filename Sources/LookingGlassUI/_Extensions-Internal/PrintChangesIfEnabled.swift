@@ -8,13 +8,13 @@
 import SwiftUI
 
 extension View {
-    /// Prints the properties that caused this view to update when ``MotionManager/isPrintingViewChanges`` is on.
+    /// Prints the properties that caused this view to update when ``MotionService/isPrintingViewChanges`` is on.
     ///
     /// Call from the top of a view body with `let _ = Self.printChangesIfEnabled()`. Only prints in debug builds.
     @MainActor
     static func printChangesIfEnabled() {
         #if DEBUG
-        if MotionManager.isPrintingViewChanges {
+        if MotionService.isPrintingViewChanges {
             Self._printChanges()
         }
         #endif
@@ -22,13 +22,13 @@ extension View {
 }
 
 extension ViewModifier {
-    /// Prints the properties that caused this view modifier to update when ``MotionManager/isPrintingViewChanges`` is on.
+    /// Prints the properties that caused this view modifier to update when ``MotionService/isPrintingViewChanges`` is on.
     ///
     /// Call from the top of a view modifier body with `let _ = Self.printChangesIfEnabled()`. Only prints in debug builds.
     @MainActor
     static func printChangesIfEnabled() {
         #if DEBUG
-        if MotionManager.isPrintingViewChanges {
+        if MotionService.isPrintingViewChanges {
             Self._printChanges()
         }
         #endif

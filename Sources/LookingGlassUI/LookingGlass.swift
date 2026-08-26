@@ -16,8 +16,8 @@ import SwiftUI
 /// 
 /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
 public struct LookingGlass<Content: View>: View {
-    @EnvironmentObject private var motionManager: MotionManager
     @Environment(\.motionUpdatesEnabled) private var motionUpdatesEnabled
+    @Environment(\.interfaceSize) private var interfaceSize
 
     let type: DeviceRotationEffectType
     let distance: CGFloat?
@@ -91,13 +91,6 @@ public struct LookingGlass<Content: View>: View {
             isShowingInFourDirections: isShowingInFourDirections,
             content: content
         )
-    }
-    
-    /// The screen size in the current interface orientation.
-    ///
-    /// Only read while motion effects are showing, as ``MotionManager`` is only in the environment below a ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` modifier.
-    private var interfaceSize: CGSize {
-        motionManager.interfaceSize
     }
     
     public var body: some View {

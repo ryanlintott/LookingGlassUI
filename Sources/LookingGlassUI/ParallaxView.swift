@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ParallaxViewModifier: ViewModifier {
-    @EnvironmentObject var motionManager: MotionManager
-    @EnvironmentObject var deviceRotation: DeviceRotation
+    /// Observed directly rather than taken from the environment, so a view using this effect without a ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` modifier draws nothing instead of trapping, matching the other effects.
+    @ObservedObject private var deviceMotion = MotionService.shared.deviceMotion
     @Environment(\.motionUpdatesEnabled) private var motionUpdatesEnabled
 
     let multiplier: CGFloat
@@ -21,7 +21,7 @@ struct ParallaxViewModifier: ViewModifier {
         /// 1. Reference frame is changed from screen to device (x and z flip)
         /// 2. result is rotated by the delta between the initial rotation and the current rotation
         /// 3. result is rotated by the inverse of the interface rotation to counteract any interface orientation changes
-        (motionManager.interfaceRotation.inverse * deviceRotation.deltaRotation)
+        (deviceMotion.interfaceRotation.inverse * deviceMotion.deltaRotation)
             .deviceToScreenReferenceFrame
     }
     
@@ -40,7 +40,7 @@ struct ParallaxViewModifier: ViewModifier {
         let _ = Self.printChangesIfEnabled()
         content
             .offset(parallaxOffset)
-            .animation(motionManager.animation, value: parallaxOffset)
+            .animation(deviceMotion.animation, value: parallaxOffset)
     }
 }
 

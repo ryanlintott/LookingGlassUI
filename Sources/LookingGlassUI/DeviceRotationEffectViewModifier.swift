@@ -25,8 +25,8 @@ public enum DeviceRotationEffectType: String, RawRepresentable, CaseIterable, Ha
 }
 
 struct DeviceRotationEffectViewModifier: ViewModifier {
-    @EnvironmentObject var motionManager: MotionManager
-    @EnvironmentObject var deviceRotation: DeviceRotation
+    /// Observed directly rather than taken from the environment, so a view using this effect without a ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` modifier draws nothing instead of trapping, matching the other effects.
+    @ObservedObject private var deviceMotion = MotionService.shared.deviceMotion
     @Environment(\.motionUpdatesEnabled) private var motionUpdatesEnabled
 
     let distance: CGFloat
@@ -50,7 +50,7 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
     // rotation that moves to the content to the closest xy axis to the one the phone is pointing at
     // device reference frame
     var cloneRotation: Quat {
-        isShowingInFourDirections ? deviceRotation.cloneRotation : .identity
+        isShowingInFourDirections ? deviceMotion.cloneRotation : .identity
     }
     
     var rotation: Quat {
@@ -61,17 +61,17 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
         /// 3. result is rotated by cloneRotation to put it in front of the viewer if they face 0, -90, 90, or 180 degrees
         /// 4. result is rotated by the inverse of the device rotation to bring it to zero
         /// 5. result is rotated by the inverse of the interface rotation to counteract any interface orientation changes
-        (motionManager.interfaceRotation.inverse * deviceRotation.quaternion.inverse * cloneRotation * offsetRotation).deviceToScreenReferenceFrame
+        (deviceMotion.interfaceRotation.inverse * deviceMotion.quaternion.inverse * cloneRotation * offsetRotation).deviceToScreenReferenceFrame
     }
     
     /// Animation that smooths movement between motion updates.
     ///
-    /// No animation is used on updates where ``DeviceRotation/cloneRotation`` changes as that rotation snaps between 90 degree intervals and animating it would sweep the view around instead.
+    /// No animation is used on updates where ``DeviceMotion/cloneRotation`` changes as that rotation snaps between 90 degree intervals and animating it would sweep the view around instead.
     var animation: Animation? {
-        if isShowingInFourDirections && deviceRotation.cloneRotationDidChange {
+        if isShowingInFourDirections && deviceMotion.cloneRotationDidChange {
             return nil
         }
-        return motionManager.animation
+        return deviceMotion.animation
     }
     
     func body(content: Content) -> some View {
@@ -80,7 +80,7 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
             content
                 .rotation3DEffect(quaternion: rotation, anchor: .center, anchorZ: distance, perspective: perspective)
                 /// Animated on the device rotation rather than on `rotation` so only device movement is smoothed. `rotation` also changes when the interface orientation changes and that 90 degree step must snap.
-                .animation(animation, value: deviceRotation.quaternion)
+                .animation(animation, value: deviceMotion.quaternion)
         }
     }
 }

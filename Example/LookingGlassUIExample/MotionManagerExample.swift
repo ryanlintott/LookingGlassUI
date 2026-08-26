@@ -9,11 +9,11 @@ import LookingGlassUI
 import SwiftUI
 
 struct MotionManagerExample: View {
-    @EnvironmentObject var deviceRotation: DeviceRotation
+    @EnvironmentObject var deviceMotion: DeviceMotion
     
     var body: some View {
         List {
-            QuaternionDataView(deviceRotation.quaternion)
+            QuaternionDataView(deviceMotion.quaternion)
         }
             .navigationTitle("MotionManager Data")
     }

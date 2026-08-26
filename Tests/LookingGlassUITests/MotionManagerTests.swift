@@ -7,169 +7,139 @@
 
 @testable import LookingGlassUI
 import Combine
+import SwiftUI
 import XCTest
 
 @MainActor
 final class MotionManagerTests: XCTestCase {
-    func testMultipleSceneRequestsUseFastestEnabledIntervalUntilLastEnabledSceneDisappears() {
-        let motionManager = MotionManager.shared
-        let firstScene = UUID()
-        let secondScene = UUID()
-        let disabledScene = UUID()
-        let unregisteredScene = UUID()
+    private func makeManager(
+        updateInterval: TimeInterval = 0.1,
+        disabled: Bool = false,
+        scenePhase: ScenePhase = .active
+    ) -> MotionManager {
+        MotionManager(updateInterval: updateInterval, disabled: disabled, scenePhase: scenePhase)
+    }
 
-        motionManager.setApplicationActive(false)
-        defer {
-            motionManager.unregisterMotionUpdates(id: firstScene)
-            motionManager.unregisterMotionUpdates(id: secondScene)
-            motionManager.unregisterMotionUpdates(id: disabledScene)
-            motionManager.setApplicationActive(true)
-        }
+    override func setUp() async throws {
+        MotionService.shared.setApplicationActive(true)
+    }
 
-        motionManager.updateMotionUpdates(id: unregisteredScene, updateInterval: 0.01, disabled: false, scenePhase: .active)
-        XCTAssertEqual(motionManager.updateInterval, 0, "updating an unregistered scene must not create a new request")
-        XCTAssertFalse(motionManager.motionUpdatesEnabled(id: unregisteredScene))
+    func testMotionUpdatesFollowTheRequestedConfiguration() {
+        let manager = makeManager(updateInterval: 0.1, disabled: false)
+        XCTAssertTrue(manager.motionUpdatesEnabled)
+        XCTAssertTrue(manager.needsMotionService)
 
-        motionManager.registerMotionUpdates(id: firstScene, updateInterval: 0.1, disabled: false, scenePhase: .active)
-        XCTAssertEqual(motionManager.updateInterval, 0.1)
-        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: firstScene), "effects follow the scene's requested configuration, not whether the application is in the background")
+        manager.update(updateInterval: 0, disabled: false, scenePhase: .active)
+        XCTAssertFalse(manager.motionUpdatesEnabled, "a zero interval is a request for no updates")
 
-        motionManager.registerMotionUpdates(id: secondScene, updateInterval: 0.05, disabled: false, scenePhase: .active)
-        XCTAssertEqual(motionManager.updateInterval, 0.05, "the fastest enabled scene should control the shared sensor")
-
-        motionManager.registerMotionUpdates(id: disabledScene, updateInterval: 0.01, disabled: true, scenePhase: .active)
-        XCTAssertEqual(motionManager.updateInterval, 0.05, "a disabled scene should not affect the shared sensor interval")
-
-        motionManager.unregisterMotionUpdates(id: secondScene)
-        XCTAssertEqual(motionManager.updateInterval, 0.1, "closing one scene should leave another scene's request active")
-        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: firstScene))
-
-        motionManager.unregisterMotionUpdates(id: firstScene)
-        XCTAssertEqual(motionManager.updateInterval, 0)
-        XCTAssertTrue(motionManager.disabled)
-        XCTAssertFalse(motionManager.motionUpdatesEnabled(id: disabledScene), "the only remaining scene is disabled")
-
-        motionManager.unregisterMotionUpdates(id: disabledScene)
-        XCTAssertEqual(motionManager.updateInterval, 0)
-        XCTAssertFalse(motionManager.disabled)
-        XCTAssertFalse(motionManager.motionUpdatesEnabled(id: disabledScene))
+        manager.update(updateInterval: 0.1, disabled: true, scenePhase: .active)
+        XCTAssertFalse(manager.motionUpdatesEnabled)
     }
 
     /// Backgrounding stops motion updates but must leave the effects they feed on screen, or the app switcher snapshot is taken without them.
-    func testMotionEffectsSurviveBackgrounding() {
-        let motionManager = MotionManager.shared
-        let scene = UUID()
+    func testMotionUpdatesStayEnabledWhileBackgrounded() {
+        let manager = makeManager()
 
-        defer {
-            motionManager.unregisterMotionUpdates(id: scene)
-            motionManager.setApplicationActive(true)
-        }
+        manager.update(updateInterval: 0.1, disabled: false, scenePhase: .background)
+        XCTAssertTrue(manager.motionUpdatesEnabled, "the scene entering the background must not turn its effects off")
+        XCTAssertFalse(manager.needsMotionService, "the scene entering the background must stop its motion updates")
 
-        motionManager.registerMotionUpdates(id: scene, updateInterval: 0.1, disabled: false, scenePhase: .active)
-        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: scene))
-        XCTAssertTrue(motionManager.needsMotionService)
-
-        motionManager.setApplicationActive(false)
-        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: scene), "the application entering the background must not turn effects off")
-        XCTAssertFalse(motionManager.needsMotionService, "the application entering the background must stop motion updates")
-
-        motionManager.setApplicationActive(true)
-        motionManager.updateMotionUpdates(id: scene, updateInterval: 0.1, disabled: false, scenePhase: .background)
-        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: scene), "the scene entering the background must not turn its effects off")
-        XCTAssertFalse(motionManager.needsMotionService, "the scene entering the background must stop motion updates")
-        XCTAssertEqual(motionManager.updateInterval, 0, "a backgrounded scene must not drive the motion service")
+        manager.update(updateInterval: 0.1, disabled: false, scenePhase: .inactive)
+        XCTAssertTrue(manager.needsMotionService, "an inactive scene remains in the foreground")
     }
 
-    func testMotionEffectsEnabledUsesPublishedRegistrationState() {
-        let motionManager = MotionManager.shared
-        let controllingScene = UUID()
-        let slowerScene = UUID()
-        let unregisteredScene = UUID()
+    func testFastestSceneDrivesTheSharedServiceInterval() {
+        let service = MotionService.shared
 
-        motionManager.setApplicationActive(false)
-        defer {
-            motionManager.unregisterMotionUpdates(id: controllingScene)
-            motionManager.unregisterMotionUpdates(id: slowerScene)
-            motionManager.setApplicationActive(true)
+        let slow = makeManager(updateInterval: 0.1)
+        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.1)
+
+        let fast = makeManager(updateInterval: 0.05)
+        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.05, "the fastest enabled scene should control the shared service")
+
+        let disabled = makeManager(updateInterval: 0.01, disabled: true)
+        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.05, "a disabled scene should not affect the shared interval")
+
+        let backgrounded = makeManager(updateInterval: 0.01, scenePhase: .background)
+        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.05, "a backgrounded scene should not affect the shared interval")
+
+        withExtendedLifetime([slow, fast, disabled, backgrounded]) {}
+    }
+
+    /// The service holds its managers weakly, so a scene torn down without warning cannot leave a request behind that keeps the sensor running.
+    func testDeallocatedSceneStopsDrivingTheSharedService() {
+        let service = MotionService.shared
+
+        let kept = makeManager(updateInterval: 0.1)
+
+        do {
+            let temporary = makeManager(updateInterval: 0.01)
+            XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.01)
+            withExtendedLifetime(temporary) {}
         }
 
-        motionManager.registerMotionUpdates(id: controllingScene, updateInterval: 0.05, disabled: false, scenePhase: .active)
-        motionManager.setApplicationActive(true)
-        XCTAssertFalse(motionManager.motionUpdatesEnabled(id: unregisteredScene))
+        service.reconcile()
+        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.1, "a deallocated scene must stop driving the shared service")
 
-        var managerChangeCount = 0
-        let cancellable = motionManager.objectWillChange.sink {
-            managerChangeCount += 1
+        withExtendedLifetime(kept) {}
+    }
+
+    func testSharedServiceStopsWhenNoSceneNeedsIt() {
+        let service = MotionService.shared
+
+        do {
+            let manager = makeManager(updateInterval: 0.1)
+            XCTAssertTrue(service.needsMotionService)
+            withExtendedLifetime(manager) {}
         }
 
-        motionManager.registerMotionUpdates(id: slowerScene, updateInterval: 0.1, disabled: false, scenePhase: .active)
-        XCTAssertEqual(motionManager.updateInterval, 0.05, "a slower registration should not change the effective interval")
-        XCTAssertGreaterThan(managerChangeCount, 0, "registering a scene must refresh observing modifiers even when the effective interval is unchanged")
-        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: slowerScene))
+        service.reconcile()
+        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0)
+        XCTAssertFalse(service.needsMotionService)
+    }
 
-        motionManager.updateMotionUpdates(id: slowerScene, updateInterval: 0.1, disabled: false, scenePhase: .inactive)
-        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: slowerScene))
+    func testApplicationBackgroundStopsTheServiceWithoutDisablingUpdates() {
+        let service = MotionService.shared
+        let manager = makeManager(updateInterval: 0.1)
 
-        motionManager.updateMotionUpdates(id: slowerScene, updateInterval: 0.1, disabled: true, scenePhase: .active)
-        XCTAssertFalse(motionManager.motionUpdatesEnabled(id: slowerScene))
+        XCTAssertTrue(service.needsMotionService)
 
-        motionManager.updateMotionUpdates(id: slowerScene, updateInterval: 0.1, disabled: false, scenePhase: .background)
-        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: slowerScene), "a backgrounded scene keeps its effects on screen")
+        service.setApplicationActive(false)
+        XCTAssertFalse(service.needsMotionService, "the application entering the background must stop the service")
+        XCTAssertTrue(manager.motionUpdatesEnabled, "the application entering the background must not turn effects off")
 
-        motionManager.unregisterMotionUpdates(id: slowerScene)
-        XCTAssertFalse(motionManager.motionUpdatesEnabled(id: slowerScene))
+        service.setApplicationActive(true)
+        XCTAssertTrue(service.needsMotionService)
+
+        withExtendedLifetime(manager) {}
+    }
+
+    /// The animation must match the rate samples actually arrive at, which is the shared interval rather than the one any single scene asked for.
+    func testDeviceRotationAnimationMatchesTheSharedInterval() {
+        let service = MotionService.shared
+
+        let slow = makeManager(updateInterval: 0.5)
+        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.5)
+
+        let fast = makeManager(updateInterval: 0.05)
+        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.05, "the slower scene receives samples at the faster scene's rate")
+
+        withExtendedLifetime([slow, fast]) {}
+    }
+
+    func testConfigurationChangesPublish() {
+        let manager = makeManager(updateInterval: 0.1)
+
+        var changeCount = 0
+        let cancellable = manager.objectWillChange.sink { changeCount += 1 }
+
+        manager.update(updateInterval: 0.2, disabled: false, scenePhase: .active)
+        XCTAssertGreaterThan(changeCount, 0, "a configuration change must refresh the scene's views")
+
+        let countAfterChange = changeCount
+        manager.update(updateInterval: 0.2, disabled: false, scenePhase: .active)
+        XCTAssertEqual(changeCount, countAfterChange, "an unchanged configuration must not refresh anything")
 
         withExtendedLifetime(cancellable) {}
-    }
-
-    func testBackgroundSceneRequestsDoNotAffectForegroundConfiguration() {
-        let motionManager = MotionManager.shared
-        let foregroundScene = UUID()
-        let backgroundScene = UUID()
-
-        motionManager.setApplicationActive(false)
-        defer {
-            motionManager.unregisterMotionUpdates(id: foregroundScene)
-            motionManager.unregisterMotionUpdates(id: backgroundScene)
-            motionManager.setApplicationActive(true)
-        }
-
-        motionManager.registerMotionUpdates(
-            id: foregroundScene,
-            updateInterval: 0.1,
-            disabled: false,
-            scenePhase: .active
-        )
-        motionManager.registerMotionUpdates(
-            id: backgroundScene,
-            updateInterval: 0.01,
-            disabled: false,
-            scenePhase: .background
-        )
-        XCTAssertEqual(motionManager.updateInterval, 0.1, "a background scene must not control the shared sensor interval")
-
-        motionManager.updateMotionUpdates(
-            id: backgroundScene,
-            updateInterval: 0.01,
-            disabled: false,
-            scenePhase: .inactive
-        )
-        XCTAssertEqual(motionManager.updateInterval, 0.01, "an inactive scene remains in the foreground")
-
-        motionManager.updateMotionUpdates(
-            id: backgroundScene,
-            updateInterval: 0.01,
-            disabled: false,
-            scenePhase: .background
-        )
-        motionManager.updateMotionUpdates(
-            id: foregroundScene,
-            updateInterval: 0.1,
-            disabled: false,
-            scenePhase: .background
-        )
-        XCTAssertEqual(motionManager.updateInterval, 0)
-        XCTAssertFalse(motionManager.disabled, "no foreground request is distinct from every foreground request being disabled")
-        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: foregroundScene), "both scenes are backgrounded but neither is disabled")
     }
 }
