@@ -11,8 +11,8 @@ import SwiftUI
 ///
 /// Takes all available space similar to `Color`
 public struct ShimmerView: View {
-    @EnvironmentObject private var motionManager: MotionManager
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.sceneMotionEffectsEnabled) private var sceneMotionEffectsEnabled
     
     let mode: ShimmerMode
     let color: Color
@@ -29,7 +29,7 @@ public struct ShimmerView: View {
     
     /// Creates a shimmering view based on device orientation
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Parameters:
     ///   - mode: Modes where shimmer should be enabled. (default: `.on`)
@@ -43,7 +43,7 @@ public struct ShimmerView: View {
     
     /// Creates a shimmering view based on device orientation
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Parameters:
     ///   - isOn: Is shimmer enabled.
@@ -54,7 +54,7 @@ public struct ShimmerView: View {
     }
     
     var isShimmering: Bool {
-        motionManager.isDetectingMotion && mode.isOn(colorScheme: colorScheme)
+        sceneMotionEffectsEnabled && mode.isOn(colorScheme: colorScheme)
     }
     
     public var body: some View {

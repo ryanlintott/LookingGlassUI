@@ -27,6 +27,7 @@ public enum DeviceRotationEffectType: String, RawRepresentable, CaseIterable, Ha
 struct DeviceRotationEffectViewModifier: ViewModifier {
     @EnvironmentObject var motionManager: MotionManager
     @EnvironmentObject var deviceRotation: DeviceRotation
+    @Environment(\.sceneMotionEffectsEnabled) private var sceneMotionEffectsEnabled
 
     let distance: CGFloat
     let perspective: CGFloat
@@ -75,7 +76,7 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         let _ = Self.printChangesIfEnabled()
-        if motionManager.isDetectingMotion {
+        if sceneMotionEffectsEnabled {
             content
                 .rotation3DEffect(quaternion: rotation, anchor: .center, anchorZ: distance, perspective: perspective)
                 /// Animated on the device rotation rather than on `rotation` so only device movement is smoothed. `rotation` also changes when the interface orientation changes and that 90 degree step must snap.
@@ -87,7 +88,7 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
 public extension View {
     /// Position a view on a sphere centered on the device and rotated using real world coordinates. This view will rotate to compensate for device rotation and appear to be seen either through a window or as a kind of reflection.
     ///
-    /// - Requires: Use the `.motionManager` view modifier only once in your app somewhere above this view in the heirarchy.
+    /// - Requires: Use the `.motionManager` view modifier above this view in the hierarchy.
     ///
     /// - Parameters:
     ///   - type: Device rotation effect.
@@ -116,7 +117,7 @@ public extension View {
     
     /// Position a view on a sphere centered on the device and rotated using real world coordinates. This view will rotate to compensate for device rotation and appear to be seen either through a window or as a kind of reflection.
     ///
-    /// - Requires: Use the `.motionManager` view modifier only once in your app somewhere above this view in the heirarchy.
+    /// - Requires: Use the `.motionManager` view modifier above this view in the hierarchy.
     /// 
     /// - Parameters:
     ///   - type: Device rotation effect.

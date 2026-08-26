@@ -10,6 +10,7 @@ import SwiftUI
 struct ParallaxViewModifier: ViewModifier {
     @EnvironmentObject var motionManager: MotionManager
     @EnvironmentObject var deviceRotation: DeviceRotation
+    @Environment(\.sceneMotionEffectsEnabled) private var sceneMotionEffectsEnabled
 
     let multiplier: CGFloat
     let maxOffset: CGFloat?
@@ -25,7 +26,7 @@ struct ParallaxViewModifier: ViewModifier {
     }
     
     var parallaxOffset: CGSize {
-        guard motionManager.isDetectingMotion else { return .zero }
+        guard sceneMotionEffectsEnabled else { return .zero }
         
         let maxOffset = maxOffset ?? .infinity
         
@@ -46,7 +47,7 @@ struct ParallaxViewModifier: ViewModifier {
 public extension View {
     /// Moves the view to create a parallax effect based on device orientation.
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Parameters:
     ///   - multiplier: How much to move the view. Distance is the radians of the rotation multiplied by this multiplier.

@@ -40,9 +40,7 @@ Really it's up to you. I currently use this package to create a gold shimmer eff
 
 ![An iphone rotated back and forth showing the Old English Wordhord App with all the gold elements shimmering as if reflecting light. A screen recording on the right shows the same content.](https://user-images.githubusercontent.com/2143656/128365446-6f9edb2a-e318-44c7-b095-4ab8b9c820f5.gif)
 
-https://apps.apple.com/us/app/old-english-wordhord/id1535982564![image](https://github.com/user-attachments/assets/3fbf59eb-d82a-4516-866e-8bcbd84852de)
-
-<a href="https://apps.apple.com/us/app/old-english-wordhord/id1535982564?itsct=apps_box_badge&amp;itscg=30200">
+<a href="https://apps.apple.com/us/app/old-english-wordhord/id1535982564">
 <img src="https://github.com/user-attachments/assets/3fbf59eb-d82a-4516-866e-8bcbd84852de" alt="Download on the App Store" style="border-top-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; border-bottom-left-radius: 13px; width: 250px; height: 83px;">
 </a>
 
@@ -53,11 +51,13 @@ LookingGlassUI is open source and free but if you like using it, please consider
 
 # Details
 ## .motionManager()
-Before adding any custom views, add the `.motionManager` view modifier *once* in your app, somewhere in the heirarchy above any other views or modifiers used in this package.
+Before adding any custom views, add the `.motionManager` view modifier once near the top of each scene's view hierarchy, above any other views or modifiers used in this package.
 ```swift
 ContentView()
     .motionManager(updateInterval: 0.1, disabled: false)
 ```
+
+Every scene shares the app's single Core Motion manager. The updateInterval used by Core Motion will be the smallest value among scenes that are not disabled and not in the backgound. Backgrounding, closing, or disabling one scene does not stop updates needed by another scene.
 
 ## ShimmerView
 *Requires [`.motionManager()`](#motionmanager)*
@@ -122,7 +122,7 @@ Text("Hello, World")
 
 ## MotionManager and DeviceRotation
 
-`MotionManager` holds configuration data and changes rarely. `DeviceRotation` holds the rotation of the device and changes on every motion update. If you want direct access to either you can read them from the environment if you have added a [`.motionManager()`](#motionmanager) modifier higher up in the heirarchy.
+`MotionManager` holds the shared configuration data and changes rarely. `DeviceRotation` holds the rotation of the device and changes on every motion update. If you want direct access to either you can read them from the environment if you have added a [`.motionManager()`](#motionmanager) modifier higher up in the hierarchy.
 
 ```swift
 @EnvironmentObject var motionManager: MotionManager
@@ -158,4 +158,3 @@ Don't worry about device orientation. Although Core Motion doesn't compensate fo
 3D space is confusing on iOS, especially as Core Motion and SwiftUI's rotation3dEffect each seem to use different axes. I created this diagram to keep track of how each one works. You probably won't need these unless you want to do something more custom. It's important to note that the Screen Rotation Axes are only used for determining rotation direction using the [right hand rule for a rotating body](https://en.wikipedia.org/wiki/Right-hand_rule). When translating a view (using .offset or similar), the axes are different with +Y towards the bottom of the screen and +X to the right. These axes are not needed as we only deal with rotation
 
 ![iOS Rotation. One diagram on the left titled: Device Rotation Axes (Core Motion) shows a tall grey rectangle flat on a surface with positive Z up, positive Y to the top of the rectangle and positive X to the right. Axes have Yaw, Roll, and Pitch rotational arrows respectively, each following the right hand rule. An additional note says: Device axis do not change when orientation changes. Another diagram on the right titled: Screen Rotation Axes (SwiftUI .rotation3dEffect) shows a tall grey rectangle flat on a surface with negative Z up, positive Y to the top of the device and negative X to the right. Axes have Yaw, Roll, and Pitch rotational arrows respectively, each following the right hand rule. Another rectangle rotated 90 degrees is on top and a note reads: Screen top changes if app supports multiple orientation.](https://user-images.githubusercontent.com/2143656/152568546-00365387-9fd9-4eb7-9048-22adc92800c3.png)
-

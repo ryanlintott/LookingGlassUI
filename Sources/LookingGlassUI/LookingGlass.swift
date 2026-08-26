@@ -14,9 +14,9 @@ import SwiftUI
 ///
 /// If motion updates are off the content will not be shown.
 /// 
-/// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
+/// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
 public struct LookingGlass<Content: View>: View {
-    @EnvironmentObject private var motionManager: MotionManager
+    @Environment(\.sceneMotionEffectsEnabled) private var sceneMotionEffectsEnabled
 
     let type: DeviceRotationEffectType
     let distance: CGFloat?
@@ -31,7 +31,7 @@ public struct LookingGlass<Content: View>: View {
     ///
     /// If motion updates are off the content will not be shown.
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
     /// - Parameters:
     ///   - type: Device rotation effect.
     ///   - distance: Distance the view is positioned from the device in points.
@@ -61,7 +61,7 @@ public struct LookingGlass<Content: View>: View {
     ///
     /// If motion updates are off the content will not be shown.
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Parameters:
     ///   - type: Device rotation effect.
@@ -94,11 +94,14 @@ public struct LookingGlass<Content: View>: View {
     
     public var body: some View {
         let _ = Self.printChangesIfEnabled()
-        if motionManager.isDetectingMotion {
+        if sceneMotionEffectsEnabled {
             GeometryReader { proxy in
                 content
                     .deviceRotationEffect(type, distance: distance, perspective: perspective, offsetRotation: offsetRotation, isShowingInFourDirections: isShowingInFourDirections)
-                    .frame(width: motionManager.interfaceSize.width, height: motionManager.interfaceSize.height)
+                    .frame(
+                        width: UIScreen.main.bounds.width,
+                        height: UIScreen.main.bounds.height
+                    )
                     .offset(x: (proxy.size.width / 2) - proxy.frame(in: .global).midX, y: (proxy.size.height / 2) - proxy.frame(in: .global).midY)
             }
         } else {

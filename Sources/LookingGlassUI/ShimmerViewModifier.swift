@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ShimmerViewModifier: ViewModifier {
-    @EnvironmentObject private var motionManager: MotionManager
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.sceneMotionEffectsEnabled) private var sceneMotionEffectsEnabled
     
     let mode: ShimmerMode
     let color: Color
@@ -34,7 +34,7 @@ struct ShimmerViewModifier: ViewModifier {
     ///
     /// The background is drawn whether or not motion updates are running so the view doesn't change colour when motion is disabled. With a clear background there's nothing left to draw once the shimmer is off, and skipping it avoids compositing a fully transparent layer over the content every frame.
     var isVisible: Bool {
-        mode.isOn(colorScheme: colorScheme) && (motionManager.isDetectingMotion || background != .clear)
+        mode.isOn(colorScheme: colorScheme) && (sceneMotionEffectsEnabled || background != .clear)
     }
     
     @ViewBuilder
@@ -62,7 +62,7 @@ struct ShimmerViewModifier: ViewModifier {
 public extension View {
     /// Add a shimmer effect with a background masked to this view.
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Note: This effect draws additional copies of the view to size the shimmer and to mask it to the view's shape. Each copy is a separate instance with its own state, so state inside the view that changes its size or shape may not be reflected in the shimmer, and any `onAppear` or `task` on the view may run more than once.
     ///
@@ -77,7 +77,7 @@ public extension View {
     
     /// Add a shimmer effect with a background masked to this view.
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Note: This effect draws additional copies of the view to size the shimmer and to mask it to the view's shape. Each copy is a separate instance with its own state, so state inside the view that changes its size or shape may not be reflected in the shimmer, and any `onAppear` or `task` on the view may run more than once.
     ///
@@ -92,7 +92,7 @@ public extension View {
     
     /// Add a shimmer effect masked to this view with a specified blend mode.
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Note: This effect draws additional copies of the view to size the shimmer and to mask it to the view's shape. Each copy is a separate instance with its own state, so state inside the view that changes its size or shape may not be reflected in the shimmer, and any `onAppear` or `task` on the view may run more than once.
     ///
@@ -107,7 +107,7 @@ public extension View {
     
     /// Add a shimmer effect masked to this view with a specified blend mode.
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added only once in your app somewhere above this view in the heirarchy.
+    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Note: This effect draws additional copies of the view to size the shimmer and to mask it to the view's shape. Each copy is a separate instance with its own state, so state inside the view that changes its size or shape may not be reflected in the shimmer, and any `onAppear` or `task` on the view may run more than once.
     ///
