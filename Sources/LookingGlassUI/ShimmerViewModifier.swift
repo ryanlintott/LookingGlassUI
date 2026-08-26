@@ -32,9 +32,9 @@ struct ShimmerViewModifier: ViewModifier {
     
     /// True if anything needs to be drawn over the content.
     ///
-    /// The background is drawn whether or not motion updates are running so the view doesn't change colour when motion is disabled. With a clear background there's nothing left to draw once the shimmer is off, and skipping it avoids compositing a fully transparent layer over the content every frame.
+    /// The background is drawn whenever there is one, whatever the mode and whether or not motion updates are running, so the view doesn't change colour when the shimmer can't appear. That matches ``ShimmerView``. With a clear background there's nothing left to draw once the shimmer is off, and skipping it avoids compositing a fully transparent layer over the content every frame.
     var isVisible: Bool {
-        mode.isOn(colorScheme: colorScheme) && (motionUpdatesEnabled || background != .clear)
+        background != .clear || (motionUpdatesEnabled && mode.isOn(colorScheme: colorScheme))
     }
     
     @ViewBuilder
