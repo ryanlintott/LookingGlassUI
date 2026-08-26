@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ShimmerViewModifier: ViewModifier {
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.sceneMotionEffectsEnabled) private var sceneMotionEffectsEnabled
+    @Environment(\.motionUpdatesEnabled) private var motionUpdatesEnabled
     
     let mode: ShimmerMode
     let color: Color
@@ -34,7 +34,7 @@ struct ShimmerViewModifier: ViewModifier {
     ///
     /// The background is drawn whether or not motion updates are running so the view doesn't change colour when motion is disabled. With a clear background there's nothing left to draw once the shimmer is off, and skipping it avoids compositing a fully transparent layer over the content every frame.
     var isVisible: Bool {
-        mode.isOn(colorScheme: colorScheme) && (sceneMotionEffectsEnabled || background != .clear)
+        mode.isOn(colorScheme: colorScheme) && (motionUpdatesEnabled || background != .clear)
     }
     
     @ViewBuilder

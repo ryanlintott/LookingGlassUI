@@ -28,11 +28,11 @@ final class MotionManagerTests: XCTestCase {
 
         motionManager.updateMotionUpdates(id: unregisteredScene, updateInterval: 0.01, disabled: false, scenePhase: .active)
         XCTAssertEqual(motionManager.updateInterval, 0, "updating an unregistered scene must not create a new request")
-        XCTAssertFalse(motionManager.isDetectingMotion)
+        XCTAssertFalse(motionManager.motionUpdatesEnabled(id: unregisteredScene))
 
         motionManager.registerMotionUpdates(id: firstScene, updateInterval: 0.1, disabled: false, scenePhase: .active)
         XCTAssertEqual(motionManager.updateInterval, 0.1)
-        XCTAssertFalse(motionManager.isDetectingMotion, "an application in the background must not report that it is detecting motion")
+        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: firstScene), "effects follow the scene's requested configuration, not whether the application is in the background")
 
         motionManager.registerMotionUpdates(id: secondScene, updateInterval: 0.05, disabled: false, scenePhase: .active)
         XCTAssertEqual(motionManager.updateInterval, 0.05, "the fastest enabled scene should control the shared sensor")
@@ -42,37 +42,42 @@ final class MotionManagerTests: XCTestCase {
 
         motionManager.unregisterMotionUpdates(id: secondScene)
         XCTAssertEqual(motionManager.updateInterval, 0.1, "closing one scene should leave another scene's request active")
-        XCTAssertFalse(motionManager.isDetectingMotion)
+        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: firstScene))
 
         motionManager.unregisterMotionUpdates(id: firstScene)
         XCTAssertEqual(motionManager.updateInterval, 0)
         XCTAssertTrue(motionManager.disabled)
-        XCTAssertFalse(motionManager.isDetectingMotion)
+        XCTAssertFalse(motionManager.motionUpdatesEnabled(id: disabledScene), "the only remaining scene is disabled")
 
         motionManager.unregisterMotionUpdates(id: disabledScene)
         XCTAssertEqual(motionManager.updateInterval, 0)
         XCTAssertFalse(motionManager.disabled)
-        XCTAssertFalse(motionManager.isDetectingMotion)
+        XCTAssertFalse(motionManager.motionUpdatesEnabled(id: disabledScene))
     }
 
-    func testIsDetectingMotionRequiresApplicationOutsideBackground() {
+    /// Backgrounding stops motion updates but must leave the effects they feed on screen, or the app switcher snapshot is taken without them.
+    func testMotionEffectsSurviveBackgrounding() {
         let motionManager = MotionManager.shared
         let scene = UUID()
 
-        motionManager.setApplicationActive(false)
         defer {
             motionManager.unregisterMotionUpdates(id: scene)
             motionManager.setApplicationActive(true)
         }
 
         motionManager.registerMotionUpdates(id: scene, updateInterval: 0.1, disabled: false, scenePhase: .active)
-        XCTAssertFalse(motionManager.isDetectingMotion)
-
-        motionManager.setApplicationActive(true)
-        XCTAssertTrue(motionManager.isDetectingMotion)
+        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: scene))
+        XCTAssertTrue(motionManager.needsMotionService)
 
         motionManager.setApplicationActive(false)
-        XCTAssertFalse(motionManager.isDetectingMotion)
+        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: scene), "the application entering the background must not turn effects off")
+        XCTAssertFalse(motionManager.needsMotionService, "the application entering the background must stop motion updates")
+
+        motionManager.setApplicationActive(true)
+        motionManager.updateMotionUpdates(id: scene, updateInterval: 0.1, disabled: false, scenePhase: .background)
+        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: scene), "the scene entering the background must not turn its effects off")
+        XCTAssertFalse(motionManager.needsMotionService, "the scene entering the background must stop motion updates")
+        XCTAssertEqual(motionManager.updateInterval, 0, "a backgrounded scene must not drive the motion service")
     }
 
     func testMotionEffectsEnabledUsesPublishedRegistrationState() {
@@ -90,7 +95,7 @@ final class MotionManagerTests: XCTestCase {
 
         motionManager.registerMotionUpdates(id: controllingScene, updateInterval: 0.05, disabled: false, scenePhase: .active)
         motionManager.setApplicationActive(true)
-        XCTAssertFalse(motionManager.motionEffectsEnabled(id: unregisteredScene))
+        XCTAssertFalse(motionManager.motionUpdatesEnabled(id: unregisteredScene))
 
         var managerChangeCount = 0
         let cancellable = motionManager.objectWillChange.sink {
@@ -100,19 +105,19 @@ final class MotionManagerTests: XCTestCase {
         motionManager.registerMotionUpdates(id: slowerScene, updateInterval: 0.1, disabled: false, scenePhase: .active)
         XCTAssertEqual(motionManager.updateInterval, 0.05, "a slower registration should not change the effective interval")
         XCTAssertGreaterThan(managerChangeCount, 0, "registering a scene must refresh observing modifiers even when the effective interval is unchanged")
-        XCTAssertTrue(motionManager.motionEffectsEnabled(id: slowerScene))
+        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: slowerScene))
 
         motionManager.updateMotionUpdates(id: slowerScene, updateInterval: 0.1, disabled: false, scenePhase: .inactive)
-        XCTAssertTrue(motionManager.motionEffectsEnabled(id: slowerScene))
+        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: slowerScene))
 
         motionManager.updateMotionUpdates(id: slowerScene, updateInterval: 0.1, disabled: true, scenePhase: .active)
-        XCTAssertFalse(motionManager.motionEffectsEnabled(id: slowerScene))
+        XCTAssertFalse(motionManager.motionUpdatesEnabled(id: slowerScene))
 
         motionManager.updateMotionUpdates(id: slowerScene, updateInterval: 0.1, disabled: false, scenePhase: .background)
-        XCTAssertFalse(motionManager.motionEffectsEnabled(id: slowerScene))
+        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: slowerScene), "a backgrounded scene keeps its effects on screen")
 
         motionManager.unregisterMotionUpdates(id: slowerScene)
-        XCTAssertFalse(motionManager.motionEffectsEnabled(id: slowerScene))
+        XCTAssertFalse(motionManager.motionUpdatesEnabled(id: slowerScene))
 
         withExtendedLifetime(cancellable) {}
     }
@@ -165,6 +170,6 @@ final class MotionManagerTests: XCTestCase {
         )
         XCTAssertEqual(motionManager.updateInterval, 0)
         XCTAssertFalse(motionManager.disabled, "no foreground request is distinct from every foreground request being disabled")
-        XCTAssertFalse(motionManager.isDetectingMotion)
+        XCTAssertTrue(motionManager.motionUpdatesEnabled(id: foregroundScene), "both scenes are backgrounded but neither is disabled")
     }
 }

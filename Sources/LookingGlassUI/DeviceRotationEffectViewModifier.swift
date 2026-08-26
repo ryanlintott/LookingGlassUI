@@ -27,7 +27,7 @@ public enum DeviceRotationEffectType: String, RawRepresentable, CaseIterable, Ha
 struct DeviceRotationEffectViewModifier: ViewModifier {
     @EnvironmentObject var motionManager: MotionManager
     @EnvironmentObject var deviceRotation: DeviceRotation
-    @Environment(\.sceneMotionEffectsEnabled) private var sceneMotionEffectsEnabled
+    @Environment(\.motionUpdatesEnabled) private var motionUpdatesEnabled
 
     let distance: CGFloat
     let perspective: CGFloat
@@ -76,7 +76,7 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         let _ = Self.printChangesIfEnabled()
-        if sceneMotionEffectsEnabled {
+        if motionUpdatesEnabled {
             content
                 .rotation3DEffect(quaternion: rotation, anchor: .center, anchorZ: distance, perspective: perspective)
                 /// Animated on the device rotation rather than on `rotation` so only device movement is smoothed. `rotation` also changes when the interface orientation changes and that 90 degree step must snap.

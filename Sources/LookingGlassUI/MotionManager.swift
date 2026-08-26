@@ -25,9 +25,18 @@ public class MotionManager: ObservableObject {
         /// The operational state of the scene that owns the request.
         var scenePhase: ScenePhase
 
-        /// Whether the request currently participates in the shared motion service.
-        var isDetectingMotion: Bool {
-            scenePhase != .background && updateInterval > 0 && !disabled
+        /// Whether the scene asked for motion updates.
+        ///
+        /// Deliberately independent of ``scenePhase``: a backgrounded scene keeps its effects on screen, where they're still captured in the app switcher snapshot, and only stops receiving new samples.
+        var motionUpdatesEnabled: Bool {
+            updateInterval > 0 && !disabled
+        }
+
+        /// Whether the scene currently needs the shared motion service running.
+        ///
+        /// The same as ``motionUpdatesEnabled`` but for the scene lifecycle, which is what separates asking for updates from receiving them.
+        var needsMotionService: Bool {
+            scenePhase != .background && motionUpdatesEnabled
         }
     }
     
@@ -54,7 +63,7 @@ public class MotionManager: ObservableObject {
     @Published private var motionUpdateRequests: [UUID: MotionUpdateRequest] = [:]
 
     /// Whether the application is outside the background and may run the motion service.
-    @Published private var isApplicationActive = true
+    @Published private var isApplicationActive: Bool = UIApplication.shared.applicationState != .background
 
     /// The effective interval between motion samples, in seconds.
     ///
@@ -81,7 +90,6 @@ public class MotionManager: ObservableObject {
     
     /// Creates the shared manager and begins observing orientation and application-lifecycle changes.
     private init() {
-        isApplicationActive = UIApplication.shared.applicationState != .background
         startObservingNotifications()
         _ = setDeviceOrientationIfNeeded()
     }
@@ -111,20 +119,21 @@ public class MotionManager: ObservableObject {
         }
     }
     
-    /// Whether the application and effective configuration currently request motion updates.
+    /// Whether the shared Core Motion service should be running.
     ///
     /// This is false while the application is in the background, when there is no enabled foreground request with a positive interval, or when every foreground request is disabled. It does not report Core Motion hardware availability.
-    public var isDetectingMotion: Bool {
+    ///
+    /// The application state and scene lifecycle are used here and nowhere else, so backgrounding stops the service without turning off the effects it feeds.
+    var needsMotionService: Bool {
         isApplicationActive && updateInterval > 0 && !disabled
     }
 
-    /// Whether motion effects can currently run for a registered scene modifier.
+    /// Whether motion updates are enabled for a registered scene modifier.
     ///
     /// - Parameter id: The scene modifier's registration identifier.
-    /// - Returns: `true` when both the scene request and shared motion service are enabled; otherwise, `false`.
-    func motionEffectsEnabled(id: UUID) -> Bool {
-        guard isDetectingMotion, let request = motionUpdateRequests[id] else { return false }
-        return request.isDetectingMotion
+    /// - Returns: `true` when that scene requested a positive interval and is not disabled; otherwise, `false`.
+    func motionUpdatesEnabled(id: UUID) -> Bool {
+        motionUpdateRequests[id]?.motionUpdatesEnabled ?? false
     }
     
     /// Adds or replaces a scene's motion-update request and applies the effective configuration.
@@ -182,12 +191,12 @@ public class MotionManager: ObservableObject {
 
     /// Publishes the aggregate scene configuration and reconciles the shared motion service.
     private func applyMotionUpdateRequests() {
-        let foregroundRequests = motionUpdateRequests.values.filter { $0.scenePhase != .background }
-
-        let minimumActiveUpdateInterval = foregroundRequests
-            .filter(\.isDetectingMotion)
+        let minimumActiveUpdateInterval = motionUpdateRequests.values
+            .filter(\.needsMotionService)
             .map(\.updateInterval)
             .min() ?? 0
+
+        let foregroundRequests = motionUpdateRequests.values.filter { $0.scenePhase != .background }
         
         let allRequestsDisabled = !foregroundRequests.isEmpty && foregroundRequests.allSatisfy(\.disabled)
 
@@ -227,7 +236,7 @@ public class MotionManager: ObservableObject {
     ///
     /// - Parameter forceRestart: Whether to restart an already-requested service even when its effective interval is unchanged.
     private func restartMotionUpdatesIfNeeded(forceRestart: Bool = false) {
-        guard isDetectingMotion else {
+        guard needsMotionService else {
             if cmManager.isDeviceMotionActive {
                 cmManager.stopDeviceMotionUpdates()
             }
@@ -313,6 +322,9 @@ public class MotionManager: ObservableObject {
     
     @available(*, unavailable, message: "Moved to DeviceRotation. Read it from `motionManager.deviceRotation` or add `@EnvironmentObject var deviceRotation: DeviceRotation` to your view.")
     public var deltaRotation: Quat { fatalError() }
+    
+    @available(*, unavailable, message: "Read the `motionUpdatesEnabled` environment value instead. It reports whether motion updates are enabled for the scene containing your view, and unlike this property it stays true while the app is in the background so effects remain in the app switcher snapshot.")
+    public var isDetectingMotion: Bool { fatalError() }
     
     @available(*, unavailable, message: "Device orientation is updated internally so this call is no longer required.")
     public func changeDeviceOrientation() { fatalError() }

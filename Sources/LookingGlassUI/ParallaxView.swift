@@ -10,7 +10,7 @@ import SwiftUI
 struct ParallaxViewModifier: ViewModifier {
     @EnvironmentObject var motionManager: MotionManager
     @EnvironmentObject var deviceRotation: DeviceRotation
-    @Environment(\.sceneMotionEffectsEnabled) private var sceneMotionEffectsEnabled
+    @Environment(\.motionUpdatesEnabled) private var motionUpdatesEnabled
 
     let multiplier: CGFloat
     let maxOffset: CGFloat?
@@ -26,7 +26,7 @@ struct ParallaxViewModifier: ViewModifier {
     }
     
     var parallaxOffset: CGSize {
-        guard sceneMotionEffectsEnabled else { return .zero }
+        guard motionUpdatesEnabled else { return .zero }
         
         let maxOffset = maxOffset ?? .infinity
         

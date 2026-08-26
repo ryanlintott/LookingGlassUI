@@ -17,7 +17,7 @@ import SwiftUI
 /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
 public struct LookingGlass<Content: View>: View {
     @EnvironmentObject private var motionManager: MotionManager
-    @Environment(\.sceneMotionEffectsEnabled) private var sceneMotionEffectsEnabled
+    @Environment(\.motionUpdatesEnabled) private var motionUpdatesEnabled
 
     let type: DeviceRotationEffectType
     let distance: CGFloat?
@@ -102,7 +102,7 @@ public struct LookingGlass<Content: View>: View {
     
     public var body: some View {
         let _ = Self.printChangesIfEnabled()
-        if sceneMotionEffectsEnabled {
+        if motionUpdatesEnabled {
             GeometryReader { proxy in
                 content
                     .deviceRotationEffect(type, distance: distance, perspective: perspective, offsetRotation: offsetRotation, isShowingInFourDirections: isShowingInFourDirections)

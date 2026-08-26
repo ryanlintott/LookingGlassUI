@@ -134,6 +134,18 @@ Text("Hello, World")
 .animation(motionManager.animation, value: deviceRotation.quaternion)
 ```
 
+## motionUpdatesEnabled
+
+Every effect in this package draws only while motion updates are enabled for its scene. Read the same environment value to match your own views to the built-in ones.
+
+```swift
+@Environment(\.motionUpdatesEnabled) private var motionUpdatesEnabled
+```
+
+It's true when the nearest [`.motionManager()`](#motionmanager) modifier was given a positive `updateInterval` and was not disabled, and false when there's no such modifier above your view.
+
+Note that this describes the configuration a scene asked for, not whether samples are currently arriving. It stays true while the app is in the background: updates stop there, but effects stay on screen at their last rotation so they're still in the app switcher snapshot.
+
 # How it Works
 
 ## Window and Reflection Modes

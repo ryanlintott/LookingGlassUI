@@ -38,6 +38,7 @@ For a feature-by-feature guide with examples, see the [README](https://github.co
 - ``SwiftUICore/View/motionManager(updateInterval:disabled:)``
 - ``MotionManager``
 - ``DeviceRotation``
+- ``SwiftUICore/EnvironmentValues/motionUpdatesEnabled``
 
 ### Shimmer
 
