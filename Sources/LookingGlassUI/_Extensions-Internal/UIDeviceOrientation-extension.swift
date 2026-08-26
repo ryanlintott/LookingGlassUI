@@ -27,6 +27,26 @@ extension UIDeviceOrientation {
         }
     }
     
+    /// The screen size in the interface orientation matching this device orientation.
+    ///
+    /// `nil` for orientations the interface never takes, including face up, face down, and unknown. They say nothing about which way the interface is facing, so a caller tracking the size should keep the one it has.
+    @MainActor
+    var interfaceSize: CGSize? {
+        /// `UIScreen.bounds` is reported in the current interface orientation, which lags a device orientation change, so the fixed coordinate space is used instead. Its bounds always reflect a portrait-up orientation and are measured in points.
+        let portraitScreenSize = UIScreen.main.fixedCoordinateSpace.bounds.size
+
+        switch self {
+        case .portrait, .portraitUpsideDown:
+            return portraitScreenSize
+        case .landscapeLeft, .landscapeRight:
+            return CGSize(width: portraitScreenSize.height, height: portraitScreenSize.width)
+        case .unknown, .faceUp, .faceDown:
+            return nil
+        @unknown default:
+            return nil
+        }
+    }
+    
     var string: String {
         switch self {
         case .portrait:

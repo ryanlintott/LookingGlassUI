@@ -16,6 +16,7 @@ import SwiftUI
 /// 
 /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
 public struct LookingGlass<Content: View>: View {
+    @EnvironmentObject private var motionManager: MotionManager
     @Environment(\.sceneMotionEffectsEnabled) private var sceneMotionEffectsEnabled
 
     let type: DeviceRotationEffectType
@@ -92,16 +93,20 @@ public struct LookingGlass<Content: View>: View {
         )
     }
     
+    /// The screen size in the current interface orientation.
+    ///
+    /// Only read while motion effects are showing, as ``MotionManager`` is only in the environment below a ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` modifier.
+    private var interfaceSize: CGSize {
+        motionManager.interfaceSize
+    }
+    
     public var body: some View {
         let _ = Self.printChangesIfEnabled()
         if sceneMotionEffectsEnabled {
             GeometryReader { proxy in
                 content
                     .deviceRotationEffect(type, distance: distance, perspective: perspective, offsetRotation: offsetRotation, isShowingInFourDirections: isShowingInFourDirections)
-                    .frame(
-                        width: UIScreen.main.bounds.width,
-                        height: UIScreen.main.bounds.height
-                    )
+                    .frame(width: interfaceSize.width, height: interfaceSize.height)
                     .offset(x: (proxy.size.width / 2) - proxy.frame(in: .global).midX, y: (proxy.size.height / 2) - proxy.frame(in: .global).midY)
             }
         } else {

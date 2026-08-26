@@ -71,6 +71,11 @@ public class MotionManager: ObservableObject {
     /// Unknown, face-up, face-down, and orientations excluded by the app's supported interface orientations do not replace the current value.
     @Published public private(set) var deviceOrientation: UIDeviceOrientation = .unknown
     
+    /// The screen size in the current interface orientation.
+    ///
+    /// Seeded from `UIScreen.bounds`, which reports the interface orientation the app launched in, and updated whenever the device turns to an orientation the interface follows. It's stored rather than derived from ``deviceOrientation`` because that starts out unknown: a device lying flat has no supported orientation to report, so at launch the bounds are the only thing that knows which way the interface is facing.
+    @Published private(set) var interfaceSize: CGSize = UIScreen.main.bounds.size
+
     /// Tokens that identify the manager's notification subscriptions.
     private var notificationObservers: [NSObjectProtocol] = []
     
@@ -210,6 +215,11 @@ public class MotionManager: ObservableObject {
 
         deviceRotation.resetInitialRotation()
         deviceOrientation = newOrientation
+
+        if let newInterfaceSize = newOrientation.interfaceSize, interfaceSize != newInterfaceSize {
+            interfaceSize = newInterfaceSize
+        }
+
         return true
     }
 
