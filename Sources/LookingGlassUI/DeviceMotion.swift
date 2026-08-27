@@ -79,16 +79,18 @@ public final class DeviceMotion: ObservableObject {
         interfaceOrientation?.rotation ?? .identity
     }
     
-    /// The rotation that brings device-reference motion to rest against the screen.
+    /// The rotation of the screen, in the device reference frame.
     ///
-    /// The inverse of the device rotation returns content to the zero position, and the inverse of ``interfaceRotation`` then counteracts the interface orientation, leaving content locked to the screen however the device is held. Compose further rotations onto this to place content relative to that resting point.
+    /// ``quaternion`` says where the device is pointing and ``interfaceRotation`` says how the interface sits on it, so composing the two gives where the screen itself is facing however the device is held and whichever way the interface has turned.
+    ///
+    /// Its inverse is what brings content back to rest against the screen, which is what the rotation effects in this package apply before placing content at a real-world angle.
     public var interfaceAlignedRotation: Quat {
-        interfaceRotation.inverse * quaternion.inverse
+         quaternion * interfaceRotation
     }
 
     /// Rotation from initial device rotation to current.
     public var deltaRotation: Quat {
-        guard let initialDeviceRotation = initialDeviceRotation else {
+        guard let initialDeviceRotation else {
             return .identity
         }
         

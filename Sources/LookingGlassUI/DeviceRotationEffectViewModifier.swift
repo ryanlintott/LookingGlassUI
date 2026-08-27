@@ -59,9 +59,8 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
         /// 1. Reference frame is changed from screen to device (x and z flip)
         /// 2. provided view is rotated according to provided offset
         /// 3. result is rotated by cloneRotation to put it in front of the viewer if they face 0, -90, 90, or 180 degrees
-        /// 4. result is rotated by the inverse of the device rotation to bring it to zero
-        /// 5. result is rotated by the inverse of the interface rotation to counteract any interface orientation changes
-        (deviceMotion.interfaceRotation.inverse * deviceMotion.quaternion.inverse * cloneRotation * offsetRotation).deviceToScreenReferenceFrame
+        /// 4. result is rotated by the inverse of the interface aligned device rotation to bring it to zero
+        (deviceMotion.interfaceAlignedRotation.inverse * cloneRotation * offsetRotation).deviceToScreenReferenceFrame
     }
     
     /// Animation that smooths movement between motion updates.
