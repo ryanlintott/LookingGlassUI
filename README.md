@@ -20,7 +20,7 @@ Create shimmer, parallax or other rotation effects based on device orientation.
 - [`.deviceRotationEffect()`](#devicerotationeffect) - A view modifier that rotates a view based on device rotation.
 - [`.rotation3DEffect()`](#rotation3deffect) - A view modifier that rotates a view based on a quaternion.
 - [`Quat`](#quat) - A wrapper for simd.quaternion with handy extensions.
-- [`MotionManager` and `DeviceMotion`](#motionmanager-and-devicerotation) - Direct access to the motion configuration and the current device rotation.
+- [`MotionManager` and `DeviceMotion`](#motionmanager-and-devicemotion) - Direct access to the motion configuration and the current device rotation.
 
 # Demo App
 The `Example` folder has an app that demonstrates the features of this package.
@@ -51,13 +51,13 @@ LookingGlassUI is open source and free but if you like using it, please consider
 
 # Details
 ## .motionManager()
-Before adding any custom views, add the `.motionManager` view modifier once near the top of each scene's view hierarchy, above any other views or modifiers used in this package.
+Before adding any custom views, add the `.motionManager` view modifier once near the top of that scene's view hierarchy, above any other views or modifiers used in this package.
 ```swift
 ContentView()
     .motionManager(updateInterval: 0.1, disabled: false)
 ```
 
-Every scene gets its own `MotionManager` holding the values you passed, and they all share one Core Motion service. That service runs at the smallest updateInterval among scenes that aren't disabled and aren't in the background, so a scene can receive updates faster than it asked for but never slower. Backgrounding, closing, or disabling one scene does not stop updates needed by another.
+Every scene gets its own `MotionManager` from `.motionManager` holding the values you passed, and they all share one Core Motion service. That service runs at the smallest updateInterval among scenes that aren't disabled and aren't in the background, so a scene can receive updates faster than it asked for but never slower. Backgrounding, closing, or disabling one scene does not stop updates needed by another.
 
 ## ShimmerView
 *Requires [`.motionManager()`](#motionmanager)*
@@ -157,4 +157,4 @@ Don't worry about device orientation. Although Core Motion doesn't compensate fo
 ## Additional Rotation Diagrams
 3D space is confusing on iOS, especially as Core Motion and SwiftUI's rotation3DEffect each seem to use different axes. I created this diagram to keep track of how each one works. You probably won't need these unless you want to do something more custom. It's important to note that the Screen Rotation Axes are only used for determining rotation direction using the [right hand rule for a rotating body](https://en.wikipedia.org/wiki/Right-hand_rule). When translating a view (using .offset or similar), the axes are different with +Y towards the bottom of the screen and +X to the right. These axes are not needed as we only deal with rotation
 
-![iOS Rotation. One diagram on the left titled: Device Rotation Axes (Core Motion) shows a tall grey rectangle flat on a surface with positive Z up, positive Y to the top of the rectangle and positive X to the right. Axes have Yaw, Roll, and Pitch rotational arrows respectively, each following the right hand rule. An additional note says: Device axis do not change when orientation changes. Another diagram on the right titled: Screen Rotation Axes (SwiftUI .rotation3dEffect) shows a tall grey rectangle flat on a surface with negative Z up, positive Y to the top of the device and negative X to the right. Axes have Yaw, Roll, and Pitch rotational arrows respectively, each following the right hand rule. Another rectangle rotated 90 degrees is on top and a note reads: Screen top changes if app supports multiple orientation.](https://user-images.githubusercontent.com/2143656/152568546-00365387-9fd9-4eb7-9048-22adc92800c3.png)
+![iOS Rotation. One diagram on the left titled: Device Rotation Axes (Core Motion) shows a tall grey rectangle flat on a surface with positive Z up, positive Y to the top of the rectangle and positive X to the right. Axes have Yaw, Roll, and Pitch rotational arrows respectively, each following the right hand rule. An additional note says: Device axis do not change when orientation changes. Another diagram on the right titled: Screen Rotation Axes (SwiftUI .rotation3DEffect) shows a tall grey rectangle flat on a surface with negative Z up, positive Y to the top of the device and negative X to the right. Axes have Yaw, Roll, and Pitch rotational arrows respectively, each following the right hand rule. Another rectangle rotated 90 degrees is on top and a note reads: Screen top changes if app supports multiple orientation.](https://user-images.githubusercontent.com/2143656/152568546-00365387-9fd9-4eb7-9048-22adc92800c3.png)

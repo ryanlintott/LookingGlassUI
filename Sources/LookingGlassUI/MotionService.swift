@@ -122,6 +122,7 @@ final class MotionService: ObservableObject {
         guard needsMotionService else {
             if cmManager.isDeviceMotionActive {
                 cmManager.stopDeviceMotionUpdates()
+                deviceMotion.setActiveUpdateInterval(0)
             }
             return
         }

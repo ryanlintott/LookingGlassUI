@@ -4,27 +4,23 @@
 
 Changes since the previous versioned release, `0.4.2`.
 
-This release raises the package's minimum platform and tools version, reorganizes the repository so the example app's Xcode workspace no longer interferes with building the package on its own, coordinates one Core Motion service across multiple scenes, and substantially reduces the work shimmer effects do on every motion update.
+This release raises the package's minimum platform and tools version, now supports apps with multiple scenes correctly, and substantially reduces the work shimmer effects do on every motion update.
 
 ### Breaking Changes
 
 - Raised the minimum supported platform from iOS 14 to iOS 15.
 - Updated the package to Swift tools version 6.0 and removed the explicit `swiftLanguageVersions` setting.
-- Add `.motionManager(updateInterval:disabled:)` once near the top of each scene's view hierarchy rather than once for the whole app. `MotionManager` is now one object per scene, created and owned by that modifier, rather than a single shared instance.
-- Moved `interfaceRotation` from `MotionManager` to `DeviceMotion`, which holds what changes with the device rather than with one scene's configuration.
-- Replaced `MotionManager.deviceOrientation` with `DeviceMotion.interfaceOrientation`. It reports which way the interface is facing rather than where the device is physically pointing, which is what every use of it in this package actually needed. Both are marked unavailable with a message pointing at the replacement.
-- Moved `quaternion`, `initialDeviceRotation`, and `deltaRotation` from `MotionManager` to the new `DeviceMotion` object. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to a view below the `motionManager` view modifier. The old properties are marked unavailable with a message pointing at the replacement.
-- Removed `animatedQuaternion`. It held the same value as `quaternion` and only differed in being assigned inside a SwiftUI animation. Now that smoothing is applied by the view rather than the manager, the two would be identical. Use `DeviceMotion.quaternion` and animate it where it's displayed if you need to smooth between motion updates, matching the animation to the update interval with `.animation(deviceMotion.animation, value: deviceMotion.quaternion)`.
-- Made `MotionManager.changeDeviceOrientation()` unavailable because the manager responds to supported device-orientation changes automatically. Remove calls to this method; no replacement is needed.
-- Made `MotionManager.setUpdateInterval(_:)` unavailable. Pass the update interval to `.motionManager(updateInterval:disabled:)` instead.
-- Made `MotionManager.setDisabled(_:)` unavailable. Pass the disabled state to `.motionManager(updateInterval:disabled:)` instead.
-- Made `MotionManager.startMotionUpdates(updateInterval:disabled:setDeviceOrientation:)` unavailable. Configure motion updates with `.motionManager(updateInterval:disabled:)`; they start automatically.
-- Made `MotionManager.restart()` unavailable. Motion updates are managed automatically when their configuration changes, the device orientation changes, or the app moves between the foreground and background.
-- Made `MotionManager.stopMotionUpdates()` unavailable. Configure motion updates with `.motionManager(updateInterval:disabled:)`; they stop automatically when no enabled scene needs them or the app enters the background.
+- `MotionManager` is now one object per scene, created and owned by that modifier, rather than a single shared instance. Add `.motionManager(updateInterval:disabled:)` once near the top of each scene's view hierarchy rather than once for the whole app.
+- Several `MotionManager` properties have been moved to `DeviceMotion` to improve performance including `quaternion`, `interfaceRotation`, `initialDeviceRotation`, and `deltaRotation`. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view. This object is added to the environment with `.motionManager()`.
+- Replaced `MotionManager.deviceOrientation` with `DeviceMotion.interfaceOrientation`. It reports which way the interface is facing rather than where the device is physically pointing, which is what every use of it in this package actually needed.
+- Made `MotionManager.animatedQuaternion` unavailable. It held the same value as `quaternion` and only differed in being assigned inside a SwiftUI animation. Now that smoothing is applied by the view rather than the manager, the two would be identical. Use `DeviceMotion.quaternion` and smooth between motion updates, matching the animation to the update interval with `.animation(deviceMotion.animation, value: deviceMotion.quaternion)`.
+- Made `MotionManager.changeDeviceOrientation()` unavailable because the manager responds to supported device-orientation changes automatically.
+- Made `MotionManager.setUpdateInterval(_:)` and `MotionManager.setDisabled(_:)` unavailable. Pass values to `.motionManager(updateInterval:disabled:)` instead.
+- Made `MotionManager.startMotionUpdates(updateInterval:disabled:setDeviceOrientation:)`, `MotionManager.restart()` and `MotionManager.stopMotionUpdates()` unavailable. Configure motion updates with `.motionManager(updateInterval:disabled:)`. Updates are managed automatically when their configuration changes, the device orientation changes, or the app moves between the foreground and background.
 - `shimmer(mode:color:background:)` and `shimmer(isOn:color:background:)` now keep showing their background colour whenever the shimmer itself can't appear, matching `ShimmerView`. That covers motion updates not running and a `mode` that's off for the current colour scheme. Previously the background stayed painted when `MotionManager` was disabled but disappeared when the update interval was zero or the mode was off.
 - Made `rotation3dEffect(quaternion:anchor:anchorZ:perspective:)` unavailable, having deprecated it in `0.4.1` for being spelled with a lowercase `d`. Use `rotation3DEffect(quaternion:anchor:anchorZ:perspective:)`, which is otherwise identical.
 - Removed the `Quat4f` and `Vec3f` placeholders left behind by the move off FirebladeMath. They were already marked unavailable, so nothing that compiled against `0.4.2` referred to them.
-- Renamed `MotionManager.updateInterval` to `MotionManager.preferredUpdateInterval`, because a scene receives samples at the fastest interval any scene asked for and so can be updated faster than it requested. The rate they actually arrive at is the new `DeviceMotion.activeUpdateInterval`. The old name is marked unavailable with a message pointing at the replacement.
+- Renamed `MotionManager.updateInterval` to `MotionManager.preferredUpdateInterval`, because all scenes receives samples at the fastest preferred interval. The rate they actually arrive at can be found at `DeviceMotion.activeUpdateInterval`. The old name is marked unavailable with a message pointing at the replacement.
 
 ### Changes
 
@@ -38,10 +34,5 @@ This release raises the package's minimum platform and tools version, reorganize
 - Fixed shimmer and `LookingGlass` content being sized wrong when the app was opened in landscape. The screen was measured once at launch in whichever orientation the interface had started in, and that measurement was then swapped for landscape as though it had been taken in portrait. It now starts correct in any orientation and follows the interface as the device turns.
 - Moved the shared Xcode workspace into `Example/` so the repository root remains a plain SwiftPM package. Previously, the root `.xcworkspace` was picked up by `xcodebuild` ahead of the package, and its local package reference only resolved by coincidence of the checkout's folder name.
 - The package no longer reads `UISupportedInterfaceOrientations` from the app's `Info.plist`. It was used to discard device orientations the interface would not follow, which the window scene's interface orientation makes unnecessary.
-- Added `.spi.yml` so Swift Package Index builds documentation for the package.
-- Added a DocC catalog with a `LookingGlassUI` landing page that curates every public symbol into topic groups, matching the documentation in `FrameUp` and `ShapeUp`.
-- Added a documentation badge and a Documentation section to the README linking to the API documentation on the Swift Package Index.
-- Replaced the Twitter badge in the README with a Bluesky badge.
+- Added package documentation hosted on the Swift Package Index.
 - Documented that the `shimmer` view modifier draws copies of the view, so state inside the view that changes its size or shape may not be reflected in the shimmer and any `onAppear` or `task` on the view may run more than once.
-- Documented `MotionManager` and `QuaternionDataView`, which had no description of their own, and added a README section on reading `MotionManager` and `DeviceMotion` directly from the environment.
-- Fixed README references to `.rotation3dEffect()` that should have been `.rotation3DEffect()`.

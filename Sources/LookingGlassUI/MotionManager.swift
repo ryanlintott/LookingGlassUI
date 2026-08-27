@@ -99,22 +99,22 @@ public final class MotionManager: ObservableObject {
         MotionService.shared.reconcile()
     }
 
-    @available(*, unavailable, message: "Removed to improve performance. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view and use `deviceMotion.quaternion`, applying animation as per the documentation for that property.")
+    @available(*, unavailable, message: "Removed to improve performance. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view. This object is added to the environment with `.motionManager()`. Use `deviceMotion.quaternion`, applying animation as per the documentation for that property.")
     public var animatedQuaternion: Quat { fatalError() }
 
-    @available(*, unavailable, message: "Moved to DeviceMotion. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view.")
+    @available(*, unavailable, message: "Moved to DeviceMotion. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view. This object is added to the environment with `.motionManager()`.")
     public var quaternion: Quat { fatalError() }
 
-    @available(*, unavailable, message: "Moved to DeviceMotion. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view.")
+    @available(*, unavailable, message: "Moved to DeviceMotion. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view. This object is added to the environment with `.motionManager()`.")
     public var initialDeviceRotation: Quat? { fatalError() }
 
-    @available(*, unavailable, message: "Moved to DeviceMotion. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view.")
+    @available(*, unavailable, message: "Moved to DeviceMotion. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view. This object is added to the environment with `.motionManager()`.")
     public var deltaRotation: Quat { fatalError() }
 
-    @available(*, unavailable, renamed: "DeviceMotion.interfaceOrientation", message: "Replaced by `DeviceMotion.interfaceOrientation`, which follows the interface rather than the device and so stays correct while the device is lying flat. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view.")
+    @available(*, unavailable, message: "Replaced by `DeviceMotion.interfaceOrientation`, which follows the interface rather than the device and so stays correct while the device is lying flat. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view. This object is added to the environment with `.motionManager()`.")
     public var deviceOrientation: UIDeviceOrientation { fatalError() }
 
-    @available(*, unavailable, message: "Moved to DeviceMotion, which changes with the device rather than with this scene's configuration. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view.")
+    @available(*, unavailable, message: "Moved to DeviceMotion. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view. This object is added to the environment with `.motionManager()`.")
     public var interfaceRotation: Quat { fatalError() }
 
     @available(*, unavailable, message: "Device orientation is updated internally so this call is no longer required.")
@@ -126,12 +126,12 @@ public final class MotionManager: ObservableObject {
     @available(*, unavailable, message: "Pass the disabled state to `.motionManager(updateInterval:disabled:)` instead.")
     public func setDisabled(_ newDisabled: Bool) { fatalError() }
 
-    @available(*, unavailable, message: "Configure motion updates with `.motionManager(updateInterval:disabled:)`; they start automatically.")
+    @available(*, unavailable, message: "Motion updates start automatically so this call is no longer required. Configure motion updates with `.motionManager(updateInterval:disabled:)`.")
     public func startMotionUpdates(updateInterval: TimeInterval? = nil, disabled: Bool? = nil, setDeviceOrientation: Bool = false) { fatalError() }
 
-    @available(*, unavailable, message: "Motion updates are managed automatically when their configuration changes, device orientation changes, or the app moves between the foreground and background.")
+    @available(*, unavailable, message: "Motion updates are managed automatically when their configuration changes, device orientation changes, or the app moves between the foreground and background so this call is no longer required.")
     public func restart() { fatalError() }
 
-    @available(*, unavailable, message: "Configure motion updates with `.motionManager(updateInterval:disabled:)`; they stop automatically when no enabled scene needs them or the app enters the background.")
+    @available(*, unavailable, message: "Motion updates stop automatically when no enabled scene needs them or the app moves to the background so this call is no longer required. Configure motion updates with `.motionManager(updateInterval:disabled:)`.")
     public func stopMotionUpdates() { fatalError() }
 }
