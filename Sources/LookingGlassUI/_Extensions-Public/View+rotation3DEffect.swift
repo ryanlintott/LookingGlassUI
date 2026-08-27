@@ -1,5 +1,5 @@
 //
-//  View+rotation3dEffect.swift
+//  View+rotation3DEffect.swift
 //  LookingGlassUI
 //
 //  Created by Ryan Lintott on 2021-05-13.
@@ -8,6 +8,11 @@
 import SwiftUI
 
 extension View {
+    @available(*, unavailable, renamed: "rotation3DEffect(quaternion:anchor:anchorZ:perspective:)", message: "This method was accidentally named with a lowercase d. It was deprecated in 0.4.1 and does nothing the renamed method does not.")
+    public func rotation3dEffect(quaternion: Quat, anchor: UnitPoint, anchorZ: CGFloat, perspective: CGFloat) -> some View {
+        rotation3DEffect(quaternion: quaternion, anchor: anchor, anchorZ: anchorZ, perspective: perspective)
+    }
+
     /// Rotates this view’s rendered output in three dimensions using a quaternion.
     /// - Parameters:
     ///   - quaternion: The quaternion used to rotate the view.
