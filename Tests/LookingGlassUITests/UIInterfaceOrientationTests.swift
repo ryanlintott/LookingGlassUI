@@ -12,25 +12,32 @@ import XCTest
 @MainActor
 final class UIInterfaceOrientationTests: XCTestCase {
     /// The screen size comes from `UIScreen`, which a test can't rotate, so each orientation is checked against the portrait size rather than against fixed dimensions.
-    private var portraitScreenSize: CGSize {
-        UIInterfaceOrientation.portrait.screenSize
+    private func portraitScreenSize() throws -> CGSize {
+        try XCTUnwrap(UIInterfaceOrientation.portrait.screenSize)
     }
 
     /// The size comes from the screen's fixed coordinate space, whose bounds always reflect a portrait-up orientation however the app is oriented while the test runs.
-    func testPortraitScreenSizeIsTallerThanItIsWide() {
-        XCTAssertGreaterThan(portraitScreenSize.height, portraitScreenSize.width)
+    func testPortraitScreenSizeIsTallerThanItIsWide() throws {
+        let portrait = try portraitScreenSize()
+
+        XCTAssertGreaterThan(portrait.height, portrait.width)
     }
 
-    func testLandscapeOrientationsSwapTheScreenSize() {
-        let landscapeScreenSize = CGSize(width: portraitScreenSize.height, height: portraitScreenSize.width)
+    func testLandscapeOrientationsSwapTheScreenSize() throws {
+        let portrait = try portraitScreenSize()
+        let landscapeScreenSize = CGSize(width: portrait.height, height: portrait.width)
 
         XCTAssertEqual(UIInterfaceOrientation.landscapeLeft.screenSize, landscapeScreenSize)
         XCTAssertEqual(UIInterfaceOrientation.landscapeRight.screenSize, landscapeScreenSize)
     }
 
-    func testPortraitOrientationsKeepTheScreenSize() {
-        XCTAssertEqual(UIInterfaceOrientation.portraitUpsideDown.screenSize, portraitScreenSize)
-        XCTAssertEqual(UIInterfaceOrientation.unknown.screenSize, portraitScreenSize)
+    func testPortraitOrientationsKeepTheScreenSize() throws {
+        XCTAssertEqual(UIInterfaceOrientation.portraitUpsideDown.screenSize, try portraitScreenSize())
+    }
+
+    /// An unknown orientation says nothing about which way the screen is facing, so it must report no size at all rather than guessing at portrait and sizing content to a screen that may be turned the other way.
+    func testUnknownOrientationHasNoScreenSize() {
+        XCTAssertNil(UIInterfaceOrientation.unknown.screenSize)
     }
 
     /// The interface turns the opposite way to the device and the two use opposite names for landscape, so these signs are easy to get backwards. Landscape left is the interface turned left, which happens when the device is turned right.

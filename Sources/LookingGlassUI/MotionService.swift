@@ -40,7 +40,7 @@ final class MotionService: ObservableObject {
 
     /// The screen size in the current interface orientation.
     ///
-    /// Seeded from `UIScreen.bounds`, which reports the interface orientation the app launched in, and updated whenever the device turns to an orientation the interface follows. It's stored rather than derived from ``deviceOrientation`` because that starts out unknown: a device lying flat has no supported orientation to report, so at launch the bounds are the only thing that knows which way the interface is facing.
+    /// Seeded from `UIScreen.bounds`, which reports the interface orientation the app launched in, and updated whenever the device turns to an orientation the interface follows. It's stored rather than derived from ``DeviceMotion/interfaceOrientation`` because that starts out nil: a device lying flat has no supported orientation to report, so at launch the bounds are the only thing that knows which way the interface is facing.
     @Published private(set) var interfaceSize: CGSize = UIScreen.main.bounds.size
 
     /// Whether the application is outside the background and may run the sensor.
@@ -99,9 +99,7 @@ final class MotionService: ObservableObject {
     
     /// Reads the orientation the interface is showing and re-zeroes the rotation when it has changed.
     ///
-    /// The window scene can become readable after this object is created, so this is called again whenever that could have happened rather than only once.
-    ///
-    /// - Returns: `true` when a different orientation was applied; otherwise, `false`.
+    /// The window scene can become readable after this object is created, so this is called again whenever that could have happened rather than only once. Most of those calls find nothing new, so the sensor is only restarted when the orientation actually changed.
     func refreshInterfaceOrientation() {
         guard let newInterfaceOrientation = UIInterfaceOrientation.current else {
             return
@@ -112,9 +110,9 @@ final class MotionService: ObservableObject {
             interfaceSize = newInterfaceSize
         }
         
-        deviceMotion.setInterfaceOrientation(newInterfaceOrientation)
+        let forceRestart = deviceMotion.setInterfaceOrientation(newInterfaceOrientation)
 
-        restartMotionUpdatesIfNeeded(forceRestart: true)
+        restartMotionUpdatesIfNeeded(forceRestart: forceRestart)
     }
 
     /// Makes the Core Motion service match the scenes that need it and the application state.

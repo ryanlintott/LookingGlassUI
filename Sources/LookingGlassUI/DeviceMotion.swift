@@ -9,7 +9,7 @@ import SwiftUI
 
 /// The rotation of the device, updated on every motion update.
 ///
-/// Access this via ``MotionManager/deviceMotion`` or from the environment. ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` places it there alongside ``MotionManager``.
+/// Read this from the environment. ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` places it there alongside ``MotionManager``.
 ///
 /// ```swift
 /// @EnvironmentObject var deviceMotion: DeviceMotion
@@ -18,17 +18,17 @@ import SwiftUI
 /// These values are shared by every scene and change with the device rather than with any one scene's configuration, which is what separates them from ``MotionManager``. They also change many times a second: `ObservableObject` invalidates every observing view whenever any published property changes, so a view that reads only a scene's configuration would be re-evaluated on every motion update if these lived on the manager.
 @MainActor
 public final class DeviceMotion: ObservableObject {
-    /// The service shared by every scene in the app.
+    /// The one instance every scene reads, since the device it describes is shared by all of them.
     static let shared = DeviceMotion()
     
-    init() { }
+    private init() { }
     
     /// Rotation of device relative to zero position.
     ///
     /// This value steps once per motion update with no smoothing. Views that need smooth movement between updates animate it themselves, as `.deviceRotationEffect()` does:
     ///
     /// ```swift
-    /// .animation(motionManager.animation, value: deviceMotion.quaternion)
+    /// .animation(deviceMotion.animation, value: deviceMotion.quaternion)
     /// ```
     @Published public private(set) var quaternion: Quat = .identity
     
@@ -51,7 +51,9 @@ public final class DeviceMotion: ObservableObject {
     
     /// The orientation the interface is currently showing.
     ///
-    /// This follows the interface rather than the device, so it stays correct while the device is lying flat and is right from launch in any orientation. Once a known value is added it will not update with unknown values.
+    /// This follows the interface rather than the device, so it stays correct while the device is lying flat and is right from launch in any orientation.
+    ///
+    /// Nil until a window scene reports a known orientation. `UIInterfaceOrientation.unknown` is never stored: a scene that cannot say which way it is facing leaves the last known orientation in place rather than resetting the world to portrait.
     @Published public private(set) var interfaceOrientation: UIInterfaceOrientation? = nil
 
     /// The interval the shared motion service is running at, in seconds.
@@ -77,6 +79,9 @@ public final class DeviceMotion: ObservableObject {
         interfaceOrientation?.rotation ?? .identity
     }
     
+    /// The rotation that brings device-reference motion to rest against the screen.
+    ///
+    /// The inverse of the device rotation returns content to the zero position, and the inverse of ``interfaceRotation`` then counteracts the interface orientation, leaving content locked to the screen however the device is held. Compose further rotations onto this to place content relative to that resting point.
     public var interfaceAlignedRotation: Quat {
         interfaceRotation.inverse * quaternion.inverse
     }
@@ -95,13 +100,16 @@ public final class DeviceMotion: ObservableObject {
         initialDeviceRotation = nil
     }
 
-    /// Stores the orientation the interface is showing.
+    /// Stores the orientation the interface is showing and re-zeroes the rotation when it differs from the one already stored.
+    ///
     /// - Parameter interfaceOrientation: The window scene's interface orientation.
-    func setInterfaceOrientation(_ interfaceOrientation: UIInterfaceOrientation) {
-        guard self.interfaceOrientation != interfaceOrientation else { return }
+    /// - Returns: `true` when a different orientation was applied; otherwise, `false`. The caller restarts the sensor on `true`, so an unchanged orientation must report `false` or every notification that reads the orientation restarts it.
+    func setInterfaceOrientation(_ interfaceOrientation: UIInterfaceOrientation) -> Bool {
+        guard self.interfaceOrientation != interfaceOrientation else { return false }
 
         self.interfaceOrientation = interfaceOrientation
         resetInitialRotation()
+        return true
     }
 
     /// Stores the interval the shared motion service is running at.

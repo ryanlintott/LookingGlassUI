@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ParallaxViewModifier: ViewModifier {
-    /// Observed directly rather than taken from the environment, so a view using this effect without a ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` modifier draws nothing instead of trapping, matching the other effects.
+    /// Taken from the environment, so this effect reads the configuration of the scene containing it. Like every other effect in this package it requires a ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` modifier above it and traps without one.
     @EnvironmentObject private var motionManager: MotionManager
     @EnvironmentObject private var deviceMotion: DeviceMotion
 

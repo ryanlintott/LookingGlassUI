@@ -27,7 +27,7 @@ LookingGlass(.reflection, distance: 4000, perspective: 0, pitch: .degrees(45), y
 
 ## What each effect does when motion updates are off
 
-An effect is off when its scene passed a zero `updateInterval` or `disabled: true`, or when there is no ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` modifier above it. Each one falls back differently, so pick the one whose empty state suits the layout:
+An effect is off when its scene passed a zero `updateInterval` or `disabled: true`. Each one falls back differently, so pick the one whose empty state suits the layout:
 
 | Effect | With motion updates off |
 | --- | --- |
@@ -38,6 +38,8 @@ An effect is off when its scene passed a zero `updateInterval` or `disabled: tru
 | ``SwiftUICore/View/shimmer(mode:color:blendMode:)`` | Draws nothing over the view |
 
 Motion updates also stop while the app or the scene is in the background, but that does not turn effects off: they stay on screen at their last rotation, so they are still there in the app switcher snapshot.
+
+Every effect reads its scene's configuration from the environment, so ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` is required above it. Leaving the modifier out is a programmer error rather than a fifth way for an effect to be off, and traps rather than drawing one of the fallbacks above.
 
 Rotations use ``Quat``, a wrapper around `simd_quatd` with pitch, yaw, and local roll, and ``SwiftUICore/View/rotation3DEffect(quaternion:anchor:anchorZ:perspective:)`` applies one to any view for a smooth rotation from any orientation to any other. Interface orientation changes are compensated for automatically, so views stay locked to the real world.
 
@@ -52,8 +54,6 @@ For a feature-by-feature guide with examples, see the [README](https://github.co
 - ``SwiftUICore/View/motionManager(updateInterval:disabled:)``
 - ``MotionManager``
 - ``DeviceMotion``
-- ``SwiftUICore/EnvironmentValues/motionUpdatesEnabled``
-- ``SwiftUICore/EnvironmentValues/interfaceSize``
 
 ### Shimmer
 
