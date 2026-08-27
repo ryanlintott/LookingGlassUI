@@ -39,11 +39,8 @@ struct MotionManagerViewModifier: ViewModifier {
         let _ = Self.printChangesIfEnabled()
         content
             .environmentObject(motionManager)
-            .environmentObject(motionService.deviceMotion)
-            .environment(\.motionUpdatesEnabled, motionManager.motionUpdatesEnabled)
-            .environment(\.interfaceSize, motionService.interfaceSize)
+            .environmentObject(DeviceMotion.shared)
             .onAppear {
-                motionService.refreshInterfaceOrientation()
                 motionManager.update(updateInterval: updateInterval, disabled: disabled, scenePhase: scenePhase)
             }
             .onChange(of: updateInterval) {
@@ -67,7 +64,7 @@ public extension View {
     /// - Parameters:
     ///   - updateInterval: Interval between motion updates in seconds. 0 will disable updates, 1/60 is 60fps and will update every frame. Somewhere between 0.1 - 0.2 is a good compromise between reactivity and performance with shimmer effects. Test performance on older devices as fast updates can make a device unusable.
     ///   - disabled: Used to temporarily disable updates.
-    /// - Returns: View with ``MotionManager`` and ``DeviceMotion`` in the environment, along with the ``SwiftUICore/EnvironmentValues/motionUpdatesEnabled`` and ``SwiftUICore/EnvironmentValues/interfaceSize`` environment values
+    /// - Returns: View with ``MotionManager`` and ``DeviceMotion`` in the environment.
     func motionManager(updateInterval: TimeInterval = 0.1, disabled: Bool = false) -> some View {
         self.modifier(MotionManagerViewModifier(updateInterval: updateInterval, disabled: disabled))
     }

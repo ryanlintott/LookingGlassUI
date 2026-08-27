@@ -134,28 +134,6 @@ Text("Hello, World")
 .animation(deviceMotion.animation, value: deviceMotion.quaternion)
 ```
 
-## motionUpdatesEnabled
-
-Every effect in this package draws only while motion updates are enabled for its scene. Read the same environment value to match your own views to the built-in ones.
-
-```swift
-@Environment(\.motionUpdatesEnabled) private var motionUpdatesEnabled
-```
-
-It's true when the nearest [`.motionManager()`](#motionmanager) modifier was given a positive `updateInterval` and was not disabled, and false when there's no such modifier above your view. `\.interfaceSize` is passed down alongside it with the screen size in the current interface orientation, which is what `LookingGlass` uses to size its projection.
-
-Each built-in effect falls back differently when motion updates are off, so pick the one whose empty state suits your layout.
-
-| Effect | With motion updates off |
-| --- | --- |
-| `LookingGlass` | Takes the same space and draws nothing |
-| `.deviceRotationEffect()` | Draws nothing and takes no space |
-| `.parallax()` | Draws the view unmoved |
-| `ShimmerView` and `.shimmer(color:background:)` | Draws the background colour alone |
-| `.shimmer(color:blendMode:)` | Draws nothing over the view |
-
-Note that this describes the configuration a scene asked for, not whether samples are currently arriving. It stays true while the app is in the background: updates stop there, but effects stay on screen at their last rotation so they're still in the app switcher snapshot.
-
 # How it Works
 
 ## Window and Reflection Modes

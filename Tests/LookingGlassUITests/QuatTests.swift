@@ -74,4 +74,29 @@ final class QuatTests: XCTestCase {
             XCTAssertEqual(angle.radians, quat.angle.radians, accuracy: 1e-7)
         }
     }
+
+    /// Rotations that point the bottom of the device along each horizontal axis.
+    ///
+    /// The clone rotation is calculated by rotating a vector pointing straight down by the device rotation and checking which horizontal axis it points along.
+    private static let towardsPositiveY = Quat(angle: .degrees(90), axis: .xAxis)
+    private static let towardsNegativeY = Quat(angle: .degrees(-90), axis: .xAxis)
+    private static let towardsNegativeX = Quat(angle: .degrees(90), axis: .yAxis)
+    private static let towardsPositiveX = Quat(angle: .degrees(-90), axis: .yAxis)
+
+    func testCloneRotationFlatIsIdentity() {
+        XCTAssertEqual(Quat.identity.cloneRotation, .identity)
+    }
+
+    /// A zero angle rotation must be exactly equal to identity or the change check in `DeviceMotion.update(quaternion:)` would report a change every time the device passed through this quadrant.
+    func testZeroAngleRotationEqualsIdentity() {
+        XCTAssertEqual(Quat(angle: .zero, axis: .zAxis), .identity)
+        XCTAssertEqual(Self.towardsPositiveY.cloneRotation, .identity)
+    }
+
+    func testCloneRotationForEachDirection() {
+        XCTAssertEqual(Self.towardsPositiveY.cloneRotation, .identity)
+        XCTAssertEqual(Self.towardsNegativeY.cloneRotation, Quat(angle: .radians(.pi), axis: .zAxis))
+        XCTAssertEqual(Self.towardsPositiveX.cloneRotation, Quat(angle: .radians(-.pi / 2), axis: .zAxis))
+        XCTAssertEqual(Self.towardsNegativeX.cloneRotation, Quat(angle: .radians(.pi / 2), axis: .zAxis))
+    }
 }

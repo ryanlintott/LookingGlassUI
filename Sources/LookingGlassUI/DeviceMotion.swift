@@ -18,6 +18,9 @@ import SwiftUI
 /// These values are shared by every scene and change with the device rather than with any one scene's configuration, which is what separates them from ``MotionManager``. They also change many times a second: `ObservableObject` invalidates every observing view whenever any published property changes, so a view that reads only a scene's configuration would be re-evaluated on every motion update if these lived on the manager.
 @MainActor
 public final class DeviceMotion: ObservableObject {
+    /// The service shared by every scene in the app.
+    static let shared = DeviceMotion()
+    
     init() { }
     
     /// Rotation of device relative to zero position.
@@ -48,8 +51,8 @@ public final class DeviceMotion: ObservableObject {
     
     /// The orientation the interface is currently showing.
     ///
-    /// This follows the interface rather than the device, so it stays correct while the device is lying flat and is right from launch in any orientation.
-    @Published public private(set) var interfaceOrientation: UIInterfaceOrientation = .unknown
+    /// This follows the interface rather than the device, so it stays correct while the device is lying flat and is right from launch in any orientation. Once a known value is added it will not update with unknown values.
+    @Published public private(set) var interfaceOrientation: UIInterfaceOrientation? = nil
 
     /// The interval the shared motion service is running at, in seconds.
     ///
@@ -71,7 +74,11 @@ public final class DeviceMotion: ObservableObject {
     ///
     /// Use this rotation when converting device-reference motion into screen-relative motion.
     public var interfaceRotation: Quat {
-        interfaceOrientation.rotation
+        interfaceOrientation?.rotation ?? .identity
+    }
+    
+    public var interfaceAlignedRotation: Quat {
+        interfaceRotation.inverse * quaternion.inverse
     }
 
     /// Rotation from initial device rotation to current.
@@ -94,6 +101,7 @@ public final class DeviceMotion: ObservableObject {
         guard self.interfaceOrientation != interfaceOrientation else { return }
 
         self.interfaceOrientation = interfaceOrientation
+        resetInitialRotation()
     }
 
     /// Stores the interval the shared motion service is running at.
@@ -112,7 +120,7 @@ public final class DeviceMotion: ObservableObject {
         }
         
         /// This only changes when the device crosses a 45 degree boundary.
-        let cloneRotation = Self.cloneRotation(for: quaternion)
+        let cloneRotation = quaternion.cloneRotation
         cloneRotationDidChange = self.cloneRotation != cloneRotation
         if cloneRotationDidChange {
             self.cloneRotation = cloneRotation
@@ -120,40 +128,5 @@ public final class DeviceMotion: ObservableObject {
         
         /// Set without animation so every observing view is invalidated once per motion update with a single transaction. Smoothing between updates is applied by the view that needs it in ``DeviceRotationEffectViewModifier``.
         self.quaternion = quaternion
-    }
-    
-    /// Calculates the rotation that moves content to the closest xy axis to the one the device is pointing at.
-    /// - Parameter quaternion: Rotation of the device relative to zero position.
-    /// - Returns: A rotation around the z axis of 0, 90, 180, or -90 degrees. (device reference frame)
-    static func cloneRotation(for quaternion: Quat) -> Quat {
-        // start with a vector pointing straight down
-        let originVector = Vec3(x: 0, y: 0, z: -1)
-        
-        // rotate the vector by the device orientation to see where the bottom of the device is pointing
-        let rotatedVector = quaternion.rotating(originVector)
-        
-        let angle: Angle
-        // check if the device is pointing more towards the x or y axis
-        if abs(rotatedVector.x) > abs(rotatedVector.y) {
-            // check which way it's pointing on the x axis and provide the appropriate rotation
-            if rotatedVector.x >= 0 {
-                // rotate -90 degrees
-                angle = .radians(-.pi / 2)
-            } else {
-                // rotate 90 degrees
-                angle = .radians(.pi / 2)
-            }
-        } else {
-            // check which way it's pointing on the y axis and provide the appropriate rotation
-            if rotatedVector.y >= 0 {
-                // rotate 0 degrees
-                angle = .zero
-            } else {
-                // rotate 180 degrees
-                angle = .radians(.pi)
-            }
-        }
-        
-        return Quat(angle: angle, axis: .zAxis)
     }
 }

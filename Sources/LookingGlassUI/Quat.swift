@@ -161,4 +161,41 @@ public extension Quat {
     func rotating(_ vector: Vec3) -> Vec3 {
         simd_act(simd.normalized, vector)
     }
+    
+    /// This rotations's z axis rotation rounded to the nearest 90 degrees (zero, 90, 180, or -90 degrees).
+    ///
+    /// This is the rotation about the z axis that turns the positive y axis onto whichever horizontal axis a vector rotated by this quaternion would point towards. It changes only when this rotation crosses a 45 degree boundary and starts pointing more towards another axis.
+    ///
+    /// Used by effects with `isShowingInFourDirections` active, where snapping to the nearest quarter turn is what keeps a copy of the content facing the viewer.
+    var cloneRotation: Quat {
+        // start with a vector pointing straight down. This is the direction a device points when it lays flat on the table.
+        let originVector = Vec3(x: 0, y: 0, z: -1)
+
+        // rotate the vector by this quaternion to see where the device is pointing
+        let rotatedVector = rotating(originVector)
+
+        let angle: Angle
+        // check if the device is pointing more towards the x or y axis
+        if abs(rotatedVector.x) > abs(rotatedVector.y) {
+            // check which way it's pointing on the x axis and provide the appropriate rotation
+            if rotatedVector.x >= 0 {
+                // rotate -90 degrees
+                angle = .radians(-.pi / 2)
+            } else {
+                // rotate 90 degrees
+                angle = .radians(.pi / 2)
+            }
+        } else {
+            // check which way it's pointing on the y axis and provide the appropriate rotation
+            if rotatedVector.y >= 0 {
+                // rotate 0 degrees
+                angle = .zero
+            } else {
+                // rotate 180 degrees
+                angle = .radians(.pi)
+            }
+        }
+        // a rotation that will turn a vector pointing at the positive Y axis towards whatever axis is closest.
+        return Quat(angle: angle, axis: .zAxis)
+    }
 }

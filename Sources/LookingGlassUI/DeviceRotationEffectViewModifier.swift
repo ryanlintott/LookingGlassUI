@@ -26,8 +26,8 @@ public enum DeviceRotationEffectType: String, RawRepresentable, CaseIterable, Ha
 
 struct DeviceRotationEffectViewModifier: ViewModifier {
     /// Observed directly rather than taken from the environment, so a view using this effect without a ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` modifier draws nothing instead of trapping, matching the other effects.
-    @ObservedObject private var deviceMotion = MotionService.shared.deviceMotion
-    @Environment(\.motionUpdatesEnabled) private var motionUpdatesEnabled
+    @EnvironmentObject private var motionManager: MotionManager
+    @EnvironmentObject private var deviceMotion: DeviceMotion
 
     let distance: CGFloat
     let perspective: CGFloat
@@ -76,7 +76,7 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         let _ = Self.printChangesIfEnabled()
-        if motionUpdatesEnabled {
+        if motionManager.isDetectingMotion {
             content
                 .rotation3DEffect(quaternion: rotation, anchor: .center, anchorZ: distance, perspective: perspective)
                 /// Animated on the device rotation rather than on `rotation` so only device movement is smoothed. `rotation` also changes when the interface orientation changes and that 90 degree step must snap.

@@ -9,8 +9,8 @@ import SwiftUI
 
 struct ParallaxViewModifier: ViewModifier {
     /// Observed directly rather than taken from the environment, so a view using this effect without a ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` modifier draws nothing instead of trapping, matching the other effects.
-    @ObservedObject private var deviceMotion = MotionService.shared.deviceMotion
-    @Environment(\.motionUpdatesEnabled) private var motionUpdatesEnabled
+    @EnvironmentObject private var motionManager: MotionManager
+    @EnvironmentObject private var deviceMotion: DeviceMotion
 
     let multiplier: CGFloat
     let maxOffset: CGFloat?
@@ -26,7 +26,7 @@ struct ParallaxViewModifier: ViewModifier {
     }
     
     var parallaxOffset: CGSize {
-        guard motionUpdatesEnabled else { return .zero }
+        guard motionManager.isDetectingMotion else { return .zero }
         
         let maxOffset = maxOffset ?? .infinity
         

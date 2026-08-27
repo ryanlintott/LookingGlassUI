@@ -36,15 +36,12 @@ final class MotionService: ObservableObject {
     private var managers: [WeakManager] = []
 
     /// The current and initial device rotations derived from Core Motion updates.
-    let deviceMotion = DeviceMotion()
+    let deviceMotion = DeviceMotion.shared
 
     /// The screen size in the current interface orientation.
     ///
     /// Seeded from `UIScreen.bounds`, which reports the interface orientation the app launched in, and updated whenever the device turns to an orientation the interface follows. It's stored rather than derived from ``deviceOrientation`` because that starts out unknown: a device lying flat has no supported orientation to report, so at launch the bounds are the only thing that knows which way the interface is facing.
     @Published private(set) var interfaceSize: CGSize = UIScreen.main.bounds.size
-
-    /// The orientation the interface is currently showing.
-    private var interfaceOrientation: UIInterfaceOrientation = .unknown
 
     /// Whether the application is outside the background and may run the sensor.
     private var isApplicationActive: Bool
@@ -56,7 +53,7 @@ final class MotionService: ObservableObject {
     private init() {
         isApplicationActive = UIApplication.shared.applicationState != .background
         startObservingNotifications()
-        _ = setInterfaceOrientationIfNeeded()
+        refreshInterfaceOrientation()
     }
 
     /// Whether the Core Motion service should be running.
@@ -99,35 +96,25 @@ final class MotionService: ObservableObject {
         isApplicationActive = isActive
         restartMotionUpdatesIfNeeded()
     }
-
-    /// Re-reads the interface orientation and restarts the service when it has changed.
+    
+    /// Reads the orientation the interface is showing and re-zeroes the rotation when it has changed.
     ///
-    /// The scene is the only thing that knows which way the interface is facing, and it can become readable after this service is created, so this is called again whenever that could have happened rather than only at launch.
-    func refreshInterfaceOrientation() {
-        guard setInterfaceOrientationIfNeeded() else { return }
-
-        restartMotionUpdatesIfNeeded(forceRestart: true)
-    }
-
-    /// Applies the window scene's interface orientation when it differs from ``interfaceOrientation``.
+    /// The window scene can become readable after this object is created, so this is called again whenever that could have happened rather than only once.
     ///
     /// - Returns: `true` when a different orientation was applied; otherwise, `false`.
-    private func setInterfaceOrientationIfNeeded() -> Bool {
-        guard let newInterfaceOrientation = UIInterfaceOrientation.current,
-              interfaceOrientation != newInterfaceOrientation else {
-            return false
+    func refreshInterfaceOrientation() {
+        guard let newInterfaceOrientation = UIInterfaceOrientation.current else {
+            return
         }
-
-        deviceMotion.resetInitialRotation()
-        interfaceOrientation = newInterfaceOrientation
-        deviceMotion.setInterfaceOrientation(newInterfaceOrientation)
-
-        let newInterfaceSize = newInterfaceOrientation.screenSize
-        if interfaceSize != newInterfaceSize {
+        
+        if let newInterfaceSize = newInterfaceOrientation.screenSize,
+           interfaceSize != newInterfaceSize {
             interfaceSize = newInterfaceSize
         }
+        
+        deviceMotion.setInterfaceOrientation(newInterfaceOrientation)
 
-        return true
+        restartMotionUpdatesIfNeeded(forceRestart: true)
     }
 
     /// Makes the Core Motion service match the scenes that need it and the application state.
@@ -203,7 +190,7 @@ final class MotionService: ObservableObject {
             ) { [weak self] _ in
                 Task { @MainActor [weak self] in
                     guard let self else { return }
-                    _ = self.setInterfaceOrientationIfNeeded()
+                    self.refreshInterfaceOrientation()
                     self.setApplicationActive(true)
                 }
             },

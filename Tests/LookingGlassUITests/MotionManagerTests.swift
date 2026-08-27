@@ -26,14 +26,14 @@ final class MotionManagerTests: XCTestCase {
 
     func testMotionUpdatesFollowTheRequestedConfiguration() {
         let manager = makeManager(updateInterval: 0.1, disabled: false)
-        XCTAssertTrue(manager.motionUpdatesEnabled)
+        XCTAssertTrue(manager.isDetectingMotion)
         XCTAssertTrue(manager.needsMotionService)
 
         manager.update(updateInterval: 0, disabled: false, scenePhase: .active)
-        XCTAssertFalse(manager.motionUpdatesEnabled, "a zero interval is a request for no updates")
+        XCTAssertFalse(manager.isDetectingMotion, "a zero interval is a request for no updates")
 
         manager.update(updateInterval: 0.1, disabled: true, scenePhase: .active)
-        XCTAssertFalse(manager.motionUpdatesEnabled)
+        XCTAssertFalse(manager.isDetectingMotion)
     }
 
     /// Backgrounding stops motion updates but must leave the effects they feed on screen, or the app switcher snapshot is taken without them.
@@ -41,7 +41,7 @@ final class MotionManagerTests: XCTestCase {
         let manager = makeManager()
 
         manager.update(updateInterval: 0.1, disabled: false, scenePhase: .background)
-        XCTAssertTrue(manager.motionUpdatesEnabled, "the scene entering the background must not turn its effects off")
+        XCTAssertTrue(manager.isDetectingMotion, "the scene entering the background must not turn its effects off")
         XCTAssertFalse(manager.needsMotionService, "the scene entering the background must stop its motion updates")
 
         manager.update(updateInterval: 0.1, disabled: false, scenePhase: .inactive)
@@ -106,7 +106,7 @@ final class MotionManagerTests: XCTestCase {
 
         service.setApplicationActive(false)
         XCTAssertFalse(service.needsMotionService, "the application entering the background must stop the service")
-        XCTAssertTrue(manager.motionUpdatesEnabled, "the application entering the background must not turn effects off")
+        XCTAssertTrue(manager.isDetectingMotion, "the application entering the background must not turn effects off")
 
         service.setApplicationActive(true)
         XCTAssertTrue(service.needsMotionService)

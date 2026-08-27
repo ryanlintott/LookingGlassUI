@@ -55,15 +55,15 @@ public final class MotionManager: ObservableObject {
     /// Whether motion updates are enabled for this scene.
     ///
     /// Deliberately independent of the scene lifecycle: a backgrounded scene keeps its effects on screen, where they're still captured in the app switcher snapshot, and only stops receiving new samples.
-    public var motionUpdatesEnabled: Bool {
+    public var isDetectingMotion: Bool {
         preferredUpdateInterval > 0 && !disabled
     }
 
     /// Whether this scene currently needs the shared motion service running.
     ///
-    /// The same as ``motionUpdatesEnabled`` but for the scene lifecycle, which is what separates asking for updates from receiving them.
+    /// The same as ``isDetectingMotion`` but for the scene lifecycle, which is what separates asking for updates from receiving them.
     var needsMotionService: Bool {
-        scenePhase != .background && motionUpdatesEnabled
+        scenePhase != .background && isDetectingMotion
     }
 
     @available(*, unavailable, renamed: "preferredUpdateInterval", message: "Renamed because a scene can receive samples faster than it asked for. `DeviceMotion.activeUpdateInterval` reports the rate they actually arrive at.")
@@ -116,9 +116,6 @@ public final class MotionManager: ObservableObject {
 
     @available(*, unavailable, message: "Moved to DeviceMotion, which changes with the device rather than with this scene's configuration. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view.")
     public var interfaceRotation: Quat { fatalError() }
-
-    @available(*, unavailable, message: "Read the `motionUpdatesEnabled` environment value instead. It reports whether motion updates are enabled for the scene containing your view, and unlike this property it stays true while the app is in the background so effects remain in the app switcher snapshot.")
-    public var isDetectingMotion: Bool { fatalError() }
 
     @available(*, unavailable, message: "Device orientation is updated internally so this call is no longer required.")
     public func changeDeviceOrientation() { fatalError() }
