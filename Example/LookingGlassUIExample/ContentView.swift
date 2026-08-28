@@ -46,7 +46,7 @@ struct ContentView: View {
                             Text("Device")
                         }
                     
-                    InterfaceAlignedDeltaRotationExample()
+                    DeltaRotationExample()
                         .tabItem {
                             Image(systemName: "rotate.3d")
                             Text("Delta")

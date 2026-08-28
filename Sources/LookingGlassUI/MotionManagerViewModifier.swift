@@ -11,9 +11,6 @@ struct MotionManagerViewModifier: ViewModifier {
     /// The lifecycle state of the scene that contains the modified view.
     @Environment(\.scenePhase) private var scenePhase
 
-    /// The shared service, observed for the device-wide values passed down the environment.
-    @ObservedObject private var motionService = MotionService.shared
-
     /// This scene's manager.
     ///
     /// Owned by SwiftUI, so it's deallocated when the scene's state is destroyed and the shared service loses this scene's claim on it without needing to be told.

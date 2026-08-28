@@ -76,7 +76,7 @@ final class DeviceMotionTests: XCTestCase {
 
     /// Settles the device at ``restingAttitude`` in `orientation`, then tilts it by `tilt` about the screen's own axes.
     ///
-    /// Conjugating by the interface rotation is what makes `tilt` mean the same physical movement of the screen in every orientation, which is the thing the interface-aligned delta has to recover.
+    /// Conjugating by the interface rotation is what makes `tilt` mean the same physical movement of the screen in every orientation, which is the thing the delta rotation has to recover.
     private func settle(in orientation: UIInterfaceOrientation, thenTiltBy tilt: Quat) {
         _ = deviceMotion.setInterfaceOrientation(orientation)
         deviceMotion.resetInitialRotation()
@@ -87,7 +87,7 @@ final class DeviceMotionTests: XCTestCase {
     }
 
     /// The same physical tilt of the screen must produce the same rotation in every interface orientation. Measuring it about the reference frame instead put it around ninety degrees out in landscape and a hundred and eighty in upside down portrait.
-    func testInterfaceAlignedDeltaIsTheSameInEveryInterfaceOrientation() {
+    func testDeltaRotationIsTheSameInEveryInterfaceOrientation() {
         let tilt = Quat(angle: .degrees(20), axis: .xAxis)
 
         for orientation in [UIInterfaceOrientation.portrait, .landscapeLeft, .landscapeRight, .portraitUpsideDown] {

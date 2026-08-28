@@ -58,7 +58,7 @@ public final class DeviceMotion: ObservableObject {
 
     /// The interval the shared motion service is running at, in seconds.
     ///
-    /// This is the fastest interval any live scene needs, so it can be shorter than the ``MotionManager/preferredUpdateInterval`` a given scene asked for. Zero while the service is stopped.
+    /// This is the fastest interval any live scene needs, so it can be shorter than the ``MotionManager/preferredUpdateInterval`` a given scene asked for. Zero when no scene needs motion updates.
     @Published public private(set) var activeUpdateInterval: TimeInterval = 0
 
     /// A linear animation whose duration matches the rate samples actually arrive at.
@@ -79,7 +79,7 @@ public final class DeviceMotion: ObservableObject {
         interfaceOrientation?.rotation ?? .identity
     }
 
-    /// Used to rotate a SwiftUI view to match an initial device orientation. The initial rotation is reset whenever the interface orientation changes, motion updates are disabled or the scene is in the background. Screen reference frame.
+    /// Used to rotate a SwiftUI view to match an initial device orientation. The initial rotation is reset whenever the interface orientation changes. Screen reference frame.
     public var deltaRotation: Quat {
         guard let initialDeviceRotation else {
             return .identity
@@ -106,11 +106,11 @@ public final class DeviceMotion: ObservableObject {
         /// 0. Start with content on the phone in the current position and orientation.
         /// 1. Rotate so that the top of content matches the top of the phone
         /// 2. Rotate back to the `.identity` position for the phone (face up)
-        /// 3. Rotate to the axis that best aligns with the current device rotation
-        /// 4. Rotate to the requested offset
-        /// 5. Rotate to so the content is the right way up in the current interface orientation.
+        /// 3. Rotate to point the top of the interface for a phone in the `.identity` device position.
+        /// 4. Rotate to the axis that best aligns with the current interface.
+        /// 5. Rotate to the requested offset.
         /// 6. Translate all this rotation from device coordinates to screen coordinates
-        return (interfaceRotation.inverse * quaternion.inverse * cloneRotation * offset * interfaceRotation).deviceToScreenReferenceFrame
+        return (interfaceRotation.inverse * quaternion.inverse * interfaceRotation * cloneRotation * offset).deviceToScreenReferenceFrame
     }
 
     /// Clears the initial device rotation so the next motion update becomes the new zero position.
@@ -146,8 +146,8 @@ public final class DeviceMotion: ObservableObject {
             initialDeviceRotation = quaternion
         }
         
-        /// This only changes when the device crosses a 45 degree boundary.
-        let cloneRotation = Self.cloneRotation(for: quaternion)
+        /// The clone rotation uses the inverse of the interface rotation because in some orientations the top of the device might point in a completely different direction from the top of the interface.
+        let cloneRotation = Self.cloneRotation(for: interfaceRotation.inverse * quaternion)
         cloneRotationDidChange = self.cloneRotation != cloneRotation
         if cloneRotationDidChange {
             self.cloneRotation = cloneRotation

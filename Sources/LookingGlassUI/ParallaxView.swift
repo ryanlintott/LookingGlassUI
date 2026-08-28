@@ -47,7 +47,7 @@ public extension View {
     ///
     /// - Parameters:
     ///   - multiplier: How much to move the view. Distance is the radians of the rotation multiplied by this multiplier.
-    ///   - maxOffset: Clamps the movement to a maximum distance in x and y directions..
+    ///   - maxOffset: Limits the movement to a maximum distance from the resting position, in any direction.
     /// - Returns: The view moved to create a parallax effect based on device orientation.
     func parallax(multiplier: CGFloat = 50, maxOffset: CGFloat? = nil) -> some View {
         modifier(ParallaxViewModifier(multiplier: multiplier, maxOffset: maxOffset))

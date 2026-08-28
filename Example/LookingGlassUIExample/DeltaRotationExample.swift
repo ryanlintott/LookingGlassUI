@@ -1,5 +1,5 @@
 //
-//  InterfaceAlignedDeltaRotationExample.swift
+//  DeltaRotationExample.swift
 //  LookingGlassUIExample
 //
 //  Created by Ryan Lintott on 2026-08-27.
@@ -8,8 +8,8 @@
 import LookingGlassUI
 import SwiftUI
 
-/// Applies `DeviceMotion.interfaceAlignedDeltaRotation` directly to a view so the object turns with the device, about the screen's own axes, from wherever the device was when updates started.
-struct InterfaceAlignedDeltaRotationExample: View {
+/// Applies `DeviceMotion.deltaRotation` directly to a view so the object turns with the device, about the screen's own axes, from wherever the device was when updates started.
+struct DeltaRotationExample: View {
     @EnvironmentObject private var motionManager: MotionManager
     @EnvironmentObject private var deviceMotion: DeviceMotion
 
@@ -70,9 +70,9 @@ struct InterfaceAlignedDeltaRotationExample: View {
     }
 }
 
-struct InterfaceAlignedDeltaRotationExample_Previews: PreviewProvider {
+struct DeltaRotationExample_Previews: PreviewProvider {
     static var previews: some View {
-        InterfaceAlignedDeltaRotationExample()
+        DeltaRotationExample()
             .motionManager(updateInterval: 0)
     }
 }
