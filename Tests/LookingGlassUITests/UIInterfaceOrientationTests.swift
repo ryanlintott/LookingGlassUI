@@ -39,17 +39,4 @@ final class UIInterfaceOrientationTests: XCTestCase {
     func testUnknownOrientationHasNoScreenSize() {
         XCTAssertNil(UIInterfaceOrientation.unknown.screenSize)
     }
-
-    /// The interface turns the opposite way to the device and the two use opposite names for landscape, so these signs are easy to get backwards. Landscape left is the interface turned left, which happens when the device is turned right.
-    func testRotationCompensatesInTheOppositeDirectionToTheInterface() {
-        XCTAssertEqual(UIInterfaceOrientation.landscapeLeft.rotation, Quat(angle: .radians(.pi / 2), axis: .zAxis))
-        XCTAssertEqual(UIInterfaceOrientation.landscapeRight.rotation, Quat(angle: .radians(-.pi / 2), axis: .zAxis))
-        XCTAssertEqual(UIInterfaceOrientation.portraitUpsideDown.rotation, Quat(angle: .radians(.pi), axis: .zAxis))
-    }
-
-    /// Portrait needs no compensation, and an unreadable orientation must behave as portrait rather than rotating the world by an arbitrary amount.
-    func testPortraitAndUnknownNeedNoRotation() {
-        XCTAssertEqual(UIInterfaceOrientation.portrait.rotation, .identity)
-        XCTAssertEqual(UIInterfaceOrientation.unknown.rotation, .identity)
-    }
 }

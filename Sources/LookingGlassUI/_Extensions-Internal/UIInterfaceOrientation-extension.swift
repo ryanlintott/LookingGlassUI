@@ -52,25 +52,25 @@ extension UIInterfaceOrientation {
         }
     }
 
-    /// The quaternion that compensates for this interface orientation.
+    /// Rotates a view from this interface orientation so it points the top of the device in the device reference frame.
     ///
     /// The interface rotates in the opposite direction to the device, and the two use opposite names for landscape: `UIInterfaceOrientation.landscapeLeft` is the interface turned to the left, which is what happens when the device is turned to the right.
-    ///
-    /// Device reference frame.
-    var rotation: Quat {
+    var rotation: Quat? {
         switch self {
         // interface turned to the left, device turned to the right
         case .landscapeLeft:
-            return Quat(angle: .radians(.pi / 2), axis: .zAxis)
+            Quat(angle: .radians(.pi / 2), axis: .zAxis)
         // interface turned to the right, device turned to the left
         case .landscapeRight:
-            return Quat(angle: .radians(-.pi / 2), axis: .zAxis)
+            Quat(angle: .radians(-.pi / 2), axis: .zAxis)
         case .portraitUpsideDown:
-            return Quat(angle: .radians(.pi), axis: .zAxis)
-        case .portrait, .unknown:
-            return .identity
+            Quat(angle: .radians(.pi), axis: .zAxis)
+        case .portrait:
+            .identity
+        case .unknown:
+            nil
         @unknown default:
-            return .identity
+            nil
         }
     }
 }

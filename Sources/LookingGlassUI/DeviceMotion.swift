@@ -78,25 +78,41 @@ public final class DeviceMotion: ObservableObject {
     public var interfaceRotation: Quat {
         interfaceOrientation?.rotation ?? .identity
     }
-    
-    /// The rotation of the screen, in the device reference frame.
-    ///
-    /// ``quaternion`` says where the device is pointing and ``interfaceRotation`` says how the interface sits on it, so composing the two gives where the screen itself is facing however the device is held and whichever way the interface has turned.
-    ///
-    /// Its inverse is what brings content back to rest against the screen, which is what the rotation effects in this package apply before placing content at a real-world angle.
-    public var interfaceAlignedRotation: Quat {
-         quaternion * interfaceRotation
-    }
 
-    /// Rotation from initial device rotation to current.
+    /// Used to rotate a SwiftUI view to match an initial device orientation. The initial rotation is reset whenever the interface orientation changes, motion updates are disabled or the scene is in the background. Screen reference frame.
     public var deltaRotation: Quat {
         guard let initialDeviceRotation else {
             return .identity
         }
-        
-        return (quaternion * initialDeviceRotation.inverse)
+        /// All rotations are provided in the device reference frame
+        /// 0. Start with content on the phone in the current position and orientation.
+        /// 1. Rotate so that the top of content matches the top of the phone
+        /// 2. Rotate back to the `.identity` position for the phone (face up)
+        /// 3. Rotate to match the initial position
+        /// 4. Rotate to so the content is the right way up in the current interface orientation.
+        /// 5. Translate all this rotation from device coordinates to screen coordinates
+        return (interfaceRotation.inverse * quaternion.inverse * initialDeviceRotation * interfaceRotation).deviceToScreenReferenceFrame
     }
     
+    /// Used to rotate a SwiftUI view so it appears locked to an orientation in the real world.
+    /// - Parameter offset: The rotational offset from a flat position with the top pointing away from the user. Device reference frame.
+    /// - Parameter isShowingInFourDirections: If enabled and the device turns more than 45 degrees on the z axis away from one of the x or y axis directions the view will rotate 90 degrees towards the new closest axis direction.
+    /// - Returns: The rotation to use to rotate a swiftUI view into a real world location with a rotation effect modifier. Screen reference frame.
+    public func realWorldOrientation(offset: Quat, isShowingInFourDirections: Bool = false) -> Quat {
+        
+        let cloneRotation = isShowingInFourDirections ? cloneRotation : .identity
+        
+        /// All rotations are provided in the device reference frame
+        /// 0. Start with content on the phone in the current position and orientation.
+        /// 1. Rotate so that the top of content matches the top of the phone
+        /// 2. Rotate back to the `.identity` position for the phone (face up)
+        /// 3. Rotate to the axis that best aligns with the current device rotation
+        /// 4. Rotate to the requested offset
+        /// 5. Rotate to so the content is the right way up in the current interface orientation.
+        /// 6. Translate all this rotation from device coordinates to screen coordinates
+        return (interfaceRotation.inverse * quaternion.inverse * cloneRotation * offset * interfaceRotation).deviceToScreenReferenceFrame
+    }
+
     /// Clears the initial device rotation so the next motion update becomes the new zero position.
     func resetInitialRotation() {
         initialDeviceRotation = nil
@@ -109,8 +125,8 @@ public final class DeviceMotion: ObservableObject {
     func setInterfaceOrientation(_ interfaceOrientation: UIInterfaceOrientation) -> Bool {
         guard self.interfaceOrientation != interfaceOrientation else { return false }
 
-        self.interfaceOrientation = interfaceOrientation
         resetInitialRotation()
+        self.interfaceOrientation = interfaceOrientation
         return true
     }
 
@@ -126,6 +142,7 @@ public final class DeviceMotion: ObservableObject {
     /// - Parameter quaternion: Rotation of the device relative to zero position.
     func update(quaternion: Quat) {
         if initialDeviceRotation == nil {
+            /// If there is no initial device rotation initialize it with the current rotation
             initialDeviceRotation = quaternion
         }
         

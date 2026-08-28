@@ -28,10 +28,11 @@ struct SettingsView: View {
     }
     
     var body: some View {
-        VStack {
+        HStack {
             Stepper(updateIntervalString, value: $updateInterval, in: 0...1, step: 0.01)
             
             Toggle("Disabled", isOn: $disabled)
+                .labelsHidden()
         }
         .padding()
     }

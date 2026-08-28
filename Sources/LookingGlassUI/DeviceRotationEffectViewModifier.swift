@@ -47,20 +47,8 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
         self.isShowingInFourDirections = isShowingInFourDirections ?? false
     }
 
-    // rotation that moves to the content to the closest xy axis to the one the phone is pointing at
-    // device reference frame
-    var cloneRotation: Quat {
-        isShowingInFourDirections ? deviceMotion.cloneRotation : .identity
-    }
-    
     var rotation: Quat {
-        /// all rotations are provided in the device reference frame
-        /// Rotations occur in reverse order
-        /// 1. Reference frame is changed from screen to device (x and z flip)
-        /// 2. provided view is rotated according to provided offset
-        /// 3. result is rotated by cloneRotation to put it in front of the viewer if they face 0, -90, 90, or 180 degrees
-        /// 4. result is rotated by the inverse of the interface aligned device rotation to bring it to zero
-        (deviceMotion.interfaceAlignedRotation.inverse * cloneRotation * offsetRotation).deviceToScreenReferenceFrame
+        deviceMotion.realWorldOrientation(offset: offsetRotation, isShowingInFourDirections: isShowingInFourDirections)
     }
     
     /// Animation that smooths movement between motion updates.
@@ -94,7 +82,7 @@ public extension View {
     ///   - distance: Distance the view is positioned from the device in points.
     ///   - perspective: Amount of perspective used in the view projection. (default of zero creates an orthographic projection where the view will not decrease in size based on distance)
     ///   - offsetRotation: Quaternion that represents the view's position in the real world. (zero positions the view on the ground)
-    ///   - isShowingInFourDirections: If active the view will be rotated around the Z axis at 90 degree intervals to always face the direction the device is pointing.
+    ///   - isShowingInFourDirections: If enabled and the device turns more than 45 degrees on the z axis away from one of the x or y axis directions the view will rotate 90 degrees towards the new closest axis direction.
     /// - Returns: The view is positioned centered on the device and rotated using real world coordinates. It will rotate to compensate for device rotation and appear to be seen either through a window or as a kind of reflection.
     func deviceRotationEffect(
         _ type: DeviceRotationEffectType,
@@ -125,7 +113,7 @@ public extension View {
     ///   - pitch: Pitch rotation of the view (zero = on the ground, 90 degrees = in front, 180 degrees = on the ceiling)
     ///   - yaw: Yaw rotation of the view (zero = in front, 90 degrees = left, -90 degrees = right, 180 degrees = behind)
     ///   - localRoll: Local roll rotation of the view.
-    ///   - isShowingInFourDirections: If active the view will be rotated around the Z axis at 90 degree intervals to always face the direction the device is pointing.
+    ///   - isShowingInFourDirections: If enabled and the device turns more than 45 degrees on the z axis away from one of the x or y axis directions the view will rotate 90 degrees towards the new closest axis direction.
     /// - Returns: The view is positioned centered on the device and rotated using real world coordinates. It will rotate to compensate for device rotation and appear to be seen either through a window or as a kind of reflection.
     func deviceRotationEffect(
         _ type: DeviceRotationEffectType,

@@ -46,6 +46,12 @@ struct ContentView: View {
                             Text("Device")
                         }
                     
+                    InterfaceAlignedDeltaRotationExample()
+                        .tabItem {
+                            Image(systemName: "rotate.3d")
+                            Text("Delta")
+                        }
+                    
                     Color.clear
                         .overlay(
                             ArrowRotationView(.reflection)

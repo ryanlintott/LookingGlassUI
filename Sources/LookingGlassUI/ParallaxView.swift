@@ -15,14 +15,8 @@ struct ParallaxViewModifier: ViewModifier {
     let multiplier: CGFloat
     let maxOffset: CGFloat?
     
-    var deltaScreenRotation: Quat {
-        /// all rotations are provided in the device reference frame
-        /// Rotations occur in reverse order
-        /// 1. Reference frame is changed from screen to device (x and z flip)
-        /// 2. result is rotated by the delta between the initial rotation and the current rotation
-        /// 3. result is rotated by the inverse of the interface rotation to counteract any interface orientation changes
-        (deviceMotion.interfaceRotation.inverse * deviceMotion.deltaRotation)
-            .deviceToScreenReferenceFrame
+    var rotation: Quat {
+        deviceMotion.deltaRotation
     }
     
     var parallaxOffset: CGSize {
@@ -30,10 +24,12 @@ struct ParallaxViewModifier: ViewModifier {
         
         let maxOffset = maxOffset ?? .infinity
         
-        let x = -min(max(-maxOffset, deltaScreenRotation.yaw.radians * multiplier), maxOffset)
-        let y = min(max(-maxOffset, deltaScreenRotation.pitch.radians * multiplier), maxOffset)
+        let x = rotation.yaw.radians * multiplier
+        let y = -rotation.pitch.radians * multiplier
         
-        return CGSize(width: x, height: y)
+        let vector = Vec3(x: x, y: y, z: 0).limited(to: maxOffset)
+        
+        return CGSize(width: vector.x, height: vector.y)
     }
     
     func body(content: Content) -> some View {
