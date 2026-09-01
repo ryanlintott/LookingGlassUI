@@ -29,7 +29,7 @@ public struct ShimmerView: View {
     
     /// Creates a shimmering view based on device orientation
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
+    /// - Requires: ``motionManager(preferredUpdateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Parameters:
     ///   - mode: Modes where shimmer should be enabled. (default: `.on`)
@@ -43,7 +43,7 @@ public struct ShimmerView: View {
     
     /// Creates a shimmering view based on device orientation
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
+    /// - Requires: ``motionManager(preferredUpdateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Parameters:
     ///   - isOn: Is shimmer enabled.

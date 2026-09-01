@@ -90,6 +90,6 @@ struct DeviceRotationEffectExample: View {
 struct DeviceRotationEffectExample_Previews: PreviewProvider {
     static var previews: some View {
         DeviceRotationEffectExample()
-            .motionManager(updateInterval: 0)
+            .motionManager(preferredUpdateInterval: 0)
     }
 }

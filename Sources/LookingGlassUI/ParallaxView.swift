@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ParallaxViewModifier: ViewModifier {
-    /// Taken from the environment, so this effect reads the configuration of the scene containing it. Like every other effect in this package it requires a ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` modifier above it and traps without one.
+    /// Taken from the environment, so this effect reads the configuration of the scene containing it. Like every other effect in this package it requires a ``SwiftUICore/View/motionManager(preferredUpdateInterval:disabled:)`` modifier above it and traps without one.
     @EnvironmentObject private var motionManager: MotionManager
     @EnvironmentObject private var deviceMotion: DeviceMotion
 
@@ -33,7 +33,7 @@ struct ParallaxViewModifier: ViewModifier {
 public extension View {
     /// Moves the view to create a parallax effect based on device orientation.
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
+    /// - Requires: ``motionManager(preferredUpdateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Parameters:
     ///   - distance: How far in front of the screen the view is treated as resting, in points. The view moves as that point would, so this is also the furthest it can travel. A negative distance rests the view behind the screen and moves it the other way.

@@ -62,7 +62,7 @@ struct ShimmerViewModifier: ViewModifier {
 public extension View {
     /// Add a shimmer effect with a background masked to this view.
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
+    /// - Requires: ``motionManager(preferredUpdateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Note: This effect draws additional copies of the view to size the shimmer and to mask it to the view's shape. Each copy is a separate instance with its own state, so state inside the view that changes its size or shape may not be reflected in the shimmer, and any `onAppear` or `task` on the view may run more than once.
     ///
@@ -77,7 +77,7 @@ public extension View {
     
     /// Add a shimmer effect with a background masked to this view.
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
+    /// - Requires: ``motionManager(preferredUpdateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Note: This effect draws additional copies of the view to size the shimmer and to mask it to the view's shape. Each copy is a separate instance with its own state, so state inside the view that changes its size or shape may not be reflected in the shimmer, and any `onAppear` or `task` on the view may run more than once.
     ///
@@ -92,7 +92,7 @@ public extension View {
     
     /// Add a shimmer effect masked to this view with a specified blend mode.
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
+    /// - Requires: ``motionManager(preferredUpdateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Note: This effect draws additional copies of the view to size the shimmer and to mask it to the view's shape. Each copy is a separate instance with its own state, so state inside the view that changes its size or shape may not be reflected in the shimmer, and any `onAppear` or `task` on the view may run more than once.
     ///
@@ -107,7 +107,7 @@ public extension View {
     
     /// Add a shimmer effect masked to this view with a specified blend mode.
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
+    /// - Requires: ``motionManager(preferredUpdateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Note: This effect draws additional copies of the view to size the shimmer and to mask it to the view's shape. Each copy is a separate instance with its own state, so state inside the view that changes its size or shape may not be reflected in the shimmer, and any `onAppear` or `task` on the view may run more than once.
     ///

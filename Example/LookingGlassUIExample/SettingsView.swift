@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @Binding private var updateInterval: TimeInterval
+    @Binding private var preferredUpdateInterval: TimeInterval
     @Binding private var disabled: Bool
     
     static let formatter: NumberFormatter = {
@@ -18,18 +18,18 @@ struct SettingsView: View {
         return formatter
     }()
     
-    var updateIntervalString: String {
-        String(format: "Update Interval: %.2f", updateInterval)
+    var preferredUpdateIntervalString: String {
+        String(format: "Update Interval: %.2f", preferredUpdateInterval)
     }
     
-    init(updateInterval: Binding<TimeInterval>, disabled: Binding<Bool>) {
-        self._updateInterval = updateInterval
+    init(preferredUpdateInterval: Binding<TimeInterval>, disabled: Binding<Bool>) {
+        self._preferredUpdateInterval = preferredUpdateInterval
         self._disabled = disabled
     }
     
     var body: some View {
         HStack {
-            Stepper(updateIntervalString, value: $updateInterval, in: 0...1, step: 0.01)
+            Stepper(preferredUpdateIntervalString, value: $preferredUpdateInterval, in: 0...1, step: 0.01)
             
             Toggle("Disabled", isOn: $disabled)
                 .labelsHidden()
@@ -40,6 +40,6 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(updateInterval: .constant(0.1), disabled: .constant(false))
+        SettingsView(preferredUpdateInterval: .constant(0.1), disabled: .constant(false))
     }
 }

@@ -73,6 +73,6 @@ struct DeltaRotationExample: View {
 struct DeltaRotationExample_Previews: PreviewProvider {
     static var previews: some View {
         DeltaRotationExample()
-            .motionManager(updateInterval: 0)
+            .motionManager(disabled: true)
     }
 }

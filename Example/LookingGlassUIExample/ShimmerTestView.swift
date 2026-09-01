@@ -51,5 +51,5 @@ struct ShimmerTestView: View {
 
 #Preview {
     ShimmerTestView()
-        .motionManager(updateInterval: 0)
+        .motionManager(preferredUpdateInterval: 0)
 }

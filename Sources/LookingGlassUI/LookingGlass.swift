@@ -14,7 +14,7 @@ import SwiftUI
 ///
 /// If motion updates are off the content will not be shown.
 /// 
-/// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
+/// - Requires: ``motionManager(preferredUpdateInterval:disabled:)`` must be added above this view in the hierarchy.
 public struct LookingGlass<Content: View>: View {
     @ObservedObject private var motionService = MotionService.shared
     @EnvironmentObject private var motionManager: MotionManager
@@ -32,7 +32,7 @@ public struct LookingGlass<Content: View>: View {
     ///
     /// If motion updates are off the content will not be shown.
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
+    /// - Requires: ``motionManager(preferredUpdateInterval:disabled:)`` must be added above this view in the hierarchy.
     /// - Parameters:
     ///   - type: Device rotation effect.
     ///   - distance: Distance the view is positioned from the device in points.
@@ -62,7 +62,7 @@ public struct LookingGlass<Content: View>: View {
     ///
     /// If motion updates are off the content will not be shown.
     ///
-    /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
+    /// - Requires: ``motionManager(preferredUpdateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Parameters:
     ///   - type: Device rotation effect.

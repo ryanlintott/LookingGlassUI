@@ -54,6 +54,6 @@ struct ParallaxExample: View {
 struct ParallaxExample_Previews: PreviewProvider {
     static var previews: some View {
         ParallaxExample()
-            .motionManager(updateInterval: 0)
+            .motionManager(preferredUpdateInterval: 0)
     }
 }

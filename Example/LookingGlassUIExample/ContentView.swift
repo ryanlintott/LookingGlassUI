@@ -9,7 +9,7 @@ import LookingGlassUI
 import SwiftUI
 
 struct ContentView: View {
-    @State private var updateInterval: TimeInterval = 0.1
+    @State private var preferredUpdateInterval: TimeInterval = 0.1
     @State private var disabled: Bool = false
     
     var body: some View {
@@ -107,15 +107,15 @@ struct ContentView: View {
                     }
             }
             
-            SettingsView(updateInterval: $updateInterval, disabled: $disabled)
+            SettingsView(preferredUpdateInterval: $preferredUpdateInterval, disabled: $disabled)
         }
-        .motionManager(updateInterval: updateInterval, disabled: disabled)
+        .motionManager(preferredUpdateInterval: preferredUpdateInterval, disabled: disabled)
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-            .motionManager(updateInterval: 0)
+            .motionManager(disabled: true)
     }
 }

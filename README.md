@@ -54,10 +54,10 @@ LookingGlassUI is open source and free but if you like using it, please consider
 Before adding any custom views, add the `.motionManager` view modifier once near the top of that scene's view hierarchy, above any other views or modifiers used in this package.
 ```swift
 ContentView()
-    .motionManager(updateInterval: 0.1, disabled: false)
+    .motionManager(preferredUpdateInterval: 0.1, disabled: false)
 ```
 
-Every scene gets its own `MotionManager` from `.motionManager` holding the values you passed, and they all share one Core Motion service. That service runs at the smallest updateInterval among scenes that aren't disabled and aren't in the background, so a scene can receive updates faster than it asked for but never slower. Backgrounding, closing, or disabling one scene does not stop updates needed by another.
+Every scene gets its own `MotionManager` from `.motionManager` holding the values you passed, and they all share one Core Motion service. That service runs at the smallest `preferredUpdateInterval` among scenes that aren't disabled and aren't in the background, so a scene can receive updates faster than it asked for but never slower. Backgrounding, closing, or disabling one scene does not stop updates needed by another.
 
 ## ShimmerView
 *Requires [`.motionManager()`](#motionmanager)*

@@ -13,11 +13,11 @@ import XCTest
 @MainActor
 final class MotionManagerTests: XCTestCase {
     private func makeManager(
-        updateInterval: TimeInterval = 0.1,
+        preferredUpdateInterval: TimeInterval = 0.1,
         disabled: Bool = false,
         scenePhase: ScenePhase = .active
     ) -> MotionManager {
-        MotionManager(updateInterval: updateInterval, disabled: disabled, scenePhase: scenePhase)
+        MotionManager(preferredUpdateInterval: preferredUpdateInterval, disabled: disabled, scenePhase: scenePhase)
     }
 
     override func setUp() async throws {
@@ -25,14 +25,14 @@ final class MotionManagerTests: XCTestCase {
     }
 
     func testMotionUpdatesFollowTheRequestedConfiguration() {
-        let manager = makeManager(updateInterval: 0.1, disabled: false)
+        let manager = makeManager(preferredUpdateInterval: 0.1, disabled: false)
         XCTAssertTrue(manager.isDetectingMotion)
         XCTAssertTrue(manager.needsMotionService)
 
-        manager.update(updateInterval: 0, disabled: false, scenePhase: .active)
+        manager.update(preferredUpdateInterval: 0, disabled: false, scenePhase: .active)
         XCTAssertFalse(manager.isDetectingMotion, "a zero interval is a request for no updates")
 
-        manager.update(updateInterval: 0.1, disabled: true, scenePhase: .active)
+        manager.update(preferredUpdateInterval: 0.1, disabled: true, scenePhase: .active)
         XCTAssertFalse(manager.isDetectingMotion)
     }
 
@@ -40,27 +40,27 @@ final class MotionManagerTests: XCTestCase {
     func testMotionUpdatesStayEnabledWhileBackgrounded() {
         let manager = makeManager()
 
-        manager.update(updateInterval: 0.1, disabled: false, scenePhase: .background)
+        manager.update(preferredUpdateInterval: 0.1, disabled: false, scenePhase: .background)
         XCTAssertTrue(manager.isDetectingMotion, "the scene entering the background must not turn its effects off")
         XCTAssertFalse(manager.needsMotionService, "the scene entering the background must stop its motion updates")
 
-        manager.update(updateInterval: 0.1, disabled: false, scenePhase: .inactive)
+        manager.update(preferredUpdateInterval: 0.1, disabled: false, scenePhase: .inactive)
         XCTAssertTrue(manager.needsMotionService, "an inactive scene remains in the foreground")
     }
 
     func testFastestSceneDrivesTheSharedServiceInterval() {
         let service = MotionService.shared
 
-        let slow = makeManager(updateInterval: 0.1)
+        let slow = makeManager(preferredUpdateInterval: 0.1)
         XCTAssertEqual(service.deviceMotion.updateInterval, 0.1)
 
-        let fast = makeManager(updateInterval: 0.05)
+        let fast = makeManager(preferredUpdateInterval: 0.05)
         XCTAssertEqual(service.deviceMotion.updateInterval, 0.05, "the fastest enabled scene should control the shared service")
 
-        let disabled = makeManager(updateInterval: 0.01, disabled: true)
+        let disabled = makeManager(preferredUpdateInterval: 0.01, disabled: true)
         XCTAssertEqual(service.deviceMotion.updateInterval, 0.05, "a disabled scene should not affect the shared interval")
 
-        let backgrounded = makeManager(updateInterval: 0.01, scenePhase: .background)
+        let backgrounded = makeManager(preferredUpdateInterval: 0.01, scenePhase: .background)
         XCTAssertEqual(service.deviceMotion.updateInterval, 0.05, "a backgrounded scene should not affect the shared interval")
 
         withExtendedLifetime([slow, fast, disabled, backgrounded]) {}
@@ -70,10 +70,10 @@ final class MotionManagerTests: XCTestCase {
     func testDeallocatedSceneStopsDrivingTheSharedService() {
         let service = MotionService.shared
 
-        let kept = makeManager(updateInterval: 0.1)
+        let kept = makeManager(preferredUpdateInterval: 0.1)
 
         do {
-            let temporary = makeManager(updateInterval: 0.01)
+            let temporary = makeManager(preferredUpdateInterval: 0.01)
             XCTAssertEqual(service.deviceMotion.updateInterval, 0.01)
             withExtendedLifetime(temporary) {}
         }
@@ -88,7 +88,7 @@ final class MotionManagerTests: XCTestCase {
         let service = MotionService.shared
 
         do {
-            let manager = makeManager(updateInterval: 0.1)
+            let manager = makeManager(preferredUpdateInterval: 0.1)
             XCTAssertTrue(service.needsMotionService)
             withExtendedLifetime(manager) {}
         }
@@ -100,7 +100,7 @@ final class MotionManagerTests: XCTestCase {
 
     func testApplicationBackgroundStopsTheServiceWithoutDisablingUpdates() {
         let service = MotionService.shared
-        let manager = makeManager(updateInterval: 0.1)
+        let manager = makeManager(preferredUpdateInterval: 0.1)
 
         XCTAssertTrue(service.needsMotionService)
 
@@ -118,26 +118,26 @@ final class MotionManagerTests: XCTestCase {
     func testDeviceRotationAnimationMatchesTheSharedInterval() {
         let service = MotionService.shared
 
-        let slow = makeManager(updateInterval: 0.5)
+        let slow = makeManager(preferredUpdateInterval: 0.5)
         XCTAssertEqual(service.deviceMotion.updateInterval, 0.5)
 
-        let fast = makeManager(updateInterval: 0.05)
+        let fast = makeManager(preferredUpdateInterval: 0.05)
         XCTAssertEqual(service.deviceMotion.updateInterval, 0.05, "the slower scene receives samples at the faster scene's rate")
 
         withExtendedLifetime([slow, fast]) {}
     }
 
     func testConfigurationChangesPublish() {
-        let manager = makeManager(updateInterval: 0.1)
+        let manager = makeManager(preferredUpdateInterval: 0.1)
 
         var changeCount = 0
         let cancellable = manager.objectWillChange.sink { changeCount += 1 }
 
-        manager.update(updateInterval: 0.2, disabled: false, scenePhase: .active)
+        manager.update(preferredUpdateInterval: 0.2, disabled: false, scenePhase: .active)
         XCTAssertGreaterThan(changeCount, 0, "a configuration change must refresh the scene's views")
 
         let countAfterChange = changeCount
-        manager.update(updateInterval: 0.2, disabled: false, scenePhase: .active)
+        manager.update(preferredUpdateInterval: 0.2, disabled: false, scenePhase: .active)
         XCTAssertEqual(changeCount, countAfterChange, "an unchanged configuration must not refresh anything")
 
         withExtendedLifetime(cancellable) {}

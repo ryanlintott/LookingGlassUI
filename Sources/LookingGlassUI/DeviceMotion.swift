@@ -9,7 +9,7 @@ import SwiftUI
 
 /// The rotation of the device, updated on every motion update.
 ///
-/// Read this from the environment. ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` places it there alongside ``MotionManager``.
+/// Read this from the environment. ``SwiftUICore/View/motionManager(preferredUpdateInterval:disabled:)`` places it there alongside ``MotionManager``.
 ///
 /// ```swift
 /// @EnvironmentObject var deviceMotion: DeviceMotion

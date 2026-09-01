@@ -9,7 +9,7 @@ import SwiftUI
 
 /// One scene's device-motion configuration.
 ///
-/// Add ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` near the top of each scene's view hierarchy. The modifier creates one of these for that scene and places it in the environment alongside ``DeviceMotion``.
+/// Add ``SwiftUICore/View/motionManager(preferredUpdateInterval:disabled:)`` near the top of each scene's view hierarchy. The modifier creates one of these for that scene and places it in the environment alongside ``DeviceMotion``.
 ///
 /// The values here are the ones that scene asked for, not an app-wide total. Every scene shares one Core Motion service, which runs at the fastest interval any scene needs, so a scene can receive updates faster than it requested but never slower.
 ///
@@ -34,11 +34,11 @@ public final class MotionManager: ObservableObject {
     /// Creates a scene's manager and adds it to the shared service.
     ///
     /// - Parameters:
-    ///   - updateInterval: The requested interval between motion samples, in seconds.
+    ///   - preferredUpdateInterval: The requested interval between motion samples, in seconds.
     ///   - disabled: Whether the scene has disabled motion updates.
     ///   - scenePhase: The operational state of the scene.
-    init(updateInterval: TimeInterval, disabled: Bool, scenePhase: ScenePhase) {
-        self.preferredUpdateInterval = updateInterval
+    init(preferredUpdateInterval: TimeInterval, disabled: Bool, scenePhase: ScenePhase) {
+        self.preferredUpdateInterval = preferredUpdateInterval
         self.disabled = disabled
         self.scenePhase = scenePhase
 
@@ -72,15 +72,15 @@ public final class MotionManager: ObservableObject {
     /// Applies a new configuration and reconciles the shared service when something changed.
     ///
     /// - Parameters:
-    ///   - updateInterval: The requested interval between motion samples, in seconds.
+    ///   - preferredUpdateInterval: The requested interval between motion samples, in seconds.
     ///   - disabled: Whether the scene has disabled motion updates.
     ///   - scenePhase: The operational state of the scene.
-    func update(updateInterval: TimeInterval, disabled: Bool, scenePhase: ScenePhase) {
+    func update(preferredUpdateInterval: TimeInterval, disabled: Bool, scenePhase: ScenePhase) {
         /// Gated one value at a time as the published ones refresh this scene's views on every assignment, and a scene phase change on its own must not do that.
         var didChange = false
 
-        if preferredUpdateInterval != updateInterval {
-            preferredUpdateInterval = updateInterval
+        if self.preferredUpdateInterval != preferredUpdateInterval {
+            self.preferredUpdateInterval = preferredUpdateInterval
             didChange = true
         }
 
@@ -120,18 +120,18 @@ public final class MotionManager: ObservableObject {
     @available(*, unavailable, message: "Device orientation is updated internally so this call is no longer required.")
     public func changeDeviceOrientation() { fatalError() }
 
-    @available(*, unavailable, message: "Pass the update interval to `.motionManager(updateInterval:disabled:)` instead.")
+    @available(*, unavailable, message: "Pass the update interval to `.motionManager(preferredUpdateInterval:disabled:)` instead.")
     public func setUpdateInterval(_ newUpdateInterval: TimeInterval) { fatalError() }
 
-    @available(*, unavailable, message: "Pass the disabled state to `.motionManager(updateInterval:disabled:)` instead.")
+    @available(*, unavailable, message: "Pass the disabled state to `.motionManager(preferredUpdateInterval:disabled:)` instead.")
     public func setDisabled(_ newDisabled: Bool) { fatalError() }
 
-    @available(*, unavailable, message: "Motion updates start automatically so this call is no longer required. Configure motion updates with `.motionManager(updateInterval:disabled:)`.")
+    @available(*, unavailable, message: "Motion updates start automatically so this call is no longer required. Configure motion updates with `.motionManager(preferredUpdateInterval:disabled:)`.")
     public func startMotionUpdates(updateInterval: TimeInterval? = nil, disabled: Bool? = nil, setDeviceOrientation: Bool = false) { fatalError() }
 
     @available(*, unavailable, message: "Motion updates are managed automatically when their configuration changes, device orientation changes, or the app moves between the foreground and background so this call is no longer required.")
     public func restart() { fatalError() }
 
-    @available(*, unavailable, message: "Motion updates stop automatically when no enabled scene needs them or the app moves to the background so this call is no longer required. Configure motion updates with `.motionManager(updateInterval:disabled:)`.")
+    @available(*, unavailable, message: "Motion updates stop automatically when no enabled scene needs them or the app moves to the background so this call is no longer required. Configure motion updates with `.motionManager(preferredUpdateInterval:disabled:)`.")
     public func stopMotionUpdates() { fatalError() }
 }

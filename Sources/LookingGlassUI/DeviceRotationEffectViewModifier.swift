@@ -25,7 +25,7 @@ public enum DeviceRotationEffectType: String, RawRepresentable, CaseIterable, Ha
 }
 
 struct DeviceRotationEffectViewModifier: ViewModifier {
-    /// Taken from the environment, so this effect reads the configuration of the scene containing it. Like every other effect in this package it requires a ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` modifier above it and traps without one.
+    /// Taken from the environment, so this effect reads the configuration of the scene containing it. Like every other effect in this package it requires a ``SwiftUICore/View/motionManager(preferredUpdateInterval:disabled:)`` modifier above it and traps without one.
     @EnvironmentObject private var motionManager: MotionManager
     @EnvironmentObject private var deviceMotion: DeviceMotion
 

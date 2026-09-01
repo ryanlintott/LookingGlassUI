@@ -23,7 +23,7 @@ struct MotionManagerExample_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             MotionManagerExample()
-                .motionManager(updateInterval: 0)
+                .motionManager(preferredUpdateInterval: 0)
         }
     }
 }

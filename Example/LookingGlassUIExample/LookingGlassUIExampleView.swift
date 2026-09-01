@@ -45,6 +45,6 @@ struct LookingGlassUIExampleView: View {
 struct LookingGlassUIExampleView_Previews: PreviewProvider {
     static var previews: some View {
         LookingGlassUIExampleView()
-            .motionManager(updateInterval: 0)
+            .motionManager(preferredUpdateInterval: 0)
     }
 }
