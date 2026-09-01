@@ -30,7 +30,7 @@ public extension Vec3 {
     }
     
     /// This vector, shortened to the absolute value of `maxLength` if it's longer, with its direction unchanged.
-    func limited(to maxLength: Double) -> Self {
+    internal func limited(to maxLength: Double) -> Self {
         let length = simd_length(self)
         guard length > abs(maxLength) else { return self }
         return self * (abs(maxLength) / length)

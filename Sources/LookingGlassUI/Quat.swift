@@ -137,7 +137,7 @@ public extension Quat {
     ///   - other: Rotation to move towards.
     ///   - amount: How far to move, where zero stays here and one arrives at `other`.
     /// - Returns: The rotation that far between the two.
-    func slerp(to other: Self, amount: Double) -> Self {
+    internal func slerp(to other: Self, amount: Double) -> Self {
         .init(simd_slerp(simd, other.simd, amount))
     }
     
@@ -186,7 +186,7 @@ public extension Quat {
     ///   - distance: How far in front of the screen the point rests, in points. Also the furthest the offset can reach.
     ///   - maxOffset: Limits the offset to this distance from the resting position, in any direction.
     /// - Returns: The offset of the point from the centre of the screen.
-    func parallaxOffset(distance: CGFloat, maxOffset: CGFloat?) -> CGSize {
+    internal func parallaxOffset(distance: CGFloat, maxOffset: CGFloat?) -> CGSize {
         let point = inverse.rotating(Vec3(x: 0, y: 0, z: distance))
         let offset = Vec3(x: point.x, y: point.y, z: 0).limited(to: maxOffset ?? .infinity)
 

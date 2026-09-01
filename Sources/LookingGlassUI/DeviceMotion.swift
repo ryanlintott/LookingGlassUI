@@ -107,7 +107,7 @@ public final class DeviceMotion: ObservableObject {
     /// - Parameter offset: The rotational offset from a flat position with the top pointing away from the user. Device reference frame.
     /// - Parameter isShowingInFourDirections: If enabled the view will show in four different places as the phone turns in a full circle. When the device turns more than 45 degrees on the z axis away from one of the x or y axis directions the view will rotate 90 degrees towards the new closest axis direction.
     /// - Returns: The rotation to use to rotate a swiftUI view into a real world location with a rotation effect modifier. Screen reference frame.
-    public func interfaceToWorldRotation(offset: Quat, isShowingInFourDirections: Bool = false) -> Quat {
+    internal func interfaceToWorldRotation(offset: Quat, isShowingInFourDirections: Bool = false) -> Quat {
         
         let cloneRotation = isShowingInFourDirections ? cloneRotation : .identity
         
