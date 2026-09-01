@@ -13,7 +13,7 @@ struct MotionManagerExample: View {
     
     var body: some View {
         List {
-            QuaternionDataView(deviceMotion.quaternion)
+            QuaternionDataView(deviceMotion.currentDeviceRotation)
         }
             .navigationTitle("MotionManager Data")
     }

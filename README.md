@@ -79,10 +79,10 @@ Text("Hello, World!")
 ## .parallax()
 *Requires [`.motionManager()`](#motionmanager)*
 
-Use `.parallax(multiplier: CGFloat, maxOffset: CGFloat)` view modifier if you want to add a parallax effect to any SwiftUI View. If `MotionManager` is disabled the modifier has no effect.
+Use `.parallax(distance: CGFloat, maxOffset: CGFloat)` view modifier if you want to add a parallax effect to any SwiftUI View. A positive distance will make the view pop out of the screen while a negative view will make it push into the screen. The actual view movement is purely a horizontal and vertical offset with no rotation or perspective effects. If `MotionManager` is disabled the modifier has no effect.
 ```swift
 Text("Hello, World!")
-    .parallax(multiplier: 40, maxOffset: 100)
+    .parallax(distance: 40, maxOffset: 100)
 ```
 
 ## LookingGlass
@@ -129,9 +129,9 @@ Text("Hello, World")
 @EnvironmentObject var deviceMotion: DeviceMotion
 ```
 
-`DeviceMotion.quaternion` steps once per motion update with no smoothing. If you want to animate the change, use a linear animation matching the update interval.
+`DeviceMotion.currentDeviceRotation` steps once per motion update with no smoothing. If you want to animate the change, use a linear animation matching the update interval.
 ```swift
-.animation(deviceMotion.animation, value: deviceMotion.quaternion)
+.animation(deviceMotion.animation, value: deviceMotion.currentDeviceRotation)
 ```
 
 # How it Works

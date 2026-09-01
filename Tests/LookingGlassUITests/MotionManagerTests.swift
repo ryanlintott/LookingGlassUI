@@ -52,16 +52,16 @@ final class MotionManagerTests: XCTestCase {
         let service = MotionService.shared
 
         let slow = makeManager(updateInterval: 0.1)
-        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.1)
+        XCTAssertEqual(service.deviceMotion.updateInterval, 0.1)
 
         let fast = makeManager(updateInterval: 0.05)
-        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.05, "the fastest enabled scene should control the shared service")
+        XCTAssertEqual(service.deviceMotion.updateInterval, 0.05, "the fastest enabled scene should control the shared service")
 
         let disabled = makeManager(updateInterval: 0.01, disabled: true)
-        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.05, "a disabled scene should not affect the shared interval")
+        XCTAssertEqual(service.deviceMotion.updateInterval, 0.05, "a disabled scene should not affect the shared interval")
 
         let backgrounded = makeManager(updateInterval: 0.01, scenePhase: .background)
-        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.05, "a backgrounded scene should not affect the shared interval")
+        XCTAssertEqual(service.deviceMotion.updateInterval, 0.05, "a backgrounded scene should not affect the shared interval")
 
         withExtendedLifetime([slow, fast, disabled, backgrounded]) {}
     }
@@ -74,12 +74,12 @@ final class MotionManagerTests: XCTestCase {
 
         do {
             let temporary = makeManager(updateInterval: 0.01)
-            XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.01)
+            XCTAssertEqual(service.deviceMotion.updateInterval, 0.01)
             withExtendedLifetime(temporary) {}
         }
 
         service.reconcile()
-        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.1, "a deallocated scene must stop driving the shared service")
+        XCTAssertEqual(service.deviceMotion.updateInterval, 0.1, "a deallocated scene must stop driving the shared service")
 
         withExtendedLifetime(kept) {}
     }
@@ -94,7 +94,7 @@ final class MotionManagerTests: XCTestCase {
         }
 
         service.reconcile()
-        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0)
+        XCTAssertEqual(service.deviceMotion.updateInterval, 0)
         XCTAssertFalse(service.needsMotionService)
     }
 
@@ -119,10 +119,10 @@ final class MotionManagerTests: XCTestCase {
         let service = MotionService.shared
 
         let slow = makeManager(updateInterval: 0.5)
-        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.5)
+        XCTAssertEqual(service.deviceMotion.updateInterval, 0.5)
 
         let fast = makeManager(updateInterval: 0.05)
-        XCTAssertEqual(service.deviceMotion.activeUpdateInterval, 0.05, "the slower scene receives samples at the faster scene's rate")
+        XCTAssertEqual(service.deviceMotion.updateInterval, 0.05, "the slower scene receives samples at the faster scene's rate")
 
         withExtendedLifetime([slow, fast]) {}
     }

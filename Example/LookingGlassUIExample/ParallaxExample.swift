@@ -9,7 +9,7 @@ import LookingGlassUI
 import SwiftUI
 
 struct ParallaxExample: View {
-    @State private var multiplier = 100.0
+    @State private var distance = 100.0
     @State private var maxOffset = 50.0
     
     let shape = RoundedRectangle(cornerRadius: 20)
@@ -24,7 +24,7 @@ struct ParallaxExample: View {
                     shape
                         .fill(.blue)
                         .accessibilityLabel("Blue rectangle")
-                        .parallax(multiplier: multiplier, maxOffset: maxOffset)
+                        .parallax(distance: distance, maxOffset: maxOffset)
                 )
                 .frame(width: 100, height: 200)
 
@@ -34,7 +34,7 @@ struct ParallaxExample: View {
                 HStack {
                     Text("Multiplier")
                     
-                    Slider(value: $multiplier, in: 0...200)
+                    Slider(value: $distance, in: -100...100)
                         .padding(.horizontal)
                 }
                 

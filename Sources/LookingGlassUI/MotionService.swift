@@ -60,7 +60,7 @@ final class MotionService: ObservableObject {
     ///
     /// The application state is used here and nowhere else, so backgrounding stops the service without turning off the effects it feeds.
     var needsMotionService: Bool {
-        isApplicationActive && deviceMotion.activeUpdateInterval > 0
+        isApplicationActive && deviceMotion.updateInterval > 0
     }
 
     /// Adds a scene's manager and reconciles the service.
@@ -77,13 +77,13 @@ final class MotionService: ObservableObject {
     func reconcile() {
         managers.removeAll { $0.manager == nil }
 
-        let newActiveUpdateInterval = managers
+        let newUpdateInterval = managers
             .compactMap(\.manager)
             .filter(\.needsMotionService)
             .map(\.preferredUpdateInterval)
             .min() ?? 0
 
-        deviceMotion.setActiveUpdateInterval(newActiveUpdateInterval)
+        deviceMotion.setUpdateInterval(newUpdateInterval)
 
         restartMotionUpdatesIfNeeded()
     }
@@ -97,7 +97,7 @@ final class MotionService: ObservableObject {
         restartMotionUpdatesIfNeeded()
     }
     
-    /// Reads the orientation the interface is showing and re-zeroes the rotation when it has changed.
+    /// Reads the orientation the interface is showing, updates ``interfaceSize`` and re-starts motion updates when it has changed.
     ///
     /// The window scene can become readable after this object is created, so this is called again whenever that could have happened rather than only once. Most of those calls find nothing new, so the sensor is only restarted when the orientation actually changed.
     func refreshInterfaceOrientation() {
@@ -122,21 +122,21 @@ final class MotionService: ObservableObject {
         guard needsMotionService else {
             if cmManager.isDeviceMotionActive {
                 cmManager.stopDeviceMotionUpdates()
-                deviceMotion.resetInitialRotation()
+                deviceMotion.resetSettledDeviceRotation()
             }
             return
         }
 
         let requiresRestart = forceRestart
             || !cmManager.isDeviceMotionActive
-            || cmManager.deviceMotionUpdateInterval != deviceMotion.activeUpdateInterval
+            || cmManager.deviceMotionUpdateInterval != deviceMotion.updateInterval
 
         guard requiresRestart else { return }
 
         if cmManager.isDeviceMotionActive {
             cmManager.stopDeviceMotionUpdates()
         }
-        cmManager.deviceMotionUpdateInterval = deviceMotion.activeUpdateInterval
+        cmManager.deviceMotionUpdateInterval = deviceMotion.updateInterval
 
         cmManager.startDeviceMotionUpdates(to: .main) { motionData, error in
             if let motionData = motionData {
@@ -147,7 +147,7 @@ final class MotionService: ObservableObject {
                 }
                 #endif
 
-                self.deviceMotion.update(quaternion: Quat(motionData.attitude.quaternion))
+                self.deviceMotion.setCurrentDeviceRotation(to: Quat(motionData.attitude.quaternion))
 
             } else if let error = error {
                 print(error.localizedDescription)

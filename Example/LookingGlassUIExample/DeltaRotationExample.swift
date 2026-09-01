@@ -45,7 +45,7 @@ struct DeltaRotationExample: View {
                             perspective: perspective
                         )
                         /// Animated on the device rotation so movement between motion updates is smoothed.
-                        .animation(deviceMotion.animation, value: deviceMotion.quaternion)
+                        .animation(deviceMotion.animation, value: deviceMotion.currentDeviceRotation)
                 }
             }
             

@@ -48,7 +48,8 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
     }
 
     var rotation: Quat {
-        deviceMotion.realWorldOrientation(offset: offsetRotation, isShowingInFourDirections: isShowingInFourDirections)
+        deviceMotion
+            .interfaceToWorldRotation(offset: offsetRotation, isShowingInFourDirections: isShowingInFourDirections)
     }
     
     /// Animation that smooths movement between motion updates.
@@ -67,7 +68,7 @@ struct DeviceRotationEffectViewModifier: ViewModifier {
             content
                 .rotation3DEffect(quaternion: rotation, anchor: .center, anchorZ: distance, perspective: perspective)
                 /// Animated on the device rotation rather than on `rotation` so only device movement is smoothed. `rotation` also changes when the interface orientation changes and that 90 degree step must snap.
-                .animation(animation, value: deviceMotion.quaternion)
+                .animation(animation, value: deviceMotion.currentDeviceRotation)
         }
     }
 }

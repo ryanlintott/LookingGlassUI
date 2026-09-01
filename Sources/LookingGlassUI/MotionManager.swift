@@ -22,7 +22,7 @@ import SwiftUI
 public final class MotionManager: ObservableObject {
     /// The interval between motion samples this scene asked for, in seconds.
     ///
-    /// The shared service runs at the fastest interval any scene asked for, so samples can arrive faster than this. ``DeviceMotion/activeUpdateInterval`` reports the rate they actually arrive at.
+    /// The shared service runs at the fastest interval any scene asked for, so samples can arrive faster than this. ``DeviceMotion/updateInterval`` reports the rate they actually arrive at.
     @Published public private(set) var preferredUpdateInterval: TimeInterval
 
     /// Whether this scene has disabled motion updates.
@@ -66,7 +66,7 @@ public final class MotionManager: ObservableObject {
         scenePhase != .background && isDetectingMotion
     }
 
-    @available(*, unavailable, renamed: "preferredUpdateInterval", message: "Renamed because a scene can receive samples faster than it asked for. `DeviceMotion.activeUpdateInterval` reports the rate they actually arrive at.")
+    @available(*, unavailable, renamed: "preferredUpdateInterval", message: "Renamed because a scene can receive samples faster than it asked for. `DeviceMotion.updateInterval` reports the rate they actually arrive at.")
     public var updateInterval: TimeInterval { fatalError() }
 
     /// Applies a new configuration and reconciles the shared service when something changed.
@@ -99,22 +99,22 @@ public final class MotionManager: ObservableObject {
         MotionService.shared.reconcile()
     }
 
-    @available(*, unavailable, message: "Removed to improve performance. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view. This object is added to the environment with `.motionManager()`. Use `deviceMotion.quaternion`, applying animation as per the documentation for that property.")
+    @available(*, unavailable, message: "Removed to improve performance. Use `DeviceMotion.currentDeviceRotation`, applying animation as per the documentation for that property. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view to access the environment object added with `.motionManager()`.")
     public var animatedQuaternion: Quat { fatalError() }
 
-    @available(*, unavailable, message: "Moved to DeviceMotion. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view. This object is added to the environment with `.motionManager()`.")
+    @available(*, unavailable, message: "Replaced by `DeviceMotion.currentDeviceRotation`. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view to access the environment object added with `.motionManager()`.")
     public var quaternion: Quat { fatalError() }
 
-    @available(*, unavailable, message: "Moved to DeviceMotion. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view. This object is added to the environment with `.motionManager()`.")
+    @available(*, unavailable, message: "The intial device rotation is no longer saved. `DeviceMotion.settledDeviceRotation` is an alternative which tracks a previous device rotation and eases towards the current rotation rather than staying where it was. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view to access the environment object added with `.motionManager()`.")
     public var initialDeviceRotation: Quat? { fatalError() }
 
-    @available(*, unavailable, message: "Moved to DeviceMotion. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view. This object is added to the environment with `.motionManager()`.")
+    @available(*, unavailable, message: "Replaced by `DeviceMotion.deltaRotation`. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view to access the environment object added with `.motionManager()`.")
     public var deltaRotation: Quat { fatalError() }
 
-    @available(*, unavailable, message: "Replaced by `DeviceMotion.interfaceOrientation`, which follows the interface rather than the device and so stays correct while the device is lying flat. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view. This object is added to the environment with `.motionManager()`.")
+    @available(*, unavailable, message: "Replaced by `DeviceMotion.interfaceOrientation`, which follows the interface rather than the device and so stays correct while the device is lying flat. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view to access the environment object added with `.motionManager()`.")
     public var deviceOrientation: UIDeviceOrientation { fatalError() }
 
-    @available(*, unavailable, message: "Moved to DeviceMotion. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view. This object is added to the environment with `.motionManager()`.")
+    @available(*, unavailable, message: "Replaced by an optional property `DeviceMotion.interfaceOrientation.rotation` as sometimes the interface orientation is unknown. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view to access the environment object added with `.motionManager()`.")
     public var interfaceRotation: Quat { fatalError() }
 
     @available(*, unavailable, message: "Device orientation is updated internally so this call is no longer required.")

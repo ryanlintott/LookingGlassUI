@@ -6,7 +6,7 @@ A Swift Package that creates shimmer, parallax, and other SwiftUI effects based 
 
 Add ``SwiftUICore/View/motionManager(updateInterval:disabled:)`` once near the top of each scene's view hierarchy and every other feature in this package can use device motion. It places that scene's ``MotionManager`` and the shared ``DeviceMotion`` in the environment. Every scene shares one Core Motion service, driven by the fastest interval any enabled foreground scene needs. Backgrounding, closing, or disabling one scene does not stop updates needed by another foreground scene, and a disabled scene does not display motion effects while another scene remains active.
 
-Make a color catch the light as the device turns with ``ShimmerView``, or add that shimmer to any view with ``SwiftUICore/View/shimmer(mode:color:background:)``. Shift a view as the device tilts with ``SwiftUICore/View/parallax(multiplier:maxOffset:)``. Lock a view to a real-world angle with ``LookingGlass`` or ``SwiftUICore/View/deviceRotationEffect(_:distance:perspective:pitch:yaw:localRoll:isShowingInFourDirections:)`` so it appears through the screen as if seen through a window or a reflection, and is only visible when the device points at it.
+Make a color catch the light as the device turns with ``ShimmerView``, or add that shimmer to any view with ``SwiftUICore/View/shimmer(mode:color:background:)``. Shift a view as the device tilts with ``SwiftUICore/View/parallax(distance:maxOffset:)``. Lock a view to a real-world angle with ``LookingGlass`` or ``SwiftUICore/View/deviceRotationEffect(_:distance:perspective:pitch:yaw:localRoll:isShowingInFourDirections:)`` so it appears through the screen as if seen through a window or a reflection, and is only visible when the device points at it.
 
 ```swift
 ContentView()
@@ -18,7 +18,7 @@ Text("Hello, World!")
     .shimmer(color: .gold)
 
 Text("Hello, World!")
-    .parallax(multiplier: 40, maxOffset: 100)
+    .parallax(distance: 40, maxOffset: 100)
 
 LookingGlass(.reflection, distance: 4000, perspective: 0, pitch: .degrees(45), yaw: .zero, localRoll: .zero) {
     Text("Hello, World!")
@@ -33,7 +33,7 @@ An effect is off when its scene passed a zero `updateInterval` or `disabled: tru
 | --- | --- |
 | ``LookingGlass`` | Takes the same space and draws nothing |
 | ``SwiftUICore/View/deviceRotationEffect(_:distance:perspective:pitch:yaw:localRoll:isShowingInFourDirections:)`` | Draws nothing and takes no space |
-| ``SwiftUICore/View/parallax(multiplier:maxOffset:)`` | Draws the view unmoved |
+| ``SwiftUICore/View/parallax(distance:maxOffset:)`` | Draws the view unmoved |
 | ``ShimmerView`` and ``SwiftUICore/View/shimmer(mode:color:background:)`` | Draws the background colour alone |
 | ``SwiftUICore/View/shimmer(mode:color:blendMode:)`` | Draws nothing over the view |
 
@@ -66,7 +66,7 @@ For a feature-by-feature guide with examples, see the [README](https://github.co
 
 ### Parallax
 
-- ``SwiftUICore/View/parallax(multiplier:maxOffset:)``
+- ``SwiftUICore/View/parallax(distance:maxOffset:)``
 
 ### Real-World Rotation
 

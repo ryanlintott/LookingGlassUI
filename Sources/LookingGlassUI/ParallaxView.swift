@@ -12,24 +12,14 @@ struct ParallaxViewModifier: ViewModifier {
     @EnvironmentObject private var motionManager: MotionManager
     @EnvironmentObject private var deviceMotion: DeviceMotion
 
-    let multiplier: CGFloat
+    let distance: CGFloat
     let maxOffset: CGFloat?
     
-    var rotation: Quat {
-        deviceMotion.deltaRotation
-    }
-    
     var parallaxOffset: CGSize {
+        /// Check if this view heirarchy is detecting motion
         guard motionManager.isDetectingMotion else { return .zero }
-        
-        let maxOffset = maxOffset ?? .infinity
-        
-        let x = rotation.yaw.radians * multiplier
-        let y = -rotation.pitch.radians * multiplier
-        
-        let vector = Vec3(x: x, y: y, z: 0).limited(to: maxOffset)
-        
-        return CGSize(width: vector.x, height: vector.y)
+
+        return deviceMotion.deltaRotation.parallaxOffset(distance: distance, maxOffset: maxOffset)
     }
     
     func body(content: Content) -> some View {
@@ -46,10 +36,15 @@ public extension View {
     /// - Requires: ``motionManager(updateInterval:disabled:)`` must be added above this view in the hierarchy.
     ///
     /// - Parameters:
-    ///   - multiplier: How much to move the view. Distance is the radians of the rotation multiplied by this multiplier.
+    ///   - distance: How far in front of the screen the view is treated as resting, in points. The view moves as that point would, so this is also the furthest it can travel. A negative distance rests the view behind the screen and moves it the other way.
     ///   - maxOffset: Limits the movement to a maximum distance from the resting position, in any direction.
     /// - Returns: The view moved to create a parallax effect based on device orientation.
+    func parallax(distance: CGFloat, maxOffset: CGFloat? = nil) -> some View {
+        modifier(ParallaxViewModifier(distance: distance, maxOffset: maxOffset))
+    }
+
+    @available(*, unavailable, renamed: "parallax(distance:maxOffset:)", message: "The view is now treated as a point resting this many points in front of the screen rather than a factor applied to the angle turned, so `distance` is what it has always been measured in.")
     func parallax(multiplier: CGFloat = 50, maxOffset: CGFloat? = nil) -> some View {
-        modifier(ParallaxViewModifier(multiplier: multiplier, maxOffset: maxOffset))
+        parallax(distance: multiplier, maxOffset: maxOffset)
     }
 }

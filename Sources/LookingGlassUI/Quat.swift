@@ -128,6 +128,18 @@ public extension Quat {
     func rotationAngle(to q2: Self) -> Angle {
         (conjugate * q2).angle
     }
+
+    /// Returns a rotation part way between this one and another, turning the short way around.
+    ///
+    /// The angle between the result and this rotation is `amount` of the angle between the two, so moving repeatedly by a fixed fraction closes the gap exponentially rather than at a steady rate.
+    ///
+    /// - Parameters:
+    ///   - other: Rotation to move towards.
+    ///   - amount: How far to move, where zero stays here and one arrives at `other`.
+    /// - Returns: The rotation that far between the two.
+    func slerp(to other: Self, amount: Double) -> Self {
+        .init(simd_slerp(simd, other.simd, amount))
+    }
     
     /// Transformation from device reference frame to screen reference frame.
     ///
@@ -160,5 +172,24 @@ public extension Quat {
     /// - Returns: The rotated vector.
     func rotating(_ vector: Vec3) -> Vec3 {
         simd_act(simd.normalized, vector)
+    }
+    
+    /// Where a point resting `distance` in front of the centre of the screen appears to sit once the device has turned by this rotation.
+    ///
+    /// This rotation describes how the device turned. A point resting in front of the screen stays where it is while the screen turns beneath it, so it travels across the screen by the opposite rotation. That inverse is what puts a positive `distance` in front of the screen rather than behind it, where content moves the other way.
+    ///
+    /// The point is carried around and then flattened onto the screen, so the offset follows the sine of the angle rather than the angle itself. It reaches `distance` when the point has come level with the screen and falls away again as the device keeps turning past it, rather than growing without bound and leaving `maxOffset` to do all the work.
+    ///
+    /// Turning in the plane of the screen leaves a point on the screen's own axis exactly where it was, so a roll produces no offset at all without having to be excluded.
+    ///
+    /// - Parameters:
+    ///   - distance: How far in front of the screen the point rests, in points. Also the furthest the offset can reach.
+    ///   - maxOffset: Limits the offset to this distance from the resting position, in any direction.
+    /// - Returns: The offset of the point from the centre of the screen.
+    func parallaxOffset(distance: CGFloat, maxOffset: CGFloat?) -> CGSize {
+        let point = inverse.rotating(Vec3(x: 0, y: 0, z: distance))
+        let offset = Vec3(x: point.x, y: point.y, z: 0).limited(to: maxOffset ?? .infinity)
+
+        return CGSize(width: offset.x, height: offset.y)
     }
 }
