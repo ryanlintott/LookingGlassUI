@@ -35,6 +35,13 @@ final class MotionService: ObservableObject {
     /// The scene managers currently alive.
     private var managers: [WeakManager] = []
 
+    /// Identifies one run of the sensor, so a sample from an earlier run can be told apart from a current one.
+    ///
+    /// Each run measures attitude against its own reference frame, and the default frame's horizontal axis points in an arbitrary direction picked from wherever the device happened to be pointing when that run started. Samples from two runs are not comparable and can disagree by most of a turn.
+    ///
+    /// Stopping the sensor doesn't drop the samples already queued for the main queue, and during an interface rotation that queue is busy enough for several to be waiting. One arriving after the next run has started would be measured against the frame it came from and, worse, could become the settled rotation that run is then measured against, leaving ``DeviceMotion/deltaRotation`` wrong by the difference between the two frames until the settling eases it out.
+    private var motionSession: Int = 0
+
     /// The current and initial device rotations derived from Core Motion updates.
     let deviceMotion = DeviceMotion.shared
 
@@ -114,15 +121,20 @@ final class MotionService: ObservableObject {
 
         restartMotionUpdatesIfNeeded(forceRestart: forceRestart)
     }
-
+    
+    private func stopMotionUpdates() {
+        motionSession &+= 1
+        cmManager.stopDeviceMotionUpdates()
+        deviceMotion.resetSettledDeviceRotation()
+    }
+    
     /// Makes the Core Motion service match the scenes that need it and the application state.
     ///
     /// - Parameter forceRestart: Whether to restart an already-requested service even when its interval is unchanged.
     private func restartMotionUpdatesIfNeeded(forceRestart: Bool = false) {
         guard needsMotionService else {
             if cmManager.isDeviceMotionActive {
-                cmManager.stopDeviceMotionUpdates()
-                deviceMotion.resetSettledDeviceRotation()
+                stopMotionUpdates()
             }
             return
         }
@@ -134,11 +146,17 @@ final class MotionService: ObservableObject {
         guard requiresRestart else { return }
 
         if cmManager.isDeviceMotionActive {
-            cmManager.stopDeviceMotionUpdates()
+            stopMotionUpdates()
         }
+        /// Start motion updates
+        motionSession &+= 1
+        let session = motionSession
+        deviceMotion.resetSettledDeviceRotation()
+        
         cmManager.deviceMotionUpdateInterval = deviceMotion.updateInterval
 
         cmManager.startDeviceMotionUpdates(to: .main) { motionData, error in
+            guard session == self.motionSession else { return }
             if let motionData = motionData {
                 #if DEBUG
                 if Self.isPrintingViewChanges {
