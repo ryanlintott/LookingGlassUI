@@ -1,0 +1,89 @@
+name: Swift Compatibility
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - dev
+      - main
+  push:
+    branches:
+      - dev
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: swift-compatibility-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  swift-6-0:
+    name: Swift 6.0 compatibility
+    runs-on: macos-15
+    timeout-minutes: 15
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.0.app/Contents/Developer
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Report toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      # Only the library is built here. This job guards the minimum Swift
+      # version the package claims to support, which is a promise about the
+      # code consumers compile. The test target is exercised by the
+      # current-swift job instead. The package is iOS only, so this cannot
+      # be a plain `swift build` against the macOS host.
+      - name: Build for iOS
+        run: >-
+          xcodebuild build
+          -scheme LookingGlassUI
+          -destination 'generic/platform=iOS'
+          CODE_SIGNING_ALLOWED=NO
+
+  current-swift:
+    name: Current Swift tests and iOS build
+    runs-on: macos-26
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Report toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      # Any available iPhone simulator will do, so pick one from the runner
+      # image rather than pinning a model name that a future image drops.
+      - name: Choose an iOS simulator
+        id: simulator
+        run: |
+          udid=$(xcrun simctl list devices available --json \
+            | jq -r '[.devices | to_entries[] | select(.key | test("iOS")) | .value[] | select(.name | startswith("iPhone"))] | last | .udid')
+          if [ -z "$udid" ] || [ "$udid" = "null" ]; then
+            echo "No iPhone simulator available on this runner." >&2
+            xcrun simctl list devices available >&2
+            exit 1
+          fi
+          echo "udid=$udid" >> "$GITHUB_OUTPUT"
+
+      - name: Test on iOS Simulator
+        run: >-
+          xcodebuild test
+          -scheme LookingGlassUI
+          -destination 'id=${{ steps.simulator.outputs.udid }}'
+
+      - name: Build for iOS
+        run: >-
+          xcodebuild build
+          -scheme LookingGlassUI
+          -destination 'generic/platform=iOS'
+          CODE_SIGNING_ALLOWED=NO

@@ -105,7 +105,7 @@ public final class MotionManager: ObservableObject {
     @available(*, unavailable, message: "Replaced by `DeviceMotion.currentDeviceRotation`. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view to access the environment object added with `.motionManager()`.")
     public var quaternion: Quat { fatalError() }
 
-    @available(*, unavailable, message: "The intial device rotation is no longer saved. `DeviceMotion.settledDeviceRotation` is an alternative which tracks a previous device rotation and eases towards the current rotation rather than staying where it was. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view to access the environment object added with `.motionManager()`.")
+    @available(*, unavailable, message: "The initial device rotation is no longer saved. `DeviceMotion.settledDeviceRotation` is an alternative which tracks a previous device rotation and eases towards the current rotation rather than staying where it was. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view to access the environment object added with `.motionManager()`.")
     public var initialDeviceRotation: Quat? { fatalError() }
 
     @available(*, unavailable, message: "Replaced by `DeviceMotion.deltaRotation`. Add `@EnvironmentObject var deviceMotion: DeviceMotion` to your view to access the environment object added with `.motionManager()`.")
