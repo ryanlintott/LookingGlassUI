@@ -15,19 +15,22 @@ struct ShimmerViewModifier: ViewModifier {
     let color: Color
     let background: Color
     let blendMode: BlendMode
+    let exposureStops: Double
     
-    init(mode: ShimmerMode? = nil, color: Color, blendMode: BlendMode? = nil) {
+    init(mode: ShimmerMode? = nil, color: Color, blendMode: BlendMode? = nil, exposureStops: Double = 0) {
         self.mode = mode ?? .on
         self.color = color
         self.background = .clear
         self.blendMode = blendMode ?? .screen
+        self.exposureStops = exposureStops
     }
     
-    init(mode: ShimmerMode? = nil, color: Color, background: Color) {
+    init(mode: ShimmerMode? = nil, color: Color, background: Color, exposureStops: Double = 0) {
         self.mode = mode ?? .on
         self.color = color
         self.background = background
         self.blendMode = .sourceAtop
+        self.exposureStops = exposureStops
     }
     
     /// True if anything needs to be drawn over the content.
@@ -47,7 +50,7 @@ struct ShimmerViewModifier: ViewModifier {
                         content
                             .hidden()
                             .overlay(
-                                ShimmerView(mode: mode, color: color, background: background)
+                                ShimmerView(mode: mode, color: color, background: background, exposureStops: exposureStops)
                             )
                             .mask(content)
                             .blendMode(blendMode)
@@ -70,9 +73,10 @@ public extension View {
     ///   - mode: Modes where shimmer should be enabled (default: `.on`)
     ///   - color: Shimmer color.
     ///   - background: Background color.
+    ///   - exposureStops: HDR exposure applied to the shimmer color on iOS 26 and later. Each stop doubles its brightness. Values that are zero, negative, or infinite use standard dynamic range. (default: `0`)
     /// - Returns: A shimmer effect with a background masked to this view.
-    func shimmer(mode: ShimmerMode? = nil, color: Color, background: Color) -> some View {
-        self.modifier(ShimmerViewModifier(mode: mode, color: color, background: background))
+    func shimmer(mode: ShimmerMode? = nil, color: Color, background: Color, exposureStops: Double = 0) -> some View {
+        self.modifier(ShimmerViewModifier(mode: mode, color: color, background: background, exposureStops: exposureStops))
     }
     
     /// Add a shimmer effect with a background masked to this view.
@@ -85,9 +89,10 @@ public extension View {
     ///   - isOn: Is shimmer enabled (default: `true`)
     ///   - color: Shimmer color.
     ///   - background: Background color.
+    ///   - exposureStops: HDR exposure applied to the shimmer color on iOS 26 and later. Each stop doubles its brightness. Values that are zero, negative, or infinite use standard dynamic range. (default: `0`)
     /// - Returns: A shimmer effect with a background masked to this view.
-    func shimmer(isOn: Bool, color: Color, background: Color) -> some View {
-        self.modifier(ShimmerViewModifier(mode: isOn ? .on : .off, color: color, background: background))
+    func shimmer(isOn: Bool, color: Color, background: Color, exposureStops: Double = 0) -> some View {
+        self.modifier(ShimmerViewModifier(mode: isOn ? .on : .off, color: color, background: background, exposureStops: exposureStops))
     }
     
     /// Add a shimmer effect masked to this view with a specified blend mode.
@@ -100,9 +105,10 @@ public extension View {
     ///   - mode: Modes where shimmer should be enabled (default: `.on`)
     ///   - color: Shimmer color
     ///   - blendMode: How shimmer will blend with other views. (default: `.screen`)
+    ///   - exposureStops: HDR exposure applied to the shimmer color on iOS 26 and later. Each stop doubles its brightness. Values that are zero, negative, or infinite use standard dynamic range. (default: `0`)
     /// - Returns: A view with a shimmer effect overlayed that is masked by the same view
-    func shimmer(mode: ShimmerMode? = nil, color: Color, blendMode: BlendMode? = nil) -> some View {
-        self.modifier(ShimmerViewModifier(mode: mode, color: color, blendMode: blendMode))
+    func shimmer(mode: ShimmerMode? = nil, color: Color, blendMode: BlendMode? = nil, exposureStops: Double = 0) -> some View {
+        self.modifier(ShimmerViewModifier(mode: mode, color: color, blendMode: blendMode, exposureStops: exposureStops))
     }
     
     /// Add a shimmer effect masked to this view with a specified blend mode.
@@ -115,8 +121,9 @@ public extension View {
     ///   - isOn: Is shimmer enabled.
     ///   - color: Shimmer color
     ///   - blendMode: How shimmer will blend with other views. (default: `.screen`)
+    ///   - exposureStops: HDR exposure applied to the shimmer color on iOS 26 and later. Each stop doubles its brightness. Values that are zero, negative, or infinite use standard dynamic range. (default: `0`)
     /// - Returns: A view with a shimmer effect overlayed that is masked by the same view
-    func shimmer(isOn: Bool, color: Color, blendMode: BlendMode? = nil) -> some View {
-        self.modifier(ShimmerViewModifier(mode: isOn ? .on : .off, color: color, blendMode: blendMode))
+    func shimmer(isOn: Bool, color: Color, blendMode: BlendMode? = nil, exposureStops: Double = 0) -> some View {
+        self.modifier(ShimmerViewModifier(mode: isOn ? .on : .off, color: color, blendMode: blendMode, exposureStops: exposureStops))
     }
 }

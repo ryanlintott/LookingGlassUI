@@ -32,7 +32,7 @@ struct ParallaxExample: View {
             
             VStack {
                 HStack {
-                    Text("Multiplier")
+                    Text("Distance")
                     
                     Slider(value: $distance, in: -100...100)
                         .padding(.horizontal)

@@ -62,18 +62,18 @@ Every scene gets its own `MotionManager` from `.motionManager` holding the value
 ## ShimmerView
 *Requires [`.motionManager()`](#motionmanager)*
 
-This view acts like `Color` but a second shimmer color will appear when device is rotated. The effect can be enabled via a parameter or set to only show in dark or light mode. If `MotionManager` is disabled only the background color will be shown.
+This view acts like `Color` but a second shimmer color will appear when device is rotated. The effect can be enabled via a parameter or set to only show in dark or light mode. If `MotionManager` is disabled only the background color will be shown. When built with Xcode 26 or later and running on iOS 26 or later, set `exposureStops` above zero to render the shimmer color in HDR; each stop doubles its brightness. The default of zero and earlier toolchain or iOS versions use the existing standard dynamic range appearance.
 ```swift
-ShimmerView(mode: .darkModeOnly, color: .goldShimmer, background: .gold)
+ShimmerView(mode: .darkModeOnly, color: .goldShimmer, background: .gold, exposureStops: 1)
 ```
 
 ## .shimmer()
 *Requires [`.motionManager()`](#motionmanager)*
 
-Use `.shimmer()` view modifier if you want to add a default shimmer effect to another SwiftUI View. If `MotionManager` is disabled the shimmer effect will not appear.
+Use `.shimmer()` view modifier if you want to add a default shimmer effect to another SwiftUI View. If `MotionManager` is disabled the shimmer effect will not appear. Its `exposureStops` parameter has the same HDR behaviour as `ShimmerView`.
 ```swift
 Text("Hello, World!")
-    .shimmer(color: .gold)
+    .shimmer(color: .gold, exposureStops: 1)
 ```
 
 ## .parallax()
