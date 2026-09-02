@@ -18,14 +18,16 @@ struct ParallaxExample: View {
         VStack {
             Spacer()
             
-            shape
-                .stroke(.red)
-                .background(
-                    shape
-                        .fill(.blue)
-                        .accessibilityLabel("Blue rectangle")
-                        .parallax(distance: distance, maxOffset: maxOffset)
-                )
+            ZStack {
+                shape
+                    .stroke(.red)
+                    .zIndex(distance > 0 ? 0 : 1)
+                
+                shape
+                    .fill(.blue)
+                    .accessibilityLabel("Blue rectangle")
+                    .parallax(distance: distance, maxOffset: maxOffset)
+            }
                 .frame(width: 100, height: 200)
 
             Spacer()
