@@ -20,17 +20,21 @@ public struct QuaternionDataView: View {
     @ViewBuilder
     public var body: some View {
         if let quat {
-            Section(header: Text("Axis Vector and angle")) {
+            Section {
                 data("Axis Vector x", quat.axis.x)
                 data("Axis Vector y", quat.axis.y)
                 data("Axis Vector z", quat.axis.z)
                 data("Angle (degrees)", quat.angle.degrees)
+            } header: {
+                Text("Axis Vector and angle")
             }
             
-            Section(header: Text("Rotation components")) {
+            Section {
                 data("Pitch (degrees)", quat.pitch.degrees)
                 data("Yaw (degrees)", quat.yaw.degrees)
                 data("Roll (degrees)", quat.roll.degrees)
+            } header: {
+                Text("Rotation components")
             }
         } else {
             Text("Quat: Nil")

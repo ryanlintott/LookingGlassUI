@@ -44,21 +44,19 @@ struct ShimmerViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         let _ = Self.printChangesIfEnabled()
         content
-            .overlay(
-                VStack {
-                    if isVisible {
-                        content
-                            .hidden()
-                            .overlay(
-                                ShimmerView(mode: mode, color: color, background: background, exposureStops: exposureStops)
-                            )
-                            .mask(content)
-                            .blendMode(blendMode)
-                            .accessibilityHidden(true)
-                            .allowsHitTesting(false)
-                    }
+            .overlay {
+                if isVisible {
+                    content
+                        .hidden()
+                        .overlay {
+                            ShimmerView(mode: mode, color: color, background: background, exposureStops: exposureStops)
+                        }
+                        .mask { content }
+                        .blendMode(blendMode)
+                        .accessibilityHidden(true)
+                        .allowsHitTesting(false)
                 }
-            )
+            }
     }
 }
 

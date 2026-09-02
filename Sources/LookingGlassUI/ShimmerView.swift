@@ -93,7 +93,7 @@ public struct ShimmerView: View {
     public var body: some View {
         let _ = Self.printChangesIfEnabled()
         background
-            .overlay(
+            .overlay {
                 VStack {
                     if isShimmering {
                         LookingGlass(
@@ -110,11 +110,12 @@ public struct ShimmerView: View {
                                 .scaleEffect(x: scale * aspectRatio, y: scale / aspectRatio, anchor: .center)
                         }
                         .clipped()
+                        
                     }
                 }
                 /// This ensures the shimmering effect does not change the content shape for hit testing and accessibility purporses.
-                    .contentShape(EmptyShape())
-            )
+                .contentShape(EmptyShape())
+            }
             .ifAvailable {
                 /// Even though allowed dynamic range is available in iOS 17, we only use it in iOS 26+ so no point enabling it in lower versions.
                 if #available(iOS 26.0, *) {
