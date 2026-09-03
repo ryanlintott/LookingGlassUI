@@ -78,9 +78,11 @@ public extension View {
     }
 
     /// Adds ``MotionManager`` and ``DeviceMotion`` into the environment.
+    /// - Tracks device motion using one Core Motion service shared across scenes. The fastest enabled foreground scene controls the shared service, and removing, disabling, or backgrounding one scene does not stop another foreground scene's motion updates.
     /// - Adjusts for landscape/portrait changes to device orientation.
-    /// - Suspends a scene's request while that scene is in the background.
-    /// - Shares one Core Motion service across scenes. Add this modifier once near the top of each scene's view hierarchy. The fastest enabled foreground scene controls the shared service, and removing, disabling, or backgrounding one scene does not stop another foreground scene's updates.
+    /// - Suspends a scene's request while that scene is in the background or on a non-device screen.
+    ///
+    ///- Important: Add this modifier only once per scene at the top of the view heirarchy so it can correctly read the size of the entire window.
     ///
     /// - Parameters:
     ///   - preferredUpdateInterval: Interval between motion updates in seconds that this scene asks for. 0 will disable updates, 1/60 is 60fps and will update every frame. The default of 0.1 is usally a good compromise between reactivity and performance for shimmer, parallax and other rotation-based effects. Test performance on older devices as fast updates can make a device unusable. Samples can arrive faster than this as every scene shares one service running at the fastest requested interval. ``DeviceMotion/updateInterval`` reports the rate they actually arrive at.

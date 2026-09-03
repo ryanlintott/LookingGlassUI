@@ -16,10 +16,10 @@ Create shimmer, parallax or other rotation effects based on device orientation.
 - [`ShimmerView`](#shimmerview) - A color that shimmers with another color as if reflecting light when the device rotates.
 - [`.shimmer()`](#shimmer) - A view modifier that overlays a shimmer color as if reflecting light when the device rotates.
 - [`.parallax()`](#parallax) - A view modifier that moves the view to add a parallax effect when the device rotates.
-- [`LookingGlass`](#lookingglass) - A view that rotates its child view to a specific 3d angle relative to the real world and positions it relative to the device.
+- [`LookingGlass`](#lookingglass) - A view that rotates its child view to a specific 3d angle relative to the real world and positions it relative to the window.
 - [`.deviceRotationEffect()`](#devicerotationeffect) - A view modifier that rotates a view based on device rotation.
 - [`.rotation3DEffect()`](#rotation3deffect) - A view modifier that rotates a view based on a quaternion.
-- [`Quat`](#quat) - A wrapper for simd.quaternion with handy extensions.
+- [`Quat`](#quat) - A wrapper for `simd_quatd` with handy extensions.
 - [`MotionManager` and `DeviceMotion`](#motionmanager-and-devicemotion) - Direct access to the motion configuration and the current device rotation.
 
 # Demo App
@@ -51,7 +51,7 @@ LookingGlassUI is open source and free but if you like using it, please consider
 
 # Details
 ## .motionManager()
-Before adding any custom views, add the `.motionManager` view modifier once near the top of that scene's view hierarchy, above any other views or modifiers used in this package.
+Before adding any custom views, add the `.motionManager` view modifier once at the top of that scene's view hierarchy, so it is able to read the full window size and location and pass that information down to any motion effects that require it.
 ```swift
 ContentView()
     .motionManager(preferredUpdateInterval: 0.1, disabled: false)
@@ -62,7 +62,7 @@ Every scene gets its own `MotionManager` from `.motionManager` holding the value
 ## ShimmerView
 *Requires [`.motionManager()`](#motionmanager)*
 
-This view acts like `Color` but a second shimmer color will appear when device is rotated. The effect can be enabled via a parameter or set to only show in dark or light mode. If `MotionManager` is disabled only the background color will be shown. When built with Xcode 26 or later and running on iOS 26 or later, set `exposureStops` above zero to render the shimmer color in HDR; each stop doubles its brightness. The default of zero and earlier toolchain or iOS versions use the existing standard dynamic range appearance.
+This view acts like `Color` but a second shimmer color will appear when device is rotated. The effect can be enabled via a parameter or set to only show in dark or light mode. If `MotionManager` is disabled only the background color will be shown. When built with Xcode 26 or later and running on iOS 26 or later, set `exposureStops` above zero to render the shimmer color in HDR; each stop doubles its brightness. The default of zero will use the standard dynamic range appearance.
 ```swift
 ShimmerView(mode: .darkModeOnly, color: .goldShimmer, background: .gold, exposureStops: 1)
 ```
@@ -70,7 +70,7 @@ ShimmerView(mode: .darkModeOnly, color: .goldShimmer, background: .gold, exposur
 ## .shimmer()
 *Requires [`.motionManager()`](#motionmanager)*
 
-Use `.shimmer()` view modifier if you want to add a default shimmer effect to another SwiftUI View. If `MotionManager` is disabled the shimmer effect will not appear. Its `exposureStops` parameter has the same HDR behaviour as `ShimmerView`.
+Use `.shimmer()` view modifier if you want to add a default shimmer effect to another SwiftUI View. If `MotionManager` is disabled the shimmer effect will not appear.
 ```swift
 Text("Hello, World!")
     .shimmer(color: .gold, exposureStops: 1)
@@ -88,7 +88,7 @@ Text("Hello, World!")
 ## LookingGlass
 *Requires [`.motionManager()`](#motionmanager)*
 
-Use `LookingGlass` if you want to project any SwiftUI view based on a real-world rotation and create your own custom effect. Content appears as if rotated and positioned from the center of the device regardless of positioin on the screen or if it's in a scrollview. If `MotionManager` is disabled nothing will be shown.
+Use `LookingGlass` if you want to project any SwiftUI view based on a real-world rotation and create your own custom effect. Content appears as if rotated and positioned from the centre of the window regardless of its position on the screen or in a scrollview. If `MotionManager` is disabled nothing will be shown.
 ```swift
 LookingGlass(.reflection, distance: 4000, perspective: 0, pitch: .degrees(45), yaw: .zero, localRoll: .zero, isShowingInFourDirections: false) {
     Text("Hello, World")
@@ -101,7 +101,7 @@ LookingGlass(.reflection, distance: 4000, perspective: 0, pitch: .degrees(45), y
 ## .deviceRotationEffect()
 *Requires [`.motionManager()`](#motionmanager)*
 
-Use `.deviceRotationEffect()` if you want to rotate a view based on device rotation. Content is rotated and positioned based on it's own center. If `MotionManager` is disabled nothing will be shown.
+Use `.deviceRotationEffect()` if you want to rotate a view based on device rotation. Content is rotated and positioned based on its own center. If `MotionManager` is disabled nothing will be shown.
 ```swift
 Text("Hello, World")
     .foregroundColor(.white)
@@ -111,14 +111,14 @@ Text("Hello, World")
 ```
 
 ## rotation3DEffect()
-Rotate SwiftUI Views based on quaterions. This ensures a smooth rotation from any point to any other point.
+Rotate SwiftUI Views based on quaternions. This ensures a smooth rotation from any point to any other point.
 ```swift
 Text("Hello, World")
     .rotation3DEffect(quaternion: Quat(pitch: .degrees(45), yaw: .zero, localRoll: .degrees(-30)), anchor: .center, anchorZ: 200, perspective: 0.2)
 ```
 
 ## Quat
-`Quat` is a wrapper for simd.quaternion with handy parameters like yaw, pitch, and roll and a way to init from pitch, yaw and localRoll.
+`Quat` is a wrapper for `simd_quatd` with handy parameters like yaw, pitch, and roll and a way to init from pitch, yaw and localRoll. Rotation axes use `Vec3`, an alias for `SIMD3<Double>` with `xAxis`, `yAxis` and `zAxis` shorthands.
 
 ## MotionManager and DeviceMotion
 
@@ -139,7 +139,7 @@ Text("Hello, World")
 ## Window and Reflection Modes
 In window mode a view appears as if your phone is a window looking into a 3d environment.
 
-In reflection mode a view appears as if your phone has a camera pointing out of the screen back at a 3d envrionment. It's not a true reflection as it doesn't take into account the viewer's eye location but it's a useful approximation.
+In reflection mode a view appears as if your phone has a camera pointing out of the screen back at a 3d environment. It's not a true reflection as it doesn't take into account the viewer's eye location but it's a useful approximation.
 
 ## Positioning View
 Views are positioned based on a quaternion or pitch, yaw, and local roll angles.
@@ -147,8 +147,8 @@ All angles at zero means the view will be visible when the phone is flat with th
 1. Local Roll rotate the view around the Z axis. 10 degrees will tilt the view counter-clockwise
 2. Pitch will rotate the view around the X axis. 90 degrees will bring the view up directly in front of the user.
 3. Yaw will rotate the view around the Z axis again. 5 degrees will move the view slightly to the left of the user. If you set isShowingInFourDirections to true the view will be copied 3 additional times and rotated at -90, 90, and 180 degrees from the position you chose.
-4. The view is then moved away from the origin based on the distance provided. The direction is dependant on choosing window or reflection.
-6. As the user moves their device around they will always see your view in the location you've set.
+4. The view is then moved away from the origin based on the distance provided. The direction is dependent on choosing window or reflection.
+5. As the user moves their device around they will always see your view in the location you've set.
 
 Don't worry about device orientation. Although Core Motion doesn't compensate for this, LookingGlassUI does.
 

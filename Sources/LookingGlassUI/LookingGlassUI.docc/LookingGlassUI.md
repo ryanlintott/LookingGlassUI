@@ -87,3 +87,6 @@ For a feature-by-feature guide with examples, see the [README](https://github.co
 
 - ``QuaternionDataView``
 
+### Extended Types
+
+- ``Swift/SIMD3``
