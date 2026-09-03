@@ -56,12 +56,12 @@ public final class DeviceMotion: ObservableObject {
     /// Used to suppress the smoothing animation for that update as the clone rotation snaps between 90 degree intervals and animating it would sweep the view around instead. This is deliberately not published as it's only read during view updates that are already triggered by ``currentDeviceRotation``.
     private(set) var cloneRotationDidChange: Bool = false
     
-    /// The orientation the interface is currently showing.
+    /// The orientation the interface is currently showing, as last reported by a scene that should be believed.
     ///
-    /// This follows the interface rather than the device, so it stays correct while the device is lying flat and is right from launch in any orientation.
+    /// Scenes report their own to ``MotionManager/interfaceOrientation``, which is where a view reads it. This is the app-wide copy the rotations below are built from; every scene on the device's screen faces the same way, so they agree on it.
     ///
-    /// Nil until a window scene reports a known orientation. `UIInterfaceOrientation.unknown` is never stored: a scene that cannot say which way it is facing leaves the last known orientation in place rather than resetting the world to portrait.
-    @Published public private(set) var interfaceOrientation: UIInterfaceOrientation? = nil
+    /// Nil until a scene reports a known orientation. `UIInterfaceOrientation.unknown` is never stored: a scene that cannot say which way it is facing leaves the last known orientation in place rather than resetting the world to portrait.
+    @Published private(set) var interfaceOrientation: UIInterfaceOrientation? = nil
 
     /// The interval the shared motion service is running at, in seconds.
     ///
@@ -92,7 +92,9 @@ public final class DeviceMotion: ObservableObject {
 
     /// The quaternion that compensates for the current interface orientation.
     ///
-    /// Use this rotation when converting device-reference motion into screen-relative motion.
+    /// Use this rotation when converting device-reference motion into screen-relative motion, as ``deltaRotation`` and the effects in this package do.
+    ///
+    /// Built from the latest report by a scene that should be believed. Which way a particular scene is facing is ``MotionManager/interfaceOrientation``, since that belongs to the scene rather than to the device; every scene on the device's screen faces the same way, so they agree on the rotation here.
     public var interfaceRotation: Quat {
         interfaceOrientation?.rotation ?? .identity
     }

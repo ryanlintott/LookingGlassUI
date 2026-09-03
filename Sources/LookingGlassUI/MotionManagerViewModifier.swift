@@ -37,6 +37,25 @@ struct MotionManagerViewModifier: ViewModifier {
         content
             .environmentObject(motionManager)
             .environmentObject(DeviceMotion.shared)
+            /// Measured in a background so that taking the container's frame can't change how `content` is laid out, and ignoring the safe area so that the frame covers the whole window rather than the part of it `content` was inset to.
+            .background(
+                GeometryReader { proxy in
+                    Color.clear
+                        .onAppear {
+                            motionManager.setContainerFrame(proxy.frame(in: .global))
+                        }
+                        .onChange(of: proxy.frame(in: .global)) {
+                            motionManager.setContainerFrame($0)
+                        }
+                }
+                .ignoresSafeArea()
+            )
+            /// Reads what the scene these views are in says about itself, which this scene's manager stores and passes on.
+            .background(
+                WindowSceneReader {
+                    motionManager.setWindowSceneState($0)
+                }
+            )
             .onAppear {
                 motionManager.update(preferredUpdateInterval: preferredUpdateInterval, disabled: disabled, scenePhase: scenePhase)
             }

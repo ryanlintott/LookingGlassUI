@@ -12,7 +12,7 @@ import SwiftUI
 ///
 /// Each scene's ``MotionManager`` adds itself here when it's created. The service keeps the sensor matched to the fastest interval any live scene needs and stops it when none do.
 @MainActor
-final class MotionService: ObservableObject {
+final class MotionService {
     /// The service shared by every scene in the app.
     static let shared = MotionService()
 
@@ -45,11 +45,6 @@ final class MotionService: ObservableObject {
     /// The current and initial device rotations derived from Core Motion updates.
     let deviceMotion = DeviceMotion.shared
 
-    /// The screen size in the current interface orientation.
-    ///
-    /// Seeded from `UIScreen.bounds`, which reports the interface orientation the app launched in, and updated whenever the device turns to an orientation the interface follows. It's stored rather than derived from ``DeviceMotion/interfaceOrientation`` because that starts out nil: a device lying flat has no supported orientation to report, so at launch the bounds are the only thing that knows which way the interface is facing.
-    @Published private(set) var interfaceSize: CGSize = UIScreen.main.bounds.size
-
     /// Whether the application is outside the background and may run the sensor.
     private var isApplicationActive: Bool
 
@@ -60,7 +55,6 @@ final class MotionService: ObservableObject {
     private init() {
         isApplicationActive = UIApplication.shared.applicationState != .background
         startObservingNotifications()
-        refreshInterfaceOrientation()
     }
 
     /// Whether the Core Motion service should be running.
@@ -104,20 +98,15 @@ final class MotionService: ObservableObject {
         restartMotionUpdatesIfNeeded()
     }
     
-    /// Reads the orientation the interface is showing, updates ``interfaceSize`` and re-starts motion updates when it has changed.
+    /// Stores the orientation a scene's interface is showing and re-starts motion updates when it has changed.
     ///
-    /// The window scene can become readable after this object is created, so this is called again whenever that could have happened rather than only once. Most of those calls find nothing new, so the sensor is only restarted when the orientation actually changed.
-    func refreshInterfaceOrientation() {
-        guard let newInterfaceOrientation = UIInterfaceOrientation.current else {
-            return
-        }
-        
-        if let newInterfaceSize = newInterfaceOrientation.screenSize,
-           interfaceSize != newInterfaceSize {
-            interfaceSize = newInterfaceSize
-        }
-        
-        let forceRestart = deviceMotion.setInterfaceOrientation(newInterfaceOrientation)
+    /// Reported by ``SwiftUICore/View/motionManager(preferredUpdateInterval:disabled:)`` from the scene its views are in, on every layout pass, so most calls find nothing new and the sensor is only restarted when the orientation actually changed.
+    ///
+    /// The last report wins. ``MotionManager/setWindowSceneState(_:)`` decides which scenes report at all, so what arrives here is only ever from a foreground scene on the device's own screen, and those all face the same way.
+    ///
+    /// - Parameter interfaceOrientation: The orientation the reporting scene's interface is showing.
+    func setInterfaceOrientation(_ interfaceOrientation: UIInterfaceOrientation) {
+        let forceRestart = deviceMotion.setInterfaceOrientation(interfaceOrientation)
 
         restartMotionUpdatesIfNeeded(forceRestart: forceRestart)
     }
@@ -132,6 +121,8 @@ final class MotionService: ObservableObject {
     ///
     /// - Parameter forceRestart: Whether to restart an already-requested service even when its interval is unchanged.
     private func restartMotionUpdatesIfNeeded(forceRestart: Bool = false) {
+        guard cmManager.isDeviceMotionAvailable else { return }
+
         guard needsMotionService else {
             if cmManager.isDeviceMotionActive {
                 stopMotionUpdates()
@@ -175,40 +166,20 @@ final class MotionService: ObservableObject {
         }
     }
 
-    /// Subscribes the service to device-orientation and application-lifecycle notifications.
+    /// Subscribes the service to application-lifecycle notifications.
+    ///
+    /// Interface orientation is not among them. It is reported by the scene's own views, which are laid out again whenever it changes, so there is nothing here to watch for it. That also avoids `UIDevice.orientationDidChangeNotification`, which only fires at all once something has called `beginGeneratingDeviceOrientationNotifications()`.
     private func startObservingNotifications() {
         let notificationCenter = NotificationCenter.default
 
         notificationObservers = [
-            /// The device turning is what makes the interface turn, so this is the signal that the scene may now report something new.
-            notificationCenter.addObserver(
-                forName: UIDevice.orientationDidChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                Task { @MainActor [weak self] in
-                    self?.refreshInterfaceOrientation()
-                }
-            },
-            /// A scene has no readable orientation until it activates, which can happen after this service is created.
-            notificationCenter.addObserver(
-                forName: UIScene.didActivateNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                Task { @MainActor [weak self] in
-                    self?.refreshInterfaceOrientation()
-                }
-            },
             notificationCenter.addObserver(
                 forName: UIApplication.willEnterForegroundNotification,
                 object: nil,
                 queue: .main
             ) { [weak self] _ in
                 Task { @MainActor [weak self] in
-                    guard let self else { return }
-                    self.refreshInterfaceOrientation()
-                    self.setApplicationActive(true)
+                    self?.setApplicationActive(true)
                 }
             },
             notificationCenter.addObserver(

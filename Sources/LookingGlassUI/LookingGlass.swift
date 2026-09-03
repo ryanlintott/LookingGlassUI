@@ -16,7 +16,6 @@ import SwiftUI
 /// 
 /// - Requires: ``motionManager(preferredUpdateInterval:disabled:)`` must be added above this view in the hierarchy.
 public struct LookingGlass<Content: View>: View {
-    @ObservedObject private var motionService = MotionService.shared
     @EnvironmentObject private var motionManager: MotionManager
 
     let type: DeviceRotationEffectType
@@ -93,18 +92,16 @@ public struct LookingGlass<Content: View>: View {
         )
     }
     
-    var interfaceSize: CGSize {
-        motionService.interfaceSize
-    }
-    
     public var body: some View {
         let _ = Self.printChangesIfEnabled()
-        if motionManager.isDetectingMotion {
+        if motionManager.isDetectingMotion, let containerFrame = motionManager.containerFrame {
             GeometryReader { proxy in
+                let viewFrame = proxy.frame(in: .global)
                 content
                     .deviceRotationEffect(type, distance: distance, perspective: perspective, offsetRotation: offsetRotation, isShowingInFourDirections: isShowingInFourDirections)
-                    .frame(width: interfaceSize.width, height: interfaceSize.height)
-                    .offset(x: (proxy.size.width / 2) - proxy.frame(in: .global).midX, y: (proxy.size.height / 2) - proxy.frame(in: .global).midY)
+                    /// Sized to the container and moved to sit on it, wherever this view happens to be, so the content's centre lands on the centre of the container and every effect in it turns about that one point.
+                    .frame(width: containerFrame.width, height: containerFrame.height)
+                    .offset(x: containerFrame.minX - viewFrame.minX, y: containerFrame.minY - viewFrame.minY)
             }
         } else {
             Color.clear
