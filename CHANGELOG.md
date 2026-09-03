@@ -4,7 +4,7 @@
 
 Changes since the previous versioned release, `0.4.2`.
 
-This release raises the package's minimum platform and tools version, now supports apps with multiple scenes correctly, and substantially reduces the work shimmer effects do on every motion update.
+This release raises the package's minimum platform and tools version, now supports apps with multiple scenes correctly, and substantially reduces the work shimmer effects do on every motion update. There are a lot of breaking changes to accomodate these fixes but they are mostly limited to the raw `MotionManager` properties with a few small renaming and slight visual changes on `shimmer`, `parallax` and `rotation3DEffect(quaternion:)`.
 
 ### Breaking Changes
 
@@ -25,6 +25,7 @@ This release raises the package's minimum platform and tools version, now suppor
 - Made `MotionManager.changeDeviceOrientation()` unavailable because the manager responds to supported device-orientation changes automatically.
 - Made `MotionManager.setUpdateInterval(_:)` and `MotionManager.setDisabled(_:)` unavailable. Pass values to `.motionManager(preferredUpdateInterval:disabled:)` instead.
 - Made `MotionManager.startMotionUpdates(updateInterval:disabled:setDeviceOrientation:)`, `MotionManager.restart()` and `MotionManager.stopMotionUpdates()` unavailable. Configure motion updates with `.motionManager(preferredUpdateInterval:disabled:)`. Updates are managed automatically when their configuration changes, the device orientation changes, or the app moves between the foreground and background.
+- `Vec3` is now a type of its own rather than an alias for `SIMD3<Double>`. As an alias, the extensions on it landed on `SIMD3<Double>` itself, so importing this package added `normalized`, `cgFloat` and the axis vectors to a standard library type throughout the importing module, where they could collide with a definition of the same name that had nothing to do with this package. Code that already spelled the type `Vec3` is unaffected. Code that passed a `SIMD3<Double>` to `Quat(angle:axis:)` or `Quat.rotating(_:)` now gets an unavailable overload explaining the change; wrap the vector with `Vec3(_:)`. `Quat.axis` returns a `Vec3`, which cannot be given the same treatment as a property, so code that used it as a `SIMD3<Double>` reaches for `.simd`, which is public for exactly that reason.
 - Removed the `Quat4f` and `Vec3f` placeholders left behind by the move off FirebladeMath. They were already marked unavailable, so nothing that compiled against `0.4.2` referred to them.
 
 ### Changes

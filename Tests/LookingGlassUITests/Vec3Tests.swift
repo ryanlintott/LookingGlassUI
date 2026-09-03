@@ -16,7 +16,7 @@ final class Vec3Tests: XCTestCase {
 
         let limited = diagonal.limited(to: 10)
 
-        XCTAssertEqual(simd_length(limited), 10, accuracy: 1e-9)
+        XCTAssertEqual(simd_length(limited.simd), 10, accuracy: 1e-9)
     }
 
     /// Only the length changes. A limit that also turned the vector would send the parallax offset off in a direction the device was never tilted.
