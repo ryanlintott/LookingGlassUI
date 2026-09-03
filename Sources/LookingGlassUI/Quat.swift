@@ -178,6 +178,15 @@ public extension Quat {
     /// - Parameters:
     ///   - vector: Vector to be rotated.
     /// - Returns: The rotated vector.
+    internal func rotating(_ vector: Vec3) -> Vec3 {
+        Vec3(simd_act(simd.normalized, vector.simd))
+    }
+    
+    /// Returns a vector rotated by this quaternion.
+    ///
+    /// - Parameters:
+    ///   - vector: Vector to be rotated.
+    /// - Returns: The rotated vector.
     func rotating(_ vector: SIMD3<Double>) -> SIMD3<Double> {
         simd_act(simd.normalized, vector)
     }
