@@ -11,6 +11,9 @@ import SwiftUI
 struct ContentView: View {
     @State private var preferredUpdateInterval: TimeInterval = 0.1
     @State private var disabled: Bool = false
+
+    /// Held in state so it is generated once for each window rather than on every update, giving that window a label that stays put while it is open.
+    @State private var windowID = String(UUID().uuidString.prefix(4))
     
     var body: some View {
         VStack(spacing: 0) {
@@ -107,6 +110,8 @@ struct ContentView: View {
                     }
             }
             
+            WindowDebugBar(windowID: windowID)
+
             SettingsView(preferredUpdateInterval: $preferredUpdateInterval, disabled: $disabled)
         }
         .motionManager(preferredUpdateInterval: preferredUpdateInterval, disabled: disabled)
