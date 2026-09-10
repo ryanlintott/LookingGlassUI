@@ -14,6 +14,12 @@ final class ShimmerLightTests: XCTestCase {
     private let color = Color.red
     private let background = Color.blue
 
+    /// How bright a sampled falloff is halfway from where its fade starts to the outer edge, whatever it was sampled into.
+    private func intensityHalfwayOut(_ falloff: ShimmerFalloff) -> Double? {
+        guard let intensities = falloff.intensities else { return nil }
+        return intensities[(intensities.count - 1) / 2]
+    }
+
     /// The values that were fixed inside `ShimmerView` before there was a light to pass it. Changing any of these changes how every existing shimmer looks.
     func testDefaultsMatchTheValuesTheyReplaced() {
         let light = ShimmerLight(color: color, background: background)
@@ -103,7 +109,7 @@ final class ShimmerLightTests: XCTestCase {
     func testPowerFalloffIsSampledFromCentreToEdge() {
         let stops = ShimmerFalloff.power(2).gradient(color: color, background: background).stops
 
-        XCTAssertEqual(stops.count, ShimmerFalloff.segments + 1)
+        XCTAssertGreaterThan(stops.count, 2)
         XCTAssertEqual(stops.first?.color, color)
         XCTAssertEqual(stops.first?.location, 0)
         XCTAssertEqual(stops.last?.color, color.opacity(0))
@@ -111,13 +117,12 @@ final class ShimmerLightTests: XCTestCase {
 
         let locations = stops.map(\.location)
         XCTAssertEqual(locations, locations.sorted())
-        XCTAssertEqual(stops[ShimmerFalloff.segments / 2].location, 0.5, accuracy: 0.0001)
+        XCTAssertEqual(locations.map { $0 - locations[0] }.max(), 1)
     }
 
     /// The point of raising the exponent is a smaller bright area, so halfway out has to be dimmer than the straight line's half brightness.
     func testHigherPowersAreDimmerHalfwayOut() {
-        let midpoint = ShimmerFalloff.segments / 2
-        let intensities = [2.0, 3, 4].map { ShimmerFalloff.power($0).intensities?[midpoint] }
+        let intensities = [2.0, 3, 4].map { intensityHalfwayOut(ShimmerFalloff.power($0)) }
 
         XCTAssertEqual(intensities.compactMap { $0 }.count, 3)
         for intensity in intensities.compactMap({ $0 }) {

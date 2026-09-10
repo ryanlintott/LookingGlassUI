@@ -17,11 +17,6 @@ public struct ShimmerFalloff: Equatable, Sendable {
     /// Opacities of the shimmer color, evenly spaced from where the fade starts to the outer edge of the light, or `nil` to run straight from the shimmer color to the background color.
     let intensities: [Double]?
     
-    /// Number of straight segments a curve is sampled into.
-    ///
-    /// A `Gradient` only interpolates linearly between its stops, so any curve has to be approximated. More segments are smoother at the cost of a larger gradient.
-    static let segments = 16
-    
     private init(intensities: [Double]?, core: Double) {
         self.intensities = intensities
         self.core = core
@@ -51,6 +46,8 @@ public struct ShimmerFalloff: Equatable, Sendable {
     ///   - core: How much of the light's radius is solid color before it starts to fade, from zero to one. (default: `0.04`)
     public static func power(_ exponent: Double, core: Double = 0.04) -> ShimmerFalloff {
         guard exponent.isFinite, exponent > 0, exponent != 1 else { return .linear(core: core) }
+        /// Number of straight segments the curve is sampled into. A `Gradient` only interpolates linearly between its stops, so a curve has to be approximated, and more segments are smoother at the cost of a larger gradient. Sixteen holds the curve to within a percent of full brightness up to an exponent of five, and drifts further above that, where the fade is steep enough near the centre that straight segments start to show.
+        let segments = 16
         return ShimmerFalloff(intensities: (0...segments).map { segment in
             pow(1 - Double(segment) / Double(segments), exponent)
         }, core: core)
