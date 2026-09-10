@@ -50,7 +50,7 @@ struct ShimmerExampleView: View {
                             .padding()
                     }
                     .foregroundColor(.goldDark)
-                    .shimmer(mode: mode(number: i), color: .goldShimmer, exposureStops: 1.5)
+                    .shimmer(mode: mode(number: i), light: ShimmerLight(color: .goldShimmer, exposureStops: 1.5))
                 }
             }
         }

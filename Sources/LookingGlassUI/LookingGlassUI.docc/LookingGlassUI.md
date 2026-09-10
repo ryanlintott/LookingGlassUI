@@ -6,18 +6,21 @@ A Swift Package that creates shimmer, parallax, and other SwiftUI effects based 
 
 Add ``SwiftUICore/View/motionManager(preferredUpdateInterval:disabled:)`` once near the top of each scene's view hierarchy and every other feature in this package can use device motion. It places that scene's ``MotionManager`` and the shared ``DeviceMotion`` in the environment. Every scene shares one Core Motion service, driven by the fastest interval any enabled foreground scene needs. Backgrounding, closing, or disabling one scene does not stop updates needed by another foreground scene, and a disabled scene does not display motion effects while another scene remains active.
 
-Make a color catch the light as the device turns with ``ShimmerView``, or add that shimmer to any view with ``SwiftUICore/View/shimmer(mode:color:background:exposureStops:)``. Shift a view as the device tilts with ``SwiftUICore/View/parallax(distance:maxOffset:)``. Lock a view to a real-world angle with ``LookingGlass`` or ``SwiftUICore/View/deviceRotationEffect(_:distance:perspective:pitch:yaw:localRoll:isShowingInFourDirections:)`` so it appears through the screen as if seen through a window or a reflection, and is only visible when the device points at it.
+Make a color catch the light as the device turns with ``ShimmerView``, or add that shimmer to any view with ``SwiftUICore/View/shimmer(mode:color:background:)``. Shift a view as the device tilts with ``SwiftUICore/View/parallax(distance:maxOffset:)``. Lock a view to a real-world angle with ``LookingGlass`` or ``SwiftUICore/View/deviceRotationEffect(_:distance:perspective:pitch:yaw:localRoll:isShowingInFourDirections:)`` so it appears through the screen as if seen through a window or a reflection, and is only visible when the device points at it.
 
-When built with Xcode 26 or later and running on iOS 26 or later, set a shimmer's `exposureStops` above zero to render its shimmer color in HDR; each stop doubles its brightness. The default of zero and earlier toolchain or iOS versions use the standard dynamic range appearance.
+Build a ``ShimmerLight`` and pass it to ``ShimmerView`` or ``SwiftUICore/View/shimmer(mode:light:blendMode:)`` to change the light itself: its size and shape, where it sits in front of the device, and the ``ShimmerFalloff`` describing how it fades out. When built with Xcode 26 or later and running on iOS 26 or later, a light's `exposureStops` above zero renders its color in HDR; each stop doubles its brightness. The default of zero and earlier toolchain or iOS versions use the standard dynamic range appearance.
 
 ```swift
 ContentView()
     .motionManager(preferredUpdateInterval: 0.1, disabled: false)
 
-ShimmerView(mode: .darkModeOnly, color: .goldShimmer, background: .gold, exposureStops: 1)
+ShimmerView(mode: .darkModeOnly, color: .goldShimmer, background: .gold)
 
 Text("Hello, World!")
-    .shimmer(color: .gold, exposureStops: 1)
+    .shimmer(color: .gold)
+
+Text("Hello, World!")
+    .shimmer(light: ShimmerLight(color: .gold, exposureStops: 1, falloff: .power(3)))
 
 Text("Hello, World!")
     .parallax(distance: 40, maxOffset: 100)
@@ -36,8 +39,8 @@ An effect is off when its scene passed a zero `preferredUpdateInterval` or `disa
 | ``LookingGlass`` | Takes the same space and draws nothing |
 | ``SwiftUICore/View/deviceRotationEffect(_:distance:perspective:pitch:yaw:localRoll:isShowingInFourDirections:)`` | Draws nothing and takes no space |
 | ``SwiftUICore/View/parallax(distance:maxOffset:)`` | Draws the view unmoved |
-| ``ShimmerView`` and ``SwiftUICore/View/shimmer(mode:color:background:exposureStops:)`` | Draws the background colour alone |
-| ``SwiftUICore/View/shimmer(mode:color:blendMode:exposureStops:)`` | Draws nothing over the view |
+| ``ShimmerView`` and ``SwiftUICore/View/shimmer(mode:color:background:)`` | Draws the background colour alone |
+| ``SwiftUICore/View/shimmer(mode:color:blendMode:)`` | Draws nothing over the view |
 
 Motion updates also stop while the app or the scene is in the background, but that does not turn effects off: they stay on screen at their last rotation, so they are still there in the app switcher snapshot.
 
@@ -61,10 +64,13 @@ For a feature-by-feature guide with examples, see the [README](https://github.co
 
 - ``ShimmerView``
 - ``ShimmerMode``
-- ``SwiftUICore/View/shimmer(mode:color:background:exposureStops:)``
-- ``SwiftUICore/View/shimmer(isOn:color:background:exposureStops:)``
-- ``SwiftUICore/View/shimmer(mode:color:blendMode:exposureStops:)``
-- ``SwiftUICore/View/shimmer(isOn:color:blendMode:exposureStops:)``
+- ``ShimmerLight``
+- ``ShimmerFalloff``
+- ``SwiftUICore/View/shimmer(mode:light:blendMode:)``
+- ``SwiftUICore/View/shimmer(mode:color:background:)``
+- ``SwiftUICore/View/shimmer(isOn:color:background:)``
+- ``SwiftUICore/View/shimmer(mode:color:blendMode:)``
+- ``SwiftUICore/View/shimmer(isOn:color:blendMode:)``
 
 ### Parallax
 

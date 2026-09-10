@@ -62,9 +62,11 @@ Every scene gets its own `MotionManager` from `.motionManager` holding the value
 ## ShimmerView
 *Requires [`.motionManager()`](#motionmanager)*
 
-This view acts like `Color` but a second shimmer color will appear when device is rotated. The effect can be enabled via a parameter or set to only show in dark or light mode. If `MotionManager` is disabled only the background color will be shown. When built with Xcode 26 or later and running on iOS 26 or later, set `exposureStops` above zero to render the shimmer color in HDR; each stop doubles its brightness. The default of zero will use the standard dynamic range appearance.
+This view acts like `Color` but a second shimmer color will appear when device is rotated. The effect can be enabled via a parameter or set to only show in dark or light mode. If `MotionManager` is disabled only the background color will be shown. Pass a `ShimmerLight` instead of a color to customize the light itself: its size and shape, where it sits in front of the device, and the `ShimmerFalloff` describing how it fades out. When built with Xcode 26 or later and running on iOS 26 or later, a light's `exposureStops` above zero renders its color in HDR; each stop doubles its brightness. The default of zero will use the standard dynamic range appearance.
 ```swift
-ShimmerView(mode: .darkModeOnly, color: .goldShimmer, background: .gold, exposureStops: 1)
+ShimmerView(mode: .darkModeOnly, color: .goldShimmer, background: .gold)
+
+ShimmerView(mode: .darkModeOnly, light: ShimmerLight(color: .goldShimmer, background: .gold, exposureStops: 1, falloff: .power(3)))
 ```
 
 ## .shimmer()
@@ -73,7 +75,7 @@ ShimmerView(mode: .darkModeOnly, color: .goldShimmer, background: .gold, exposur
 Use `.shimmer()` view modifier if you want to add a default shimmer effect to another SwiftUI View. If `MotionManager` is disabled the shimmer effect will not appear.
 ```swift
 Text("Hello, World!")
-    .shimmer(color: .gold, exposureStops: 1)
+    .shimmer(light: ShimmerLight(color: .gold, exposureStops: 1))
 ```
 
 ## .parallax()

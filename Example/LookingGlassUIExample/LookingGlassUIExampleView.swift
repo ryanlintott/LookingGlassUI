@@ -42,8 +42,10 @@ struct LookingGlassUIExampleView: View {
             )
             .foregroundColor(.gold)
             .shimmer(
-                color: .goldShimmer,
-                exposureStops: isHDREnabled ? hdrExposureStops : 0
+                light: ShimmerLight(
+                    color: .goldShimmer,
+                    exposureStops: isHDREnabled ? hdrExposureStops : 0
+                )
             )
             .overlay(alignment: .bottom) {
                 #if compiler(>=6.2)
