@@ -9,7 +9,12 @@ import SwiftUI
 
 /// The way a ``ShimmerLight`` fades from its centre to its outer edge.
 public struct ShimmerFalloff: Equatable, Sendable {
-    /// Opacities of the shimmer color, evenly spaced from the centre of the light to its outer edge, or `nil` to run straight from the shimmer color to the background color.
+    /// How much of the light's radius is solid color before it starts to fade, from zero to one.
+    ///
+    /// The fade is measured from here rather than from the centre, so a light keeps the same bright core however large it is or however small it's drawn.
+    public var core: Double
+    
+    /// Opacities of the shimmer color, evenly spaced from where the fade starts to the outer edge of the light, or `nil` to run straight from the shimmer color to the background color.
     let intensities: [Double]?
     
     /// Number of straight segments a curve is sampled into.
@@ -17,35 +22,50 @@ public struct ShimmerFalloff: Equatable, Sendable {
     /// A `Gradient` only interpolates linearly between its stops, so any curve has to be approximated. More segments are smoother at the cost of a larger gradient.
     static let segments = 16
     
-    private init(intensities: [Double]?) {
+    private init(intensities: [Double]?, core: Double) {
         self.intensities = intensities
+        self.core = core
+    }
+    
+    /// The core actually drawn, ignoring values that aren't a fraction of the radius.
+    var drawnCore: Double {
+        guard core.isFinite else { return 0 }
+        return min(max(core, 0), 1)
     }
     
     /// A fade running in a straight line from the shimmer color to the background color.
     ///
     /// Half the radius sits above half brightness, which reads as one large soft blob.
-    public static let linear = ShimmerFalloff(intensities: nil)
+    ///
+    /// - Parameter core: How much of the light's radius is solid color before it starts to fade, from zero to one. (default: `0.04`)
+    public static func linear(core: Double = 0.04) -> ShimmerFalloff {
+        ShimmerFalloff(intensities: nil, core: core)
+    }
     
     /// A fade dropping as the distance from the centre, subtracted from one, raised to `exponent`.
     ///
     /// An exponent above one drops the brightness quickly at first and then trails off, so the brightest part stays small while the faint halo around it still reaches the outer edge, closer to light glancing off a surface. Below one it does the reverse, holding the brightness and then falling away at the edge.
     ///
-    /// - Parameter exponent: How sharply the light fades. `1` is ``linear``. Values that aren't positive and finite are also ``linear``.
-    public static func power(_ exponent: Double) -> ShimmerFalloff {
-        guard exponent.isFinite, exponent > 0, exponent != 1 else { return .linear }
+    /// - Parameters:
+    ///   - exponent: How sharply the light fades. `1` is ``linear(core:)``. Values that aren't positive and finite are too.
+    ///   - core: How much of the light's radius is solid color before it starts to fade, from zero to one. (default: `0.04`)
+    public static func power(_ exponent: Double, core: Double = 0.04) -> ShimmerFalloff {
+        guard exponent.isFinite, exponent > 0, exponent != 1 else { return .linear(core: core) }
         return ShimmerFalloff(intensities: (0...segments).map { segment in
             pow(1 - Double(segment) / Double(segments), exponent)
-        })
+        }, core: core)
     }
     
-    /// A fade through the supplied opacities, spaced evenly from the centre of the light to its outer edge.
+    /// A fade through the supplied opacities, spaced evenly from where the fade starts to the outer edge of the light.
     ///
     /// Use this to shape a light that none of the other falloffs describe. Start at `1` and end at `0` for a light that is fully the shimmer color at its centre and gone by its edge.
     ///
-    /// - Parameter intensities: Opacities of the shimmer color from centre to edge. Each is clamped to `0...1`, and fewer than two leaves nothing to interpolate so the falloff is ``linear``.
-    public static func intensities(_ intensities: [Double]) -> ShimmerFalloff {
-        guard intensities.count > 1 else { return .linear }
-        return ShimmerFalloff(intensities: intensities.map { $0.isFinite ? min(max($0, 0), 1) : 0 })
+    /// - Parameters:
+    ///   - intensities: Opacities of the shimmer color from where the fade starts to the outer edge. Each is clamped to `0...1`, and fewer than two leaves nothing to interpolate so the falloff is ``linear(core:)``.
+    ///   - core: How much of the light's radius is solid color before it starts to fade, from zero to one. (default: `0.04`)
+    public static func intensities(_ intensities: [Double], core: Double = 0.04) -> ShimmerFalloff {
+        guard intensities.count > 1 else { return .linear(core: core) }
+        return ShimmerFalloff(intensities: intensities.map { $0.isFinite ? min(max($0, 0), 1) : 0 }, core: core)
     }
     
     /// The gradient a light with this falloff draws.

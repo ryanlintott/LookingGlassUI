@@ -70,16 +70,16 @@ public struct ShimmerView: View {
                             perspective: 0,
                             pitch: light.pitch,
                             yaw: light.yaw,
-                            localRoll: light.rollAngle,
+                            localRoll: light.localRoll,
                             isShowingInFourDirections: true
                         ) {
                             RadialGradient(
                                 gradient: light.gradient,
                                 center: .center,
-                                startRadius: light.startRadius,
-                                endRadius: light.endRadius
+                                startRadius: light.gradientCoreRadius,
+                                endRadius: light.gradientRadius
                             )
-                            .frame(width: light.endRadius * 2, height: light.endRadius * 2)
+                            .frame(width: light.gradientDiameter, height: light.gradientDiameter)
                             .scaleEffect(light.gradientScale, anchor: .center)
                         }
                         .clipped()

@@ -17,26 +17,27 @@ public struct ShimmerLight: Equatable, Sendable {
     public var background: Color
     /// HDR exposure applied to the color on iOS 26 and later. Each stop doubles its brightness.
     public var exposureStops: Double
-    /// Radius in points of the solid core at the centre of the light, before scaling.
-    public var startRadius: CGFloat
-    /// Radius in points the light has finished fading by, before scaling.
-    public var endRadius: CGFloat
-    /// Width of the light relative to its height. One is circular, below one is a tall narrow highlight, and above one a wide flat one.
-    public var aspectRatio: CGFloat
-    /// Distance in points the light sits in front of the device.
-    public var distance: CGFloat
-    /// Angle the light is pitched to where it sits in front of the device.
-    public var pitch: Angle
-    /// Angle the light is yawed to where it sits in front of the device.
-    public var yaw: Angle
-    /// Angle the light is rolled by where it sits in front of the device.
-    public var rollAngle: Angle
-    /// How much larger than its radius the light is drawn.
+    /// Size of the light in points, as it ends up on screen.
+    public var size: CGSize
+    /// The fraction of its size the light is actually drawn at before being stretched back up to fill it.
     ///
-    /// The aspect ratio squeezes and stretches around this, so reshaping a light doesn't change how much of the view it covers.
-    public var scale: CGFloat
+    /// A gradient drawn small and scaled up costs much less to draw than the same gradient drawn full size, and a light this soft has little detail to lose. Lower values are cheaper and softer, and one draws the light at full size.
+    public var resolution: CGFloat
+    /// Pitch rotation placing the light in the real world (zero = on the ground, 90 degrees = in front, 180 degrees = on the ceiling).
+    public var pitch: Angle
+    /// Yaw rotation placing the light in the real world (zero = in front, 90 degrees = left, -90 degrees = right, 180 degrees = behind).
+    ///
+    /// A shimmer shows its light in all four directions, so this turns it within each rather than picking one to face.
+    public var yaw: Angle
+    /// Local roll turning the light about its own centre, tilting the ellipse where it hangs in the world.
+    public var localRoll: Angle
     /// The way the light fades from its centre to its outer edge.
     public var falloff: ShimmerFalloff
+    
+    /// Distance in points the light hangs in front of the device.
+    ///
+    /// A shimmer is drawn without perspective, so nothing about the light changes with the distance it's placed at. It's kept because ``LookingGlass`` asks for one, and far enough away that a light is never behind the screen.
+    let distance: CGFloat = 4000
     
     /// Creates a light for a shimmer effect to catch.
     ///
@@ -48,52 +49,77 @@ public struct ShimmerLight: Equatable, Sendable {
     ///   - color: Color of the light.
     ///   - background: Color behind the light. Clear draws nothing where the light has faded out, leaving whatever it was drawn over. (default: `.clear`)
     ///   - exposureStops: HDR exposure applied to the color on iOS 26 and later. Each stop doubles its brightness. Values that aren't positive and finite use standard dynamic range. (default: `0`)
-    ///   - startRadius: Radius in points of the solid core at the centre of the light, before scaling. (default: `5`)
-    ///   - endRadius: Radius in points the light has finished fading by, before scaling. (default: `125`)
-    ///   - aspectRatio: Width of the light relative to its height. One is circular, below one is a tall narrow highlight, and above one a wide flat one. (default: `0.25`)
-    ///   - distance: Distance in points the light sits in front of the device. (default: `4000`)
-    ///   - pitch: Angle the light is pitched to where it sits in front of the device. (default: `45` degrees)
-    ///   - yaw: Angle the light is yawed to where it sits in front of the device. (default: `.zero`)
-    ///   - rollAngle: Angle the light is rolled by where it sits in front of the device. (default: `-30` degrees)
-    ///   - scale: How much larger than its radius the light is drawn. Scaling up a light with a smaller radius (and smaller resolution) improves performance. (default: `5`)
-    ///   - falloff: The way the light fades from its centre to its outer edge. (default: ``ShimmerFalloff/linear``)
+    ///   - size: Size of the light in points, as it ends up on screen. (default: `625` × `2500`)
+    ///   - resolution: The fraction of its size the light is drawn at before being stretched back up to fill it. Drawing small and scaling up costs much less than drawing full size, and a light this soft has little detail to lose. Values that aren't positive and finite draw the light at full size. (default: `0.2`)
+    ///   - pitch: Pitch rotation placing the light in the real world (zero = on the ground, 90 degrees = in front, 180 degrees = on the ceiling). (default: `45` degrees, halfway between the two)
+    ///   - yaw: Yaw rotation placing the light in the real world (zero = in front, 90 degrees = left, -90 degrees = right, 180 degrees = behind). (default: `.zero`)
+    ///   - localRoll: Local roll turning the light about its own centre, tilting the ellipse where it hangs in the world. (default: `-30` degrees)
+    ///   - falloff: The way the light fades from its centre to its outer edge. (default: ``ShimmerFalloff/linear(core:)``)
     public init(
         color: Color,
         background: Color = .clear,
         exposureStops: Double = 0,
-        startRadius: CGFloat = 5,
-        endRadius: CGFloat = 125,
-        aspectRatio: CGFloat = 0.25,
-        distance: CGFloat = 4000,
+        size: CGSize = CGSize(width: 625, height: 2500),
+        resolution: CGFloat = 0.2,
         pitch: Angle = .degrees(45),
         yaw: Angle = .zero,
-        rollAngle: Angle = .degrees(-30),
-        scale: CGFloat = 5,
-        falloff: ShimmerFalloff = .linear
+        localRoll: Angle = .degrees(-30),
+        falloff: ShimmerFalloff = .linear()
     ) {
         self.color = color
         self.background = background
         self.exposureStops = exposureStops
-        self.startRadius = startRadius
-        self.endRadius = endRadius
-        self.aspectRatio = aspectRatio
-        self.distance = distance
+        self.size = size
         self.pitch = pitch
         self.yaw = yaw
-        self.rollAngle = rollAngle
-        self.scale = scale
+        self.localRoll = localRoll
+        self.resolution = resolution
         self.falloff = falloff
     }
     
-    /// Scale applied to the gradient on each axis, ignoring values that would leave nothing to draw.
+    /// Width of the light relative to its height. One is circular, below one is a tall narrow highlight, and above one a wide flat one.
     ///
-    /// The gradient starts out circular, so one axis is stretched by as much as the other is squeezed. Each takes the square root of the aspect ratio, which leaves the width divided by the height equal to the aspect ratio itself rather than to its square, and leaves the area the scale alone.
+    /// Derived from ``size``, which is what the light is actually drawn to.
+    public var aspectRatio: CGFloat {
+        guard size.width.isFinite, size.height.isFinite, size.height > 0 else { return 0 }
+        return size.width / size.height
+    }
+    
+    /// The resolution the light is drawn at, ignoring values that would leave nothing to draw.
+    private var drawnResolution: CGFloat {
+        guard resolution.isFinite, resolution > 0 else { return 1 }
+        return resolution
+    }
+    
+    /// Width and height in points of the square the gradient is drawn in before it's stretched into the light.
     ///
-    /// A scale or aspect ratio of zero collapses the gradient and a negative one flips it or has no square root at all, so anything that isn't positive and finite is drawn unscaled.
+    /// The gradient is a circle, so it's drawn square and stretched to the light's size afterwards. Taking the resolution off both sides of that square, rather than off the width or the height, leaves the amount it has to be scaled up by the same on average whatever shape the light is, so a light keeps the same softness as it's reshaped.
+    ///
+    /// Zero where there is no light to draw, which leaves the gradient an empty frame.
+    var gradientDiameter: CGFloat {
+        guard size.width.isFinite, size.width > 0, size.height.isFinite, size.height > 0 else { return 0 }
+        return sqrt(size.width * size.height) * drawnResolution
+    }
+    
+    /// Radius in points the gradient is drawn to before being stretched.
+    var gradientRadius: CGFloat {
+        gradientDiameter / 2
+    }
+    
+    /// Radius in points the gradient is solid color to before it starts to fade, before being stretched.
+    ///
+    /// The size of that core belongs to the falloff, which is the shape of the light from its centre to its edge; this is only where it lands in the gradient being drawn.
+    var gradientCoreRadius: CGFloat {
+        gradientRadius * CGFloat(falloff.drawnCore)
+    }
+    
+    /// Scale applied to the drawn gradient on each axis to stretch it into the light.
+    ///
+    /// Dividing the light's size by the square it was drawn in leaves it exactly ``size`` on screen, however small it was drawn.
     var gradientScale: CGSize {
-        guard scale.isFinite, scale > 0, aspectRatio.isFinite, aspectRatio > 0 else { return CGSize(width: 1, height: 1) }
-        let stretch = sqrt(aspectRatio)
-        return CGSize(width: scale * stretch, height: scale / stretch)
+        let diameter = gradientDiameter
+        guard diameter > 0 else { return CGSize(width: 1, height: 1) }
+        return CGSize(width: size.width / diameter, height: size.height / diameter)
     }
     
     /// HDR headroom the color is rendered with, or `nil` for standard dynamic range.
