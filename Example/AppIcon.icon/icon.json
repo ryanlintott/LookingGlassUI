@@ -1,0 +1,59 @@
+{
+  "features" : [
+    "specular-location"
+  ],
+  "fill" : {
+    "automatic-gradient" : "extended-gray:0.00000,1.00000"
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "hidden-specializations" : [
+            {
+              "value" : true
+            },
+            {
+              "idiom" : "watchOS",
+              "value" : false
+            }
+          ],
+          "image-name" : "border-and-triangles-circle.svg",
+          "name" : "border-and-triangles-circle"
+        },
+        {
+          "blend-mode-specializations" : [
+            {
+              "appearance" : "tinted",
+              "value" : "normal"
+            }
+          ],
+          "fill" : "none",
+          "hidden-specializations" : [
+            {
+              "idiom" : "watchOS",
+              "value" : true
+            }
+          ],
+          "image-name" : "border-and-triangles.svg",
+          "name" : "border-and-triangles"
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : "outside",
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

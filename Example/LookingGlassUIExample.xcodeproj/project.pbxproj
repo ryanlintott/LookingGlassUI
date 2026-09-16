@@ -8,10 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		CF1AB2AF2CB5BCF20049E553 /* LookingGlassUI in Frameworks */ = {isa = PBXBuildFile; productRef = CF1AB2AE2CB5BCF20049E553 /* LookingGlassUI */; };
+		CF68E3A9305A1331003902AC /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = CF68E3A8305A1331003902AC /* AppIcon.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		CF4D35B326540516001D5F2A /* LookingGlassUIExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LookingGlassUIExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF68E3A8305A1331003902AC /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -44,6 +46,7 @@
 			isa = PBXGroup;
 			children = (
 				CF0D2D523033671D009D649A /* LookingGlassUIExample */,
+				CF68E3A8305A1331003902AC /* AppIcon.icon */,
 				CF4D35B426540516001D5F2A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -123,6 +126,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CF68E3A9305A1331003902AC /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
