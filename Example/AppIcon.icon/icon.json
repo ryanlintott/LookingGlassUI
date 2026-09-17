@@ -18,8 +18,19 @@
               "value" : false
             }
           ],
-          "image-name" : "border-and-triangles-circle.svg",
-          "name" : "border-and-triangles-circle"
+          "image-name" : "border-circle.svg",
+          "name" : "border-circle"
+        },
+        {
+          "blend-mode-specializations" : [
+            {
+              "appearance" : "tinted",
+              "value" : "normal"
+            }
+          ],
+          "fill" : "none",
+          "image-name" : "triangles.svg",
+          "name" : "triangles"
         },
         {
           "blend-mode-specializations" : [
@@ -35,8 +46,8 @@
               "value" : true
             }
           ],
-          "image-name" : "border-and-triangles.svg",
-          "name" : "border-and-triangles"
+          "image-name" : "border.svg",
+          "name" : "border"
         }
       ],
       "shadow" : {
